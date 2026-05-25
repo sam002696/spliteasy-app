@@ -1,4 +1,4 @@
-import { BarChart3, Home, User, Users, Wallet } from "lucide-react-native";
+import {  Home, User, Users, Wallet } from "lucide-react-native";
 
 export const tabItems = [
   {
@@ -16,11 +16,11 @@ export const tabItems = [
     label: "Balances",
     icon: Wallet,
   },
-  {
-    name: "reports",
-    label: "Reports",
-    icon: BarChart3,
-  },
+  // {
+  //   name: "reports",
+  //   label: "Reports",
+  //   icon: BarChart3,
+  // },
   {
     name: "profile",
     label: "Profile",

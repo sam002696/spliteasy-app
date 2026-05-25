@@ -7,7 +7,7 @@ export function ModalHeader({ onClose }) {
   const theme = useTheme();
 
   return (
-    <View style={[styles.root, { marginBottom: theme.space[6] }]}>
+    <View style={[styles.root, { marginBottom: theme.space[6], marginTop: theme.space[4] }]}>
       <View style={{ flex: 1, gap: theme.space[1] }}>
         <Text variant="label" color="textMuted" uppercase>
           New group
