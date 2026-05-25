@@ -1,0 +1,56 @@
+import React, { useCallback } from "react";
+import { FlatList, View } from "react-native";
+import { Text, useTheme } from "../../../design-system";
+import { GroupListCard } from "./GroupListCard";
+
+function EmptyGroups() {
+  const theme = useTheme();
+
+  return (
+    <View
+      style={{
+        alignItems: "center",
+        backgroundColor: theme.semantic.surface,
+        borderRadius: theme.radii.lg,
+        gap: theme.space[2],
+        padding: theme.space[6],
+      }}
+    >
+      <Text variant="sectionTitle" color="text">
+        No groups found
+      </Text>
+      <Text variant="bodySmall" color="textMuted" align="center">
+        Try a different filter or create a new group.
+      </Text>
+    </View>
+  );
+}
+
+export function GroupsList({ groups, ListHeaderComponent, ListFooterComponent, onOpenGroup }) {
+  const theme = useTheme();
+
+  const renderItem = useCallback(
+    ({ item, index }) => (
+      <GroupListCard group={item} index={index} onPress={() => onOpenGroup?.(item.id)} />
+    ),
+    [onOpenGroup],
+  );
+
+  return (
+    <FlatList
+      data={groups}
+      keyExtractor={(item) => item.id}
+      renderItem={renderItem}
+      ListHeaderComponent={ListHeaderComponent}
+      ListFooterComponent={ListFooterComponent}
+      ListEmptyComponent={EmptyGroups}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        gap: theme.space[3],
+        paddingBottom: theme.space[8] * 4,
+        paddingHorizontal: theme.space[4],
+        paddingTop: theme.space[2],
+      }}
+    />
+  );
+}

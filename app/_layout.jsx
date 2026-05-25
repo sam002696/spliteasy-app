@@ -1,0 +1,44 @@
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { ThemeProvider, useTheme } from "../src/design-system";
+
+function RootNavigator() {
+  const theme = useTheme();
+
+  return (
+    <>
+      <StatusBar style="dark" backgroundColor={theme.semantic.background} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: {
+            backgroundColor: theme.semantic.background,
+          },
+        }}
+      >
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="groups/[groupId]" />
+        <Stack.Screen
+          name="(modals)/create-group"
+          options={{
+            presentation: "modal",
+          }}
+        />
+        <Stack.Screen
+          name="(modals)/add-expense"
+          options={{
+            presentation: "modal",
+          }}
+        />
+      </Stack>
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <RootNavigator />
+    </ThemeProvider>
+  );
+}
