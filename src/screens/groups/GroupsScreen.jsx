@@ -1,10 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, useTheme } from "../../design-system";
+import { useTheme } from "../../design-system";
 import {
-  CreateGroupFab,
   FilterChips,
   GroupsHeader,
   GroupsList,
@@ -17,7 +15,11 @@ function GroupsIntro({ activeFilter, onCreateGroup, onFilterChange }) {
     <>
       <GroupsHeader onCreateGroup={onCreateGroup} />
       <GroupsSummary stats={groupStats} />
-      <FilterChips filters={groupFilters} value={activeFilter} onChange={onFilterChange} />
+      <FilterChips
+        filters={groupFilters}
+        value={activeFilter}
+        onChange={onFilterChange}
+      />
     </>
   );
 }
@@ -62,7 +64,6 @@ export function GroupsScreen() {
           />
         }
       />
-      <CreateGroupFab onPress={handleCreateGroup} />
     </SafeAreaView>
   );
 }
