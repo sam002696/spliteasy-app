@@ -1,17 +1,14 @@
 import React, { useMemo, useState } from "react";
-import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../design-system";
 import {
   BalanceFilterChips,
-  BalanceSummaryCard,
   BalancesHeader,
   BalancesList,
   SectionHeader,
 } from "./components";
 import {
   balanceFilters,
-  balanceSummary,
   openBalances,
   settledBalances,
 } from "./data/balancesData";
@@ -20,9 +17,14 @@ function BalancesIntro({ activeFilter, onFilterChange, openCount }) {
   return (
     <>
       <BalancesHeader />
-      <BalanceSummaryCard summary={balanceSummary} />
-      <BalanceFilterChips filters={balanceFilters} value={activeFilter} onChange={onFilterChange} />
-      {activeFilter !== "settled" ? <SectionHeader title="Open balances" meta={`${openCount} open`} /> : null}
+      <BalanceFilterChips
+        filters={balanceFilters}
+        value={activeFilter}
+        onChange={onFilterChange}
+      />
+      {activeFilter !== "settled" ? (
+        <SectionHeader title="Open balances" meta={`${openCount} open`} />
+      ) : null}
     </>
   );
 }

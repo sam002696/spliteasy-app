@@ -2,19 +2,13 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../design-system";
-import {
-  FilterChips,
-  GroupsHeader,
-  GroupsList,
-  GroupsSummary,
-} from "./components";
-import { groupFilters, groups, groupStats } from "./data/groupsData";
+import { FilterChips, GroupsHeader, GroupsList } from "./components";
+import { groupFilters, groups } from "./data/groupsData";
 
 function GroupsIntro({ activeFilter, onCreateGroup, onFilterChange }) {
   return (
     <>
       <GroupsHeader onCreateGroup={onCreateGroup} />
-      <GroupsSummary stats={groupStats} />
       <FilterChips
         filters={groupFilters}
         value={activeFilter}
