@@ -1,5 +1,5 @@
 import React from "react";
-import { ReceiptText, UserRoundCheck, WalletCards } from "lucide-react-native";
+import { ReceiptText, Scale, UserRoundCheck } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { Card, Text, useTheme } from "../../../design-system";
 import { AnimatedSection } from "./AnimatedSection";
@@ -16,9 +16,9 @@ const summaryItems = [
     icon: UserRoundCheck,
   },
   {
-    key: "netBalance",
-    label: "Net",
-    icon: WalletCards,
+    key: "netPosition",
+    label: "Net position",
+    icon: Scale,
   },
 ];
 

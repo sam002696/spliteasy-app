@@ -11,6 +11,18 @@ import { Avatar, Badge, Card, Divider, Text, useTheme } from "../../../design-sy
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
+function getPositionCopy(group) {
+  if (group.balanceTone === "negative") {
+    return { label: "You owe", amount: group.balance.replace(/^-\s*/, "") };
+  }
+
+  if (group.balanceTone === "settled") {
+    return { label: "All settled", amount: group.balance };
+  }
+
+  return { label: "You are owed", amount: group.balance.replace(/^\+\s*/, "") };
+}
+
 function AvatarStack({ members }) {
   const theme = useTheme();
 
@@ -39,6 +51,7 @@ export function GroupCard({ group, index = 0, onPress }) {
   const translateY = useSharedValue(theme.space[4]);
   const cardWidth = theme.space[8] * 8 + theme.space[6];
   const cardMinHeight = theme.space[8] * 5 + theme.space[6];
+  const position = getPositionCopy(group);
 
   useEffect(() => {
     const delay = theme.motion.fast + index * (theme.motion.fast / 3);
@@ -98,10 +111,10 @@ export function GroupCard({ group, index = 0, onPress }) {
         <View style={styles.cardBottom}>
           <View style={{ gap: theme.space[1] }}>
             <Text variant="cardAmount" color={group.balanceTone}>
-              {group.balance}
+              {position.amount}
             </Text>
             <Text variant="label" color="white50">
-              Your balance
+              {position.label}
             </Text>
           </View>
           <AvatarStack members={group.members} />

@@ -76,7 +76,7 @@ export function CreateGroupScreen() {
           </View>
         </FormSection>
 
-        <FormSection title="Base currency" subtitle="Balances will be shown in this currency.">
+        <FormSection title="Base currency" subtitle="Group amounts will use this currency.">
           <View style={{ gap: theme.space[3] }}>
             <View style={{ alignItems: "center", flexDirection: "row", gap: theme.space[2] }}>
               <DollarSign

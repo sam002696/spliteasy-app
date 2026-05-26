@@ -1,19 +1,18 @@
 import {
   Bell,
   CircleHelp,
-  CreditCard,
+  CircleDollarSign,
   History,
   LockKeyhole,
   LogOut,
   PencilLine,
-  WalletCards,
 } from "lucide-react-native";
 
 export const profileUser = {
   name: "Sami Rahman",
   email: "sami@example.com",
   initials: "SR",
-  plan: "Personal wallet",
+  plan: "Split summary",
 };
 
 export const profileActions = [
@@ -36,7 +35,7 @@ export const settingsRows = [
     id: "default-currency",
     label: "Default currency",
     value: "BDT",
-    icon: WalletCards,
+    icon: CircleDollarSign,
   },
   {
     id: "privacy",
@@ -45,16 +44,16 @@ export const settingsRows = [
     icon: LockKeyhole,
   },
   {
-    id: "payment-history",
-    label: "Payment history",
-    value: "Settlements",
+    id: "settlement-history",
+    label: "Settlement history",
+    value: "Manual records",
     icon: History,
   },
   {
-    id: "payment-methods",
-    label: "Payment methods",
-    value: "Manual tracking",
-    icon: CreditCard,
+    id: "manual-settlements",
+    label: "Manual settlements",
+    value: "External tracking",
+    icon: CircleDollarSign,
   },
   {
     id: "support",

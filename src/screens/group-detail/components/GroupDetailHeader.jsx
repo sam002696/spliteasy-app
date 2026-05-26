@@ -38,7 +38,12 @@ export function GroupDetailHeader({ group, onBack }) {
   return (
     <View style={[styles.root, { marginBottom: theme.space[5] }]}>
       <HeaderButton icon={ChevronLeft} label="Back" onPress={onBack} />
-      <View style={[styles.titleBlock, { gap: theme.space[1] }]}>
+      <View
+        style={[
+          styles.titleBlock,
+          { gap: theme.space[1], marginLeft: theme.space[2] },
+        ]}
+      >
         <Text variant="screenTitle" color="text" numberOfLines={1}>
           {group.name}
         </Text>

@@ -32,7 +32,7 @@ function Example() {
     <Box flex={1} backgroundColor="background" p={4}>
       <Card variant="limeHero">
         <Text variant="micro" color="accentText" uppercase>
-          Total balance
+          Net position
         </Text>
         <Text variant="heroAmount" color="accentText">
           ৳ 2,400

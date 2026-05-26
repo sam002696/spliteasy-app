@@ -25,10 +25,10 @@ export function BalanceSummaryCard({ summary }) {
     <AnimatedSection delay={theme.motion.fast}>
       <Card variant="limeHero" style={{ marginBottom: theme.space[5] }}>
         <Text variant="micro" color="black60" uppercase>
-          Net balance
+          Net position
         </Text>
         <Text variant="heroAmount" color="accentText" style={{ marginTop: theme.space[1] }}>
-          {summary.netBalance}
+          {summary.netPosition}
         </Text>
         <View style={[styles.row, { marginTop: theme.space[5] }]}>
           <SummaryStat label="Owed to you" value={summary.owedToYou} />

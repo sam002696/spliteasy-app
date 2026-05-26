@@ -25,7 +25,7 @@ function NotificationButton() {
     >
       <BellDot
         color={theme.semantic.accent}
-        size={theme.space[6]}
+        size={theme.space[5]}
         strokeWidth={theme.borderWidths.medium}
       />
     </Pressable>
@@ -42,10 +42,10 @@ export function TopBar() {
           <Avatar name="Sami Rahman" />
           <View>
             <Text variant="label" color="textMuted">
-              SplitEasy
+              Overview
             </Text>
             <Text variant="cardTitle" color="text">
-              Personal wallet
+              Sami Rahman
             </Text>
           </View>
         </View>

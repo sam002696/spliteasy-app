@@ -48,10 +48,10 @@ export function HeroCard({ summary }) {
     <FadeInView delay={theme.motion.normal}>
       <Card variant="limeHero" style={{ marginBottom: theme.space[6] }}>
         <Text variant="micro" color="black60" uppercase>
-          Total balance
+          Net position
         </Text>
         <View style={{ marginTop: theme.space[1] }}>
-          <AmountText value={summary.totalBalance} variant="heroAmount" large />
+          <AmountText value={summary.netPosition} variant="heroAmount" large />
         </View>
         <View style={[styles.statsRow, { marginTop: theme.space[5] }]}>
           <HeroStat label="Owed to you" value={summary.owedToYou} />

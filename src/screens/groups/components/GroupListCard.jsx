@@ -25,6 +25,18 @@ function BalanceIcon({ tone }) {
   return <Icon color={color} size={theme.space[5]} strokeWidth={theme.borderWidths.medium} />;
 }
 
+function getPositionCopy(group) {
+  if (group.balanceTone === "settled") {
+    return { label: "All settled", amount: "৳ 0" };
+  }
+
+  if (group.balanceTone === "negative") {
+    return { label: "You owe", amount: group.balance.replace(/^-\s*/, "") };
+  }
+
+  return { label: "You are owed", amount: group.balance.replace(/^\+\s*/, "") };
+}
+
 function MetaItem({ icon: Icon, children }) {
   const theme = useTheme();
 
@@ -49,6 +61,7 @@ export function GroupListCard({ group, index, onPress }) {
   const translateY = useSharedValue(theme.space[4]);
   const balanceTone = group.balanceTone === "settled" ? "positive" : group.balanceTone;
   const balanceColor = group.balanceTone === "negative" ? "negative" : "positive";
+  const position = getPositionCopy(group);
 
   useEffect(() => {
     const delay = theme.motion.fast + index * (theme.motion.fast / 2);
@@ -122,9 +135,14 @@ export function GroupListCard({ group, index, onPress }) {
           <View style={{ flex: 1, gap: theme.space[2] }}>
             <View style={[styles.balanceTextRow, { gap: theme.space[2] }]}>
               <BalanceIcon tone={group.balanceTone} />
-              <Text variant="cardAmount" color={balanceColor} numberOfLines={1}>
-                {group.balance}
-              </Text>
+              <View style={styles.positionText}>
+                <Text variant="cardAmount" color={balanceColor} numberOfLines={1}>
+                  {position.amount}
+                </Text>
+                <Text variant="label" color="white50" numberOfLines={1}>
+                  {position.label}
+                </Text>
+              </View>
             </View>
             <ProgressBar
               value={group.settlementProgress}
@@ -153,6 +171,9 @@ const styles = StyleSheet.create({
   balanceTextRow: {
     alignItems: "center",
     flexDirection: "row",
+  },
+  positionText: {
+    flex: 1,
   },
   latestRow: {
     alignItems: "center",

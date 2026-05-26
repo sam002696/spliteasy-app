@@ -1,12 +1,12 @@
 import React from "react";
-import { Bell, CreditCard } from "lucide-react-native";
+import { Bell, CircleCheck } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { Avatar, Button, Card, ProgressBar, Text, useTheme } from "../../../design-system";
 
 export function BalanceCard({ balance }) {
   const theme = useTheme();
   const isDebt = balance.tone === "negative";
-  const Icon = isDebt ? CreditCard : Bell;
+  const Icon = isDebt ? CircleCheck : Bell;
 
   return (
     <Card variant="black">

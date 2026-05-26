@@ -4,6 +4,9 @@ import { Avatar, Text, useTheme } from "../../../design-system";
 
 export const ActivityItem = memo(function ActivityItem({ activity }) {
   const theme = useTheme();
+  const isDebt = activity.tone === "negative";
+  const amount = String(activity.amount).replace(/^[+-]\s*/, "");
+  const amountLabel = isDebt ? "You owe" : activity.action === "settled" ? "Settled" : "You are owed";
 
   return (
     <View
@@ -28,14 +31,22 @@ export const ActivityItem = memo(function ActivityItem({ activity }) {
           {activity.timestamp}
         </Text>
       </View>
-      <Text variant="field" color={activity.tone}>
-        {activity.amount}
-      </Text>
+      <View style={styles.amount}>
+        <Text variant="field" color={activity.tone}>
+          {amount}
+        </Text>
+        <Text variant="micro" color="textMuted">
+          {amountLabel}
+        </Text>
+      </View>
     </View>
   );
 });
 
 const styles = StyleSheet.create({
+  amount: {
+    alignItems: "flex-end",
+  },
   root: {
     alignItems: "center",
     borderBottomWidth: 0.5,

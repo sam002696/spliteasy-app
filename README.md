@@ -1,6 +1,6 @@
 # SplitEasy App
 
-SplitEasy is an Expo React Native bill-splitting app. The current codebase focuses on the app shell, design-system usage, and production-ready UI architecture. Business logic, persistence, auth, APIs, OCR, notifications, and payments are intentionally not implemented yet.
+SplitEasy is an Expo React Native shared-expense splitting app. The current codebase focuses on the app shell, design-system usage, and production-ready UI architecture. Business logic, persistence, auth, APIs, OCR, notifications, and in-app money movement are intentionally not implemented yet.
 
 ## Current Status
 
@@ -42,7 +42,7 @@ Home is the main hub. It shows:
 
 - Top bar
 - Greeting
-- Lime hero balance card
+- Lime split-summary card
 - Active groups carousel
 - Recent activity feed
 - Bottom navigation
@@ -125,7 +125,7 @@ Add Expense is a full-height modal. It includes:
 - Prefilled group field
 - Date field
 - Currency selector
-- Payer selector
+- Who paid selector
 - Split method selector
 - Split preview
 - Save expense button
@@ -156,10 +156,10 @@ Balances shows global settlement state across all groups:
 - Lime summary card
 - Filter chips
 - Open balance cards
-- Remind / Pay buttons
+- Remind / Mark settled buttons
 - Settled section
 
-Actions are UI-only. Remind does not send notifications yet, and Pay does not create settlement records yet.
+Actions are UI-only. Remind does not send notifications yet, and Mark settled does not create settlement records yet.
 
 ### Reports
 

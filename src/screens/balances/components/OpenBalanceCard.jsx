@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Bell, CreditCard, TrendingDown, TrendingUp } from "lucide-react-native";
+import { Bell, CircleCheck, TrendingDown, TrendingUp } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -31,7 +31,7 @@ export function OpenBalanceCard({ balance, index = 0 }) {
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(theme.space[3]);
   const isDebt = balance.tone === "negative";
-  const ActionIcon = isDebt ? CreditCard : Bell;
+  const ActionIcon = isDebt ? CircleCheck : Bell;
 
   useEffect(() => {
     const delay = theme.motion.fast + index * (theme.motion.fast / 2);

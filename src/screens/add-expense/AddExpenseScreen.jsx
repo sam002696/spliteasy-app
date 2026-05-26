@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { CalendarDays, CreditCard, FileText, UserRound } from "lucide-react-native";
+import { CalendarDays, FileText, UserRound, Users } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -118,7 +118,7 @@ export function AddExpenseScreen({ groupId }) {
                 label="Members"
                 value={`${group.memberCount} people · ${splitMethod}`}
                 editable={false}
-                left={<FieldIcon icon={CreditCard} translateY={2} />}
+                left={<FieldIcon icon={Users} translateY={2} />}
                 helperText="Detailed share assignment comes next."
               />
             </FormSection>

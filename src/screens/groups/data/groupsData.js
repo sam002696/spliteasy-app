@@ -17,7 +17,7 @@
 export const groupStats = {
   activeGroups: "6",
   totalMembers: "24",
-  netBalance: "2,400",
+  netPosition: "৳ 2,400",
 };
 
 export const groupFilters = [
@@ -37,7 +37,7 @@ export const groups = [
     members: ["Sami", "Nadia", "Rafi", "Mira"],
     latestExpense: "Groceries at Shwapno",
     updatedAt: "12 min ago",
-    balance: "+ ৳ 1,240",
+    balance: "৳ 1,240",
     balanceTone: "positive",
     settlementProgress: 0.72,
     activityCount: "18 expenses",
@@ -51,7 +51,7 @@ export const groups = [
     members: ["Ari", "Sami", "Tuba", "Joy", "Nadia"],
     latestExpense: "Hotel booking",
     updatedAt: "1 hr ago",
-    balance: "- ৳ 780",
+    balance: "৳ 780",
     balanceTone: "negative",
     settlementProgress: 0.42,
     activityCount: "27 expenses",
@@ -65,7 +65,7 @@ export const groups = [
     members: ["Sami", "Rafi", "Nadia"],
     latestExpense: "Tickets and snacks",
     updatedAt: "Yesterday",
-    balance: "+ ৳ 560",
+    balance: "৳ 560",
     balanceTone: "positive",
     settlementProgress: 0.88,
     activityCount: "6 expenses",
@@ -93,7 +93,7 @@ export const groups = [
     members: ["Sami", "Ma", "Baba", "Rina"],
     latestExpense: "Gift shopping",
     updatedAt: "May 18",
-    balance: "- ৳ 420",
+    balance: "৳ 420",
     balanceTone: "negative",
     settlementProgress: 0.58,
     activityCount: "9 expenses",
@@ -107,7 +107,7 @@ export const groups = [
     members: ["Sami", "Tuba", "Rafi", "Mira"],
     latestExpense: "May meetup snacks",
     updatedAt: "May 12",
-    balance: "+ ৳ 320",
+    balance: "৳ 320",
     balanceTone: "positive",
     settlementProgress: 0.66,
     activityCount: "5 expenses",

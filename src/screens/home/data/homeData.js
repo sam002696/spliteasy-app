@@ -1,6 +1,6 @@
 /**
  * @typedef {Object} HomeSummary
- * @property {string} totalBalance
+ * @property {string} netPosition
  * @property {string} owedToYou
  * @property {string} youOwe
  */
@@ -30,7 +30,7 @@
  */
 
 export const homeSummary = {
-  totalBalance: "2,400",
+  netPosition: "2,400",
   owedToYou: "3,180",
   youOwe: "780",
 };
@@ -41,7 +41,7 @@ export const activeGroups = [
     name: "Dhanmondi Flat",
     memberCount: 4,
     latestExpense: "Groceries at Shwapno",
-    balance: "+ ৳ 1,240",
+    balance: "৳ 1,240",
     balanceTone: "positive",
     category: "Roommates",
     categoryTone: "lime",
@@ -52,7 +52,7 @@ export const activeGroups = [
     name: "Cox's Bazar",
     memberCount: 6,
     latestExpense: "Hotel booking",
-    balance: "- ৳ 780",
+    balance: "৳ 780",
     balanceTone: "negative",
     category: "Travel",
     categoryTone: "orange",
@@ -63,7 +63,7 @@ export const activeGroups = [
     name: "Friday Movie",
     memberCount: 3,
     latestExpense: "Tickets and snacks",
-    balance: "+ ৳ 560",
+    balance: "৳ 560",
     balanceTone: "positive",
     category: "Movie",
     categoryTone: "orange",
@@ -77,7 +77,7 @@ export const recentActivity = [
     user: "Nadia",
     action: "added",
     title: "Groceries at Shwapno",
-    amount: "+ ৳ 620",
+    amount: "৳ 620",
     tone: "positive",
     timestamp: "12 min ago",
   },
@@ -86,16 +86,16 @@ export const recentActivity = [
     user: "Rafi",
     action: "settled",
     title: "Dinner split",
-    amount: "+ ৳ 300",
+    amount: "৳ 300",
     tone: "positive",
     timestamp: "1 hr ago",
   },
   {
     id: "activity-3",
     user: "Ari",
-    action: "requested",
+    action: "added",
     title: "Hotel booking",
-    amount: "- ৳ 780",
+    amount: "৳ 780",
     tone: "negative",
     timestamp: "Yesterday",
   },
@@ -104,7 +104,7 @@ export const recentActivity = [
     user: "Mira",
     action: "updated",
     title: "Utility bill",
-    amount: "+ ৳ 420",
+    amount: "৳ 420",
     tone: "positive",
     timestamp: "Yesterday",
   },
