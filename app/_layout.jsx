@@ -18,6 +18,12 @@ function RootNavigator() {
           },
         }}
       >
+        <Stack.Screen
+          name="(auth)/login"
+          options={{
+            initialRouteName: "(auth)/login",
+          }}
+        />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="groups/[groupId]" />
         <Stack.Screen
