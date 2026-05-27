@@ -23,11 +23,11 @@ export function LoginScreen() {
     <SafeAreaView
       edges={["top", "bottom"]}
       style={{
-        backgroundColor: theme.colors.black,
+        backgroundColor: theme.semantic.background,
         flex: 1,
       }}
     >
-      <StatusBar style="light" backgroundColor={theme.colors.black} />
+      <StatusBar style="light" backgroundColor={theme.semantic.background} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
@@ -37,21 +37,15 @@ export function LoginScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             flexGrow: 1,
-            padding: theme.space[4],
           }}
         >
           <View
             style={{
               backgroundColor: theme.semantic.background,
-              borderColor: theme.rgba.white10,
-              borderRadius: theme.radii.hero,
-              borderWidth: theme.borderWidths.hairline,
               flex: 1,
-              minHeight: 760,
-              overflow: "hidden",
-              paddingHorizontal: theme.space[6],
-              paddingTop: theme.space[5],
-              paddingBottom: theme.space[8],
+              paddingHorizontal: theme.space[5],
+              paddingTop: theme.space[4],
+              paddingBottom: theme.space[6],
             }}
           >
             <LoginHeader />
@@ -60,17 +54,17 @@ export function LoginScreen() {
               style={{
                 flex: 1,
                 justifyContent: "space-between",
-                marginTop: theme.space[8],
+                marginTop: 28,
               }}
             >
               <View>
-                <View style={{ gap: theme.space[4], marginBottom: theme.space[8] }}>
+                <View style={{ gap: theme.space[3], marginBottom: theme.space[6] }}>
                   <Text
-                    variant="heroAmount"
+                    variant="screenTitle"
                     color="text"
                     style={{
-                      fontSize: 40,
-                      lineHeight: 46,
+                      fontSize: 34,
+                      lineHeight: 40,
                     }}
                   >
                     Welcome back
@@ -79,8 +73,8 @@ export function LoginScreen() {
                     variant="body"
                     color="textMuted"
                     style={{
-                      fontSize: 20,
-                      lineHeight: 28,
+                      fontSize: 16,
+                      lineHeight: 23,
                     }}
                   >
                     Enter your details to access your account.

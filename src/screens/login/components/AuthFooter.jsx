@@ -15,7 +15,7 @@ export function AuthFooter({ onSignUp }) {
         justifyContent: "center",
       }}
     >
-      <Text variant="body" color="textMuted">
+      <Text variant="bodySmall" color="textMuted">
         Don't have an account?
       </Text>
       <Pressable
@@ -25,7 +25,7 @@ export function AuthFooter({ onSignUp }) {
           opacity: pressed ? 0.72 : 1,
         })}
       >
-        <Text variant="field" color="accent">
+        <Text variant="bodySmall" color="accent" style={{ fontWeight: theme.fontWeights.semibold }}>
           Sign up
         </Text>
       </Pressable>

@@ -10,8 +10,8 @@ export function AuthDivider({ label = "Or continue with" }) {
       style={{
         alignItems: "center",
         flexDirection: "row",
-        gap: theme.space[6],
-        marginVertical: theme.space[6],
+        gap: theme.space[4],
+        marginVertical: theme.space[5],
       }}
     >
       <View
@@ -21,7 +21,7 @@ export function AuthDivider({ label = "Or continue with" }) {
           height: theme.borderWidths.hairline,
         }}
       />
-      <Text variant="body" color="textMuted">
+      <Text variant="bodySmall" color="textMuted">
         {label}
       </Text>
       <View

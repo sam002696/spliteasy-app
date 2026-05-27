@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react-native";
 import { Pressable, View } from "react-native";
 import { Button, Text, TextField, useTheme } from "../../../design-system";
@@ -9,30 +9,25 @@ export function LoginForm({ onForgotPassword, onSubmit }) {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const canSubmit = useMemo(
-    () => email.trim().length > 0 && password.trim().length > 0,
-    [email, password]
-  );
-
   const fieldStyle = {
     backgroundColor: theme.semantic.card,
     borderColor: theme.rgba.white10,
-    borderRadius: theme.radii.xl,
-    height: 82,
-    paddingHorizontal: theme.space[5],
+    borderRadius: theme.radii.lg,
+    height: 60,
+    paddingHorizontal: theme.space[4],
   };
 
   const inputStyle = {
     color: theme.semantic.text,
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: theme.fontWeights.regular,
-    height: 26,
-    lineHeight: 26,
+    height: 22,
+    lineHeight: 22,
   };
 
   return (
-    <View style={{ gap: theme.space[5] }}>
-      <View style={{ gap: theme.space[5] }}>
+    <View style={{ gap: theme.space[4] }}>
+      <View style={{ gap: theme.space[3] }}>
         <TextField
           value={email}
           onChangeText={setEmail}
@@ -63,9 +58,9 @@ export function LoginForm({ onForgotPassword, onSubmit }) {
               onPress={() => setIsPasswordVisible((visible) => !visible)}
             >
               {isPasswordVisible ? (
-                <EyeOff color={theme.semantic.textMuted} size={22} strokeWidth={1.8} />
+                <EyeOff color={theme.semantic.textMuted} size={20} strokeWidth={1.8} />
               ) : (
-                <Eye color={theme.semantic.textMuted} size={22} strokeWidth={1.8} />
+                <Eye color={theme.semantic.textMuted} size={20} strokeWidth={1.8} />
               )}
             </Pressable>
           }
@@ -89,15 +84,14 @@ export function LoginForm({ onForgotPassword, onSubmit }) {
         title="Continue"
         size="lg"
         fullWidth
-        disabled={!canSubmit}
         onPress={() => onSubmit?.({ email, password })}
         style={{
-          height: 72,
-          marginTop: theme.space[3],
+          height: 58,
+          marginTop: theme.space[2],
         }}
         textStyle={{
-          fontSize: 20,
-          lineHeight: 24,
+          fontSize: 16,
+          lineHeight: 20,
         }}
       />
     </View>

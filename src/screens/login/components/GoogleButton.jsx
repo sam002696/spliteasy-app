@@ -8,9 +8,9 @@ function GoogleMark() {
       accessibilityElementsHidden
       importantForAccessibility="no"
       style={{
-        fontSize: 30,
+        fontSize: 24,
         fontWeight: "700",
-        lineHeight: 34,
+        lineHeight: 28,
       }}
     >
       <RNText style={{ color: "#4285F4" }}>G</RNText>
@@ -30,11 +30,10 @@ export function GoogleButton({ onPress }) {
         alignItems: "center",
         backgroundColor: theme.semantic.card,
         borderColor: theme.rgba.white10,
-        borderRadius: theme.radii.xl,
+        borderRadius: theme.radii.lg,
         borderWidth: theme.borderWidths.hairline,
         flexDirection: "row",
-        gap: theme.space[3],
-        height: 74,
+        height: 58,
         justifyContent: "center",
         opacity: pressed ? 0.78 : 1,
         paddingHorizontal: theme.space[5],
@@ -42,9 +41,9 @@ export function GoogleButton({ onPress }) {
     >
       <View
         style={{
-          height: 34,
+          height: 28,
           justifyContent: "center",
-          width: 34,
+          width: 28,
         }}
       >
         <GoogleMark />
@@ -53,8 +52,8 @@ export function GoogleButton({ onPress }) {
         variant="field"
         color="text"
         style={{
-          fontSize: 20,
-          lineHeight: 24,
+          fontSize: 16,
+          lineHeight: 20,
         }}
       >
         Google

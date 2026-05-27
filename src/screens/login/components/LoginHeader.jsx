@@ -20,7 +20,8 @@ export function LoginHeader() {
       <IconButton
         label="Go back"
         tone="ghost"
-        icon={(color) => <ChevronLeft color={color} size={22} strokeWidth={2.2} />}
+        size={40}
+        icon={(color) => <ChevronLeft color={color} size={20} strokeWidth={2.2} />}
         onPress={() => router.back()}
         style={{
           backgroundColor: theme.rgba.white10,
@@ -35,8 +36,8 @@ export function LoginHeader() {
         color="textMuted"
         uppercase
         style={{
-          letterSpacing: 3,
-          paddingLeft: 3,
+          letterSpacing: 2.5,
+          paddingLeft: 2.5,
         }}
       >
         SplitEasy
