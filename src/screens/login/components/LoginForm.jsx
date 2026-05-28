@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Eye, EyeOff } from "lucide-react-native";
 import { Pressable, View } from "react-native";
 import { Button, Text, TextField, useTheme } from "../../../design-system";
 
-export function LoginForm({ onForgotPassword, onSubmit }) {
+export function LoginForm({ isSubmitting = false, onForgotPassword, onSubmit }) {
   const theme = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const canSubmit = useMemo(
+    () => email.trim().length > 0 && password.trim().length > 0,
+    [email, password]
+  );
 
   const fieldStyle = {
     backgroundColor: theme.semantic.card,
@@ -84,6 +88,8 @@ export function LoginForm({ onForgotPassword, onSubmit }) {
         title="Continue"
         size="lg"
         fullWidth
+        disabled={!canSubmit || isSubmitting}
+        loading={isSubmitting}
         onPress={() => onSubmit?.({ email, password })}
         style={{
           height: 58,

@@ -1,8 +1,10 @@
 import React from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, useTheme } from "../../design-system";
+import { login, selectAuth, useAppDispatch, useAppSelector } from "../../store";
 import {
   AuthDivider,
   AuthFooter,
@@ -12,9 +14,18 @@ import {
 } from "./components";
 
 export function LoginScreen() {
+  const router = useRouter();
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector(selectAuth);
 
-  const handleSubmit = () => {};
+  const handleSubmit = async ({ email, password }) => {
+    const result = dispatch(login({ email, password }));
+
+    if (login.fulfilled.match(result)) {
+      router.replace("/(tabs)");
+    }
+  };
   const handleForgotPassword = () => {};
   const handleGoogle = () => {};
   const handleSignUp = () => {};
@@ -58,7 +69,9 @@ export function LoginScreen() {
               }}
             >
               <View>
-                <View style={{ gap: theme.space[3], marginBottom: theme.space[6] }}>
+                <View
+                  style={{ gap: theme.space[3], marginBottom: theme.space[6] }}
+                >
                   <Text
                     variant="screenTitle"
                     color="text"
@@ -82,6 +95,7 @@ export function LoginScreen() {
                 </View>
 
                 <LoginForm
+                  isSubmitting={loading.login}
                   onForgotPassword={handleForgotPassword}
                   onSubmit={handleSubmit}
                 />

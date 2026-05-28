@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { Provider } from "react-redux";
 import { ThemeProvider, useTheme } from "../src/design-system";
 import { ToastViewport } from "../src/components/toast";
+import { AuthGate } from "../src/navigation";
 import { store } from "../src/store";
 
 function RootNavigator() {
@@ -35,6 +36,7 @@ function RootNavigator() {
           }}
         />
       </Stack>
+      <AuthGate />
       <ToastViewport />
     </>
   );
