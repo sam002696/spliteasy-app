@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Provider } from "react-redux";
 import { ThemeProvider, useTheme } from "../src/design-system";
+import { ToastViewport } from "../src/components/toast";
 import { store } from "../src/store";
 
 function RootNavigator() {
@@ -18,12 +19,7 @@ function RootNavigator() {
           },
         }}
       >
-        <Stack.Screen
-          name="(auth)/login"
-          options={{
-            initialRouteName: "(auth)/login",
-          }}
-        />
+        <Stack.Screen name="(auth)/login" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="groups/[groupId]" />
         <Stack.Screen
@@ -39,6 +35,7 @@ function RootNavigator() {
           }}
         />
       </Stack>
+      <ToastViewport />
     </>
   );
 }

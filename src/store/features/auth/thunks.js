@@ -5,6 +5,10 @@ import {
   getStoredAuthToken,
   setStoredAuthToken,
 } from "../../../api/tokenStorage";
+import {
+  dispatchSuccessToast,
+  rejectWithErrorToast,
+} from "../../utils/toastFeedback";
 import { getAuthTokenFromPayload, getUserFromPayload } from "./authPayload";
 
 export const bootstrapAuth = createAsyncThunk(
@@ -43,7 +47,7 @@ export const bootstrapAuth = createAsyncThunk(
         data: null,
       });
     }
-  }
+  },
 );
 
 export const register = createAsyncThunk(
@@ -59,15 +63,17 @@ export const register = createAsyncThunk(
         await setStoredAuthToken(token);
       }
 
+      dispatchSuccessToast(thunkApi, response, "Account created successfully.");
+
       return {
         response,
         token,
         user: getUserFromPayload(response),
       };
     } catch (error) {
-      return api.reject(error, "Registration failed");
+      return rejectWithErrorToast(thunkApi, error, "Registration failed");
     }
-  }
+  },
 );
 
 export const login = createAsyncThunk(
@@ -83,15 +89,17 @@ export const login = createAsyncThunk(
         await setStoredAuthToken(token);
       }
 
+      dispatchSuccessToast(thunkApi, response, "Logged in successfully.");
+
       return {
         response,
         token,
         user: getUserFromPayload(response),
       };
     } catch (error) {
-      return api.reject(error, "Login failed");
+      return rejectWithErrorToast(thunkApi, error, "Login failed");
     }
-  }
+  },
 );
 
 export const logout = createAsyncThunk("auth/logout", async (_, thunkApi) => {
@@ -100,10 +108,11 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkApi) => {
   try {
     const response = await api.post(authEndpoints.logout);
     await clearStoredAuthToken();
+    dispatchSuccessToast(thunkApi, response, "Logged out successfully.");
     return response;
   } catch (error) {
     await clearStoredAuthToken();
-    return api.reject(error, "Logout failed");
+    return rejectWithErrorToast(thunkApi, error, "Logout failed");
   }
 });
 
@@ -115,7 +124,7 @@ export const fetchCurrentUser = createAsyncThunk(
     try {
       return await api.get(authEndpoints.me);
     } catch (error) {
-      return api.reject(error, "Unable to fetch profile");
+      return rejectWithErrorToast(thunkApi, error, "Unable to fetch profile");
     }
-  }
+  },
 );

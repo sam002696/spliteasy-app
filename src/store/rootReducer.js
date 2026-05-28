@@ -3,12 +3,14 @@ import authReducer from "./features/auth";
 import expensesReducer from "./features/expenses";
 import groupsReducer from "./features/groups";
 import invitationsReducer from "./features/invitations";
+import toastsReducer from "./features/toasts";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   groups: groupsReducer,
   expenses: expensesReducer,
   invitations: invitationsReducer,
+  toasts: toastsReducer,
 });
 
 export default rootReducer;

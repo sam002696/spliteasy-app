@@ -1,5 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createThunkApi, expenseEndpoints } from "../../../api";
+import {
+  dispatchSuccessToast,
+  rejectWithErrorToast,
+} from "../../utils/toastFeedback";
 
 export const fetchGroupExpenses = createAsyncThunk(
   "expenses/listByGroup",
@@ -10,7 +14,7 @@ export const fetchGroupExpenses = createAsyncThunk(
       const response = await api.get(expenseEndpoints.listByGroup(groupId));
       return { response, groupId };
     } catch (error) {
-      return api.reject(error, "Unable to fetch expenses");
+      return rejectWithErrorToast(thunkApi, error, "Unable to fetch expenses");
     }
   }
 );
@@ -22,9 +26,10 @@ export const createExpense = createAsyncThunk(
 
     try {
       const response = await api.post(expenseEndpoints.create(groupId), expense);
+      dispatchSuccessToast(thunkApi, response, "Expense created successfully.");
       return { response, groupId };
     } catch (error) {
-      return api.reject(error, "Unable to create expense");
+      return rejectWithErrorToast(thunkApi, error, "Unable to create expense");
     }
   }
 );
@@ -37,7 +42,7 @@ export const fetchExpense = createAsyncThunk(
     try {
       return await api.get(expenseEndpoints.detail(expenseId));
     } catch (error) {
-      return api.reject(error, "Unable to fetch expense");
+      return rejectWithErrorToast(thunkApi, error, "Unable to fetch expense");
     }
   }
 );
@@ -49,9 +54,10 @@ export const deleteExpense = createAsyncThunk(
 
     try {
       const response = await api.delete(expenseEndpoints.remove(expenseId));
+      dispatchSuccessToast(thunkApi, response, "Expense deleted successfully.");
       return { response, expenseId, groupId };
     } catch (error) {
-      return api.reject(error, "Unable to delete expense");
+      return rejectWithErrorToast(thunkApi, error, "Unable to delete expense");
     }
   }
 );
