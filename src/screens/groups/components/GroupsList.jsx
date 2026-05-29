@@ -1,10 +1,23 @@
 import React, { useCallback } from "react";
-import { FlatList, View } from "react-native";
+import { ActivityIndicator, FlatList, RefreshControl, View } from "react-native";
 import { Text, useTheme } from "../../../design-system";
 import { GroupListCard } from "./GroupListCard";
 
-function EmptyGroups() {
+function EmptyGroups({ isLoading }) {
   const theme = useTheme();
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          alignItems: "center",
+          padding: theme.space[6],
+        }}
+      >
+        <ActivityIndicator color={theme.semantic.text} />
+      </View>
+    );
+  }
 
   return (
     <View
@@ -26,7 +39,15 @@ function EmptyGroups() {
   );
 }
 
-export function GroupsList({ groups, ListHeaderComponent, ListFooterComponent, onOpenGroup }) {
+export function GroupsList({
+  groups,
+  isLoading = false,
+  ListHeaderComponent,
+  ListFooterComponent,
+  onOpenGroup,
+  onRefresh,
+  refreshing = false,
+}) {
   const theme = useTheme();
 
   const renderItem = useCallback(
@@ -43,7 +64,16 @@ export function GroupsList({ groups, ListHeaderComponent, ListFooterComponent, o
       renderItem={renderItem}
       ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={ListFooterComponent}
-      ListEmptyComponent={EmptyGroups}
+      ListEmptyComponent={<EmptyGroups isLoading={isLoading} />}
+      refreshControl={
+        onRefresh ? (
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.semantic.text}
+          />
+        ) : undefined
+      }
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         gap: theme.space[3],

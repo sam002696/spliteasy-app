@@ -22,8 +22,8 @@ export const groupStats = {
 
 export const groupFilters = [
   { label: "All", value: "all" },
-  { label: "Owed to you", value: "positive" },
-  { label: "You owe", value: "negative" },
+  { label: "Owed to you", value: "owed_to_you" },
+  { label: "You owe", value: "you_owe" },
   { label: "Settled", value: "settled" },
 ];
 

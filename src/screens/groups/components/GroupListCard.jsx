@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
-import { ChevronRight, Clock3, ReceiptText, TrendingDown, TrendingUp, Users } from "lucide-react-native";
+import {
+  ChevronRight,
+  Clock3,
+  ReceiptText,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -8,7 +15,14 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { Badge, Card, Divider, ProgressBar, Text, useTheme } from "../../../design-system";
+import {
+  Badge,
+  Card,
+  Divider,
+  ProgressBar,
+  Text,
+  useTheme,
+} from "../../../design-system";
 import { MemberStack } from "./MemberStack";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -16,16 +30,27 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 function BalanceIcon({ tone }) {
   const theme = useTheme();
   const Icon = tone === "negative" ? TrendingDown : TrendingUp;
-  const color = tone === "negative" ? theme.semantic.negative : theme.semantic.positive;
+  const color =
+    tone === "negative" ? theme.semantic.negative : theme.semantic.positive;
 
   if (tone === "settled") {
     return null;
   }
 
-  return <Icon color={color} size={theme.space[5]} strokeWidth={theme.borderWidths.medium} />;
+  return (
+    <Icon
+      color={color}
+      size={theme.space[5]}
+      strokeWidth={theme.borderWidths.medium}
+    />
+  );
 }
 
 function getPositionCopy(group) {
+  if (group.positionLabel) {
+    return { label: group.positionLabel, amount: group.balance };
+  }
+
   if (group.balanceTone === "settled") {
     return { label: "All settled", amount: "৳ 0" };
   }
@@ -59,14 +84,22 @@ export function GroupListCard({ group, index, onPress }) {
   const pressed = useSharedValue(0);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(theme.space[4]);
-  const balanceTone = group.balanceTone === "settled" ? "positive" : group.balanceTone;
-  const balanceColor = group.balanceTone === "negative" ? "negative" : "positive";
+  const balanceTone =
+    group.balanceTone === "settled" ? "positive" : group.balanceTone;
+  const balanceColor =
+    group.balanceTone === "negative" ? "negative" : "positive";
   const position = getPositionCopy(group);
 
   useEffect(() => {
     const delay = theme.motion.fast + index * (theme.motion.fast / 2);
-    opacity.value = withDelay(delay, withTiming(1, { duration: theme.motion.spring }));
-    translateY.value = withDelay(delay, withTiming(0, { duration: theme.motion.spring }));
+    opacity.value = withDelay(
+      delay,
+      withTiming(1, { duration: theme.motion.spring }),
+    );
+    translateY.value = withDelay(
+      delay,
+      withTiming(0, { duration: theme.motion.spring }),
+    );
   }, [index, opacity, theme.motion.fast, theme.motion.spring, translateY]);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -113,7 +146,12 @@ export function GroupListCard({ group, index, onPress }) {
             Latest expense
           </Text>
           <View style={styles.latestRow}>
-            <Text variant="body" color="white" numberOfLines={1} style={styles.latestText}>
+            <Text
+              variant="body"
+              color="white"
+              numberOfLines={1}
+              style={styles.latestText}
+            >
               {group.latestExpense}
             </Text>
             <View style={[styles.time, { gap: theme.space[1] }]}>
@@ -136,7 +174,11 @@ export function GroupListCard({ group, index, onPress }) {
             <View style={[styles.balanceTextRow, { gap: theme.space[2] }]}>
               <BalanceIcon tone={group.balanceTone} />
               <View style={styles.positionText}>
-                <Text variant="cardAmount" color={balanceColor} numberOfLines={1}>
+                <Text
+                  variant="cardAmount"
+                  color={balanceColor}
+                  numberOfLines={1}
+                >
                   {position.amount}
                 </Text>
                 <Text variant="label" color="white50" numberOfLines={1}>

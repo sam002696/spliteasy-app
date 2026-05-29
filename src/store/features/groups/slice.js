@@ -27,8 +27,12 @@ const groupsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGroups.pending, (state) => {
+      .addCase(fetchGroups.pending, (state, action) => {
+        const filter = action.meta.arg || groupFilters.all;
+
         state.loading.list = true;
+        state.activeFilter = filter;
+        state.items = state.itemsByFilter[filter] || [];
         state.error = null;
       })
       .addCase(fetchGroups.fulfilled, (state, action) => {
