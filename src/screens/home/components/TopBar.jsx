@@ -2,6 +2,8 @@ import React from "react";
 import { BellDot } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Avatar, Text, useTheme } from "../../../design-system";
+import { selectCurrentUser, useAppSelector } from "../../../store";
+import { getGreeting } from "../utils";
 import { FadeInView } from "./FadeInView";
 
 function NotificationButton() {
@@ -34,18 +36,21 @@ function NotificationButton() {
 
 export function TopBar() {
   const theme = useTheme();
+  const currentUser = useAppSelector(selectCurrentUser);
+  const displayName = currentUser?.name || currentUser?.email || "there";
+  const greeting = getGreeting();
 
   return (
     <FadeInView delay={0}>
       <View style={[styles.root, { marginBottom: theme.space[4] }]}>
         <View style={[styles.identity, { gap: theme.space[3] }]}>
-          <Avatar name="Sami Rahman" />
+          <Avatar name={displayName} />
           <View>
             <Text variant="label" color="textMuted">
-              Good evening,
+              {greeting},
             </Text>
             <Text variant="cardTitle" color="text">
-              Sami Rahman
+              {displayName}
             </Text>
           </View>
         </View>

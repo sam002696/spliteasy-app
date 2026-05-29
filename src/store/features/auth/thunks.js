@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { authEndpoints, createThunkApi } from "../../../api";
+import { apiRequest, authEndpoints, createThunkApi } from "../../../api";
 import {
   clearStoredAuthToken,
   getStoredAuthToken,
@@ -89,12 +89,19 @@ export const login = createAsyncThunk(
         await setStoredAuthToken(token);
       }
 
+      const profileResponse = token
+        ? await apiRequest(authEndpoints.me, {
+            method: "GET",
+            token,
+          })
+        : null;
+
       dispatchSuccessToast(thunkApi, response, "Logged in successfully.");
 
       return {
         response,
         token,
-        user: getUserFromPayload(response),
+        user: getUserFromPayload(profileResponse || response),
       };
     } catch (error) {
       return rejectWithErrorToast(thunkApi, error, "Login failed");

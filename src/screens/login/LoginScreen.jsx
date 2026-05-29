@@ -20,7 +20,7 @@ export function LoginScreen() {
   const { loading } = useAppSelector(selectAuth);
 
   const handleSubmit = async ({ email, password }) => {
-    const result = dispatch(login({ email, password }));
+    const result = await dispatch(login({ email, password }));
 
     if (login.fulfilled.match(result)) {
       router.replace("/(tabs)");
