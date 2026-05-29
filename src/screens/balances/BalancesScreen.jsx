@@ -38,7 +38,7 @@ export function BalancesScreen() {
     }
 
     if (activeFilter === "settled") {
-      return [];
+      return settledBalances;
     }
 
     return openBalances.filter((balance) => balance.tone === activeFilter);

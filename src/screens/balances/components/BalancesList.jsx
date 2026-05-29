@@ -56,7 +56,7 @@ export function BalancesList({ balances, header, settledBalances, showSettledOnl
       renderItem={renderItem}
       ListHeaderComponent={header}
       ListEmptyComponent={showSettledOnly ? null : EmptyBalances}
-      ListFooterComponent={footer}
+      // ListFooterComponent={footer}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         gap: theme.space[3],
