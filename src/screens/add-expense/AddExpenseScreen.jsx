@@ -1,10 +1,22 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CalendarDays, FileText, UserRound, Users } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ModeToggle, TextField, useTheme } from "../../design-system";
-import { getGroupDetail } from "../group-detail/data/groupDetailData";
+import {
+  createExpense,
+  fetchGroup,
+  fetchGroupBalances,
+  fetchGroupExpenses,
+  fetchGroupMembers,
+  selectCurrentUser,
+  selectExpenses,
+  selectGroupMembers,
+  selectSelectedGroup,
+  useAppDispatch,
+  useAppSelector,
+} from "../../store";
 import {
   AddExpenseFooter,
   AddExpenseHeader,
@@ -13,7 +25,12 @@ import {
   FormSection,
   ScanPlaceholder,
 } from "./components";
-import { currencyOptions, entryModes, payers, splitMethods } from "./data/addExpenseOptions";
+import {
+  currencyOptions,
+  entryModes,
+  splitMethods,
+} from "./data/addExpenseOptions";
+import { buildCreateExpensePayload, getTodayInputValue } from "./utils";
 
 function FieldIcon({ icon: Icon, translateY = 1 }) {
   const theme = useTheme();
@@ -40,17 +57,99 @@ function FieldIcon({ icon: Icon, translateY = 1 }) {
 export function AddExpenseScreen({ groupId }) {
   const theme = useTheme();
   const router = useRouter();
-  const group = useMemo(() => getGroupDetail(groupId), [groupId]);
+  const dispatch = useAppDispatch();
+  const normalizedGroupId = String(groupId);
+  const selectedGroup = useAppSelector(selectSelectedGroup);
+  const members = useAppSelector(selectGroupMembers(normalizedGroupId));
+  const currentUser = useAppSelector(selectCurrentUser);
+  const { loading } = useAppSelector(selectExpenses);
+  const groupName =
+    selectedGroup && String(selectedGroup.id) === normalizedGroupId
+      ? selectedGroup.name
+      : "Selected group";
   const [entryMode, setEntryMode] = useState("manual");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [currency, setCurrency] = useState("BDT");
-  const [payer, setPayer] = useState("sami");
+  const [expenseDate, setExpenseDate] = useState(getTodayInputValue());
+  const [payerId, setPayerId] = useState(null);
   const [splitMethod, setSplitMethod] = useState("equal");
-  const canSave = amount.trim().length > 0 && description.trim().length > 1;
+  const payerOptions = useMemo(
+    () =>
+      members.map((member) => ({
+        label: member.name,
+        value: member.id,
+      })),
+    [members],
+  );
+  const participantUserIds = useMemo(
+    () => members.map((member) => member.id),
+    [members],
+  );
+  const amountValue = Number(String(amount).replace(/,/g, "").trim());
+  const hasValidAmount = Number.isFinite(amountValue) && amountValue > 0;
+  const hasValidDate = /^\d{4}-\d{2}-\d{2}$/.test(expenseDate.trim());
+  const canSave =
+    hasValidAmount &&
+    description.trim().length > 1 &&
+    hasValidDate &&
+    splitMethod === "equal" &&
+    Boolean(payerId) &&
+    participantUserIds.length > 0;
+
+  useEffect(() => {
+    if (!groupId) {
+      return;
+    }
+
+    dispatch(fetchGroup(normalizedGroupId));
+    dispatch(fetchGroupMembers(normalizedGroupId));
+  }, [dispatch, groupId, normalizedGroupId]);
+
+  useEffect(() => {
+    if (payerId || !members.length) {
+      return;
+    }
+
+    const currentMember = members.find(
+      (member) => member.id === currentUser?.id,
+    );
+    setPayerId(currentMember?.id || members[0].id);
+  }, [currentUser?.id, members, payerId]);
 
   const closeModal = () => {
     router.back();
+  };
+
+  const saveExpense = async () => {
+    if (!canSave) {
+      return;
+    }
+
+    const expense = buildCreateExpensePayload({
+      amount,
+      currency,
+      description,
+      expenseDate,
+      paidByUserId: payerId,
+      participantUserIds,
+      splitMethod,
+    });
+
+    const result = await dispatch(
+      createExpense({
+        expense,
+        groupId: normalizedGroupId,
+      }),
+    );
+
+    if (createExpense.fulfilled.match(result)) {
+      dispatch(fetchGroup(normalizedGroupId));
+      dispatch(fetchGroupExpenses(normalizedGroupId));
+      dispatch(fetchGroupMembers(normalizedGroupId));
+      dispatch(fetchGroupBalances(normalizedGroupId));
+      closeModal();
+    }
   };
 
   return (
@@ -71,7 +170,11 @@ export function AddExpenseScreen({ groupId }) {
       >
         <AddExpenseHeader onClose={closeModal} />
         <AmountCard amount={amount} onAmountChange={setAmount} />
-        <ModeToggle options={entryModes} value={entryMode} onChange={setEntryMode} />
+        <ModeToggle
+          options={entryModes}
+          value={entryMode}
+          onChange={setEntryMode}
+        />
 
         {entryMode === "scan" ? (
           <ScanPlaceholder />
@@ -88,45 +191,68 @@ export function AddExpenseScreen({ groupId }) {
                 />
                 <TextField
                   label="Group"
-                  value={group.name}
+                  value={groupName}
                   editable={false}
                   left={<FieldIcon icon={UserRound} />}
                 />
                 <TextField
                   label="Date"
-                  value="Today"
-                  editable={false}
+                  value={expenseDate}
+                  onChangeText={setExpenseDate}
+                  placeholder="YYYY-MM-DD"
+                  keyboardType="numbers-and-punctuation"
                   left={<FieldIcon icon={CalendarDays} />}
+                  helperText="Use YYYY-MM-DD format."
                 />
               </View>
             </FormSection>
 
             <FormSection title="Currency">
-              <ChoiceGrid options={currencyOptions} value={currency} onChange={setCurrency} />
+              <ChoiceGrid
+                options={currencyOptions}
+                value={currency}
+                onChange={setCurrency}
+              />
             </FormSection>
 
             <FormSection title="Who paid">
-              <ChoiceGrid options={payers} value={payer} onChange={setPayer} />
+              <ChoiceGrid
+                options={payerOptions}
+                value={payerId}
+                onChange={setPayerId}
+              />
             </FormSection>
 
             <FormSection title="Split method">
-              <ChoiceGrid options={splitMethods} value={splitMethod} onChange={setSplitMethod} />
+              <ChoiceGrid
+                options={splitMethods}
+                value={splitMethod}
+                onChange={setSplitMethod}
+              />
             </FormSection>
 
             <FormSection title="Split preview">
               <TextField
                 label="Members"
-                value={`${group.memberCount} people · ${splitMethod}`}
+                value={`${participantUserIds.length} people · ${splitMethod}`}
                 editable={false}
                 left={<FieldIcon icon={Users} translateY={2} />}
-                helperText="Detailed share assignment comes next."
+                helperText={
+                  splitMethod === "equal"
+                    ? "This expense will be split equally across all group members."
+                    : "Only equal split is supported by the backend right now."
+                }
               />
             </FormSection>
           </View>
         )}
 
         <View style={{ marginTop: theme.space[6] }}>
-          <AddExpenseFooter canSave={entryMode === "scan" ? false : canSave} onSave={closeModal} />
+          <AddExpenseFooter
+            canSave={entryMode === "scan" ? false : canSave}
+            loading={loading.create}
+            onSave={saveExpense}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
