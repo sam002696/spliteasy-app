@@ -6,6 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Text, TextField, useTheme } from "../../design-system";
 import {
   createGroup,
+  fetchGroups,
+  groupFilters,
   selectGroupsState,
   useAppDispatch,
   useAppSelector,
@@ -78,6 +80,7 @@ export function CreateGroupScreen() {
     );
 
     if (createGroup.fulfilled.match(result)) {
+      await dispatch(fetchGroups(groupFilters.all));
       closeModal();
     }
   };

@@ -5,7 +5,8 @@ import { Avatar, Text, useTheme } from "../../../design-system";
 export function MemberStack({ members, count }) {
   const theme = useTheme();
   const visibleMembers = members.slice(0, 4);
-  const remaining = Math.max(count - visibleMembers.length, 0);
+  const remaining =
+    visibleMembers.length > 0 ? Math.max(count - visibleMembers.length, 0) : 0;
 
   return (
     <View style={{ alignItems: "center", flexDirection: "row" }}>
