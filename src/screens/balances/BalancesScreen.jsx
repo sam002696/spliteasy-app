@@ -1,17 +1,24 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../design-system";
+import {
+  fetchBalances,
+  selectActiveBalanceFilter,
+  selectBalanceCounts,
+  selectBalances,
+  selectBalancesState,
+  setActiveBalanceFilter,
+  useAppDispatch,
+  useAppSelector,
+} from "../../store";
 import {
   BalanceFilterChips,
   BalancesHeader,
   BalancesList,
   SectionHeader,
 } from "./components";
-import {
-  balanceFilters,
-  openBalances,
-  settledBalances,
-} from "./data/balancesData";
+import { balanceFilters } from "./data/balancesData";
+import { mapApiBalanceToListItem } from "./utils";
 
 function BalancesIntro({ activeFilter, onFilterChange, openCount }) {
   return (
@@ -31,18 +38,30 @@ function BalancesIntro({ activeFilter, onFilterChange, openCount }) {
 
 export function BalancesScreen() {
   const theme = useTheme();
-  const [activeFilter, setActiveFilter] = useState("open");
-  const visibleBalances = useMemo(() => {
-    if (activeFilter === "open") {
-      return openBalances;
-    }
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector(selectBalancesState);
+  const balances = useAppSelector(selectBalances);
+  const counts = useAppSelector(selectBalanceCounts);
+  const activeFilter = useAppSelector(selectActiveBalanceFilter);
+  const visibleBalances = useMemo(
+    () => balances.map(mapApiBalanceToListItem),
+    [balances],
+  );
 
-    if (activeFilter === "settled") {
-      return settledBalances;
-    }
+  useEffect(() => {
+    dispatch(fetchBalances(activeFilter));
+  }, [activeFilter, dispatch]);
 
-    return openBalances.filter((balance) => balance.tone === activeFilter);
-  }, [activeFilter]);
+  const refreshBalances = useCallback(() => {
+    dispatch(fetchBalances(activeFilter));
+  }, [activeFilter, dispatch]);
+
+  const handleFilterChange = useCallback(
+    (filter) => {
+      dispatch(setActiveBalanceFilter(filter));
+    },
+    [dispatch],
+  );
 
   return (
     <SafeAreaView
@@ -54,13 +73,14 @@ export function BalancesScreen() {
     >
       <BalancesList
         balances={visibleBalances}
-        settledBalances={settledBalances}
-        showSettledOnly={activeFilter === "settled"}
+        isLoading={loading.list && visibleBalances.length === 0}
+        onRefresh={refreshBalances}
+        refreshing={loading.list && visibleBalances.length > 0}
         header={
           <BalancesIntro
             activeFilter={activeFilter}
-            onFilterChange={setActiveFilter}
-            openCount={visibleBalances.length}
+            onFilterChange={handleFilterChange}
+            openCount={counts[activeFilter] ?? visibleBalances.length}
           />
         }
       />

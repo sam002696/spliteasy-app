@@ -1,12 +1,23 @@
 import React, { useCallback } from "react";
-import { FlatList, View } from "react-native";
+import { ActivityIndicator, FlatList, RefreshControl, View } from "react-native";
 import { Text, useTheme } from "../../../design-system";
 import { OpenBalanceCard } from "./OpenBalanceCard";
-import { SectionHeader } from "./SectionHeader";
-import { SettledBalanceRow } from "./SettledBalanceRow";
 
-function EmptyBalances() {
+function EmptyBalances({ isLoading }) {
   const theme = useTheme();
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          alignItems: "center",
+          padding: theme.space[6],
+        }}
+      >
+        <ActivityIndicator color={theme.semantic.text} />
+      </View>
+    );
+  }
 
   return (
     <View
@@ -28,25 +39,18 @@ function EmptyBalances() {
   );
 }
 
-export function BalancesList({ balances, header, settledBalances, showSettledOnly }) {
+export function BalancesList({
+  balances,
+  header,
+  isLoading = false,
+  onRefresh,
+  refreshing = false,
+}) {
   const theme = useTheme();
 
   const renderItem = useCallback(
     ({ item, index }) => <OpenBalanceCard balance={item} index={index} />,
     [],
-  );
-
-  const footer = (
-    <View style={{ gap: theme.space[3], paddingBottom: theme.space[8] }}>
-      {showSettledOnly || settledBalances.length > 0 ? (
-        <>
-          <SectionHeader title="Settled" meta={`${settledBalances.length} cleared`} />
-          {settledBalances.map((settlement) => (
-            <SettledBalanceRow key={settlement.id} settlement={settlement} />
-          ))}
-        </>
-      ) : null}
-    </View>
   );
 
   return (
@@ -55,11 +59,20 @@ export function BalancesList({ balances, header, settledBalances, showSettledOnl
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
       ListHeaderComponent={header}
-      ListEmptyComponent={showSettledOnly ? null : EmptyBalances}
-      // ListFooterComponent={footer}
+      ListEmptyComponent={<EmptyBalances isLoading={isLoading} />}
+      refreshControl={
+        onRefresh ? (
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.semantic.text}
+          />
+        ) : undefined
+      }
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         gap: theme.space[3],
+        paddingBottom: theme.space[8] * 4,
         paddingHorizontal: theme.space[4],
         paddingTop: theme.space[2],
       }}
