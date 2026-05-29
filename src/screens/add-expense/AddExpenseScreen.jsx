@@ -136,7 +136,7 @@ export function AddExpenseScreen({ groupId }) {
       splitMethod,
     });
 
-    const result = await dispatch(
+    const result = dispatch(
       createExpense({
         expense,
         groupId: normalizedGroupId,
