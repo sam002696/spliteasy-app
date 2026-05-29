@@ -23,6 +23,7 @@ function RootNavigator() {
         <Stack.Screen name="(auth)/login" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="groups/[groupId]" />
+        <Stack.Screen name="group-requests" />
         <Stack.Screen
           name="(modals)/create-group"
           options={{

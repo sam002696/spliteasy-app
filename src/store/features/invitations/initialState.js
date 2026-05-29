@@ -3,7 +3,9 @@ const initialState = {
   loading: {
     pending: false,
     accept: false,
+    acceptById: {},
     reject: false,
+    rejectById: {},
   },
   error: null,
   message: null,

@@ -30,11 +30,13 @@ const invitationsSlice = createSlice({
         state.loading.pending = false;
         state.error = action.payload;
       })
-      .addCase(acceptInvitation.pending, (state) => {
+      .addCase(acceptInvitation.pending, (state, action) => {
         state.loading.accept = true;
+        state.loading.acceptById[action.meta.arg] = true;
       })
       .addCase(acceptInvitation.fulfilled, (state, action) => {
         state.loading.accept = false;
+        delete state.loading.acceptById[action.payload.invitationId];
         state.pending = state.pending.filter(
           (invitation) => invitation.id !== action.payload.invitationId
         );
@@ -42,13 +44,16 @@ const invitationsSlice = createSlice({
       })
       .addCase(acceptInvitation.rejected, (state, action) => {
         state.loading.accept = false;
+        delete state.loading.acceptById[action.meta.arg];
         state.error = action.payload;
       })
-      .addCase(rejectInvitation.pending, (state) => {
+      .addCase(rejectInvitation.pending, (state, action) => {
         state.loading.reject = true;
+        state.loading.rejectById[action.meta.arg] = true;
       })
       .addCase(rejectInvitation.fulfilled, (state, action) => {
         state.loading.reject = false;
+        delete state.loading.rejectById[action.payload.invitationId];
         state.pending = state.pending.filter(
           (invitation) => invitation.id !== action.payload.invitationId
         );
@@ -56,6 +61,7 @@ const invitationsSlice = createSlice({
       })
       .addCase(rejectInvitation.rejected, (state, action) => {
         state.loading.reject = false;
+        delete state.loading.rejectById[action.meta.arg];
         state.error = action.payload;
       });
   },
