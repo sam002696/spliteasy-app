@@ -8,7 +8,6 @@ import {
   ActiveGroupsSection,
   ActivityItem,
   FadeInView,
-  Greeting,
   HeroCard,
   RecentActivitySection,
   TopBar,
@@ -21,7 +20,6 @@ function HomeHeader({ onOpenGroup }) {
   return (
     <>
       <TopBar />
-      <Greeting name="Sami" />
       <HeroCard summary={homeSummary} />
       <ActiveGroupsSection groups={activeGroups} onOpenGroup={onOpenGroup} />
       <RecentActivitySection />

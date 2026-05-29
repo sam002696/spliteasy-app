@@ -42,7 +42,7 @@ export function TopBar() {
           <Avatar name="Sami Rahman" />
           <View>
             <Text variant="label" color="textMuted">
-              Overview
+              Good evening,
             </Text>
             <Text variant="cardTitle" color="text">
               Sami Rahman
