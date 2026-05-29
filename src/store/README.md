@@ -8,6 +8,7 @@ This folder contains the app-wide Redux Toolkit setup for API-backed state.
 - `rootReducer.js`: combines feature reducers.
 - `hooks.js`: shared `useAppDispatch` and `useAppSelector` hooks.
 - `features/auth`: register, login, logout, current user, token bootstrap.
+- `features/balances`: global balances across all groups.
 - `features/groups`: groups, members, invites, group balances.
 - `features/expenses`: group expenses and single expense state.
 - `features/invitations`: pending invitations, accept, reject.

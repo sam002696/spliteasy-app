@@ -24,6 +24,10 @@ export const expenseEndpoints = {
   remove: (expenseId) => `/expenses/${expenseId}`,
 };
 
+export const balanceEndpoints = {
+  list: (filter = "open") => `/balances?filter=${encodeURIComponent(filter)}`,
+};
+
 export const invitationEndpoints = {
   pending: "/group-invitations/pending",
   accept: (invitationId) => `/group-invitations/${invitationId}/accept`,
