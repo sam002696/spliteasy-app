@@ -1,6 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { balanceEndpoints, createThunkApi } from "../../../api";
-import { rejectWithErrorToast } from "../../utils/toastFeedback";
+import {
+  dispatchSuccessToast,
+  rejectWithErrorToast,
+} from "../../utils/toastFeedback";
 
 export const balanceFilters = {
   open: "open",
@@ -18,6 +21,27 @@ export const fetchBalances = createAsyncThunk(
       return { response, filter };
     } catch (error) {
       return rejectWithErrorToast(thunkApi, error, "Unable to fetch balances");
+    }
+  }
+);
+
+export const settleBalance = createAsyncThunk(
+  "balances/settle",
+  async ({ balanceId, groupId, userId }, thunkApi) => {
+    const api = createThunkApi(thunkApi);
+
+    try {
+      const response = await api.post(balanceEndpoints.settle(groupId, userId));
+      dispatchSuccessToast(thunkApi, response, "Balance marked settled.");
+
+      return {
+        balanceId,
+        groupId,
+        response,
+        userId,
+      };
+    } catch (error) {
+      return rejectWithErrorToast(thunkApi, error, "Unable to settle balance");
     }
   }
 );

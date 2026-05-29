@@ -114,12 +114,17 @@ export function mapGroupBalances(balancesData) {
 
     return {
       id: String(balance.user?.id || balance.label),
+      groupId: balancesData?.group_id,
+      userId: balance.user?.id,
       person: balance.user?.name || "Unknown",
       note: balance.label,
       amount: formatAmount(balance.amount, balancesData?.base_currency),
       tone,
       progress: totalSpend > 0 ? Math.min(amount / totalSpend, 1) : 0,
       action: tone === "negative" ? "Mark settled" : "Remind",
+      canSettle:
+        tone === "negative" &&
+        Boolean(balancesData?.group_id && balance.user?.id),
     };
   });
 }

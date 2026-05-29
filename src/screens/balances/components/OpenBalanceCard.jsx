@@ -25,7 +25,12 @@ function DirectionIcon({ tone }) {
   );
 }
 
-export function OpenBalanceCard({ balance, index = 0 }) {
+export function OpenBalanceCard({
+  actionLoading = false,
+  balance,
+  index = 0,
+  onActionPress,
+}) {
   const theme = useTheme();
   const pressed = useSharedValue(0);
   const opacity = useSharedValue(0);
@@ -97,6 +102,8 @@ export function OpenBalanceCard({ balance, index = 0 }) {
             variant={isDebt ? "danger" : "primary"}
             size="sm"
             fullWidth
+            loading={actionLoading}
+            onPress={() => onActionPress?.(balance)}
             left={
               <ActionIcon
                 color={isDebt ? theme.colors.white : theme.semantic.accentText}

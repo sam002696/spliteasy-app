@@ -9,14 +9,18 @@ import {
   fetchGroupBalances,
   fetchGroupExpenses,
   fetchGroupMembers,
+  fetchGroups,
   inviteGroupMember,
   leaveGroup,
+  selectActiveGroupFilter,
   selectCurrentUser,
   selectExpensesByGroup,
   selectGroupBalances,
   selectGroupMembers,
   selectGroupsState,
   selectSelectedGroup,
+  selectSettlingBalanceIds,
+  settleBalance,
   useAppDispatch,
   useAppSelector,
 } from "../../store";
@@ -32,9 +36,22 @@ import {
 import { groupDetailTabs } from "./data/groupDetailData";
 import { mapGroupDetail } from "./utils";
 
-function ActivePanel({ group, invitingMember, onInviteMember, tab }) {
+function ActivePanel({
+  group,
+  invitingMember,
+  onBalanceAction,
+  onInviteMember,
+  settlingIds,
+  tab,
+}) {
   if (tab === "balances") {
-    return <BalancesPanel balances={group.balances} />;
+    return (
+      <BalancesPanel
+        balances={group.balances}
+        onBalanceAction={onBalanceAction}
+        settlingIds={settlingIds}
+      />
+    );
   }
 
   if (tab === "members") {
@@ -56,10 +73,12 @@ export function GroupDetailScreen({ groupId }) {
   const dispatch = useAppDispatch();
   const normalizedGroupId = String(groupId);
   const selectedGroup = useAppSelector(selectSelectedGroup);
+  const activeGroupFilter = useAppSelector(selectActiveGroupFilter);
   const currentUser = useAppSelector(selectCurrentUser);
   const members = useAppSelector(selectGroupMembers(normalizedGroupId));
   const balancesData = useAppSelector(selectGroupBalances(normalizedGroupId));
   const expenses = useAppSelector(selectExpensesByGroup(normalizedGroupId));
+  const settlingIds = useAppSelector(selectSettlingBalanceIds);
   const { loading } = useAppSelector(selectGroupsState);
   const [activeTab, setActiveTab] = useState("expenses");
   const [hasRequestedGroup, setHasRequestedGroup] = useState(false);
@@ -116,6 +135,29 @@ export function GroupDetailScreen({ groupId }) {
     }
 
     return false;
+  };
+
+  const settleGroupBalance = async (balance) => {
+    if (!balance.canSettle) {
+      return;
+    }
+
+    try {
+      await dispatch(
+        settleBalance({
+          balanceId: balance.id,
+          groupId: balance.groupId,
+          userId: balance.userId,
+        }),
+      ).unwrap();
+    } catch {
+      return;
+    }
+
+    dispatch(fetchGroup(normalizedGroupId));
+    dispatch(fetchGroupBalances(normalizedGroupId));
+    dispatch(fetchGroupExpenses(normalizedGroupId));
+    dispatch(fetchGroups(activeGroupFilter));
   };
 
   const goToGroups = () => {
@@ -233,7 +275,9 @@ export function GroupDetailScreen({ groupId }) {
             <ActivePanel
               group={group}
               invitingMember={loading.invite}
+              onBalanceAction={settleGroupBalance}
               onInviteMember={inviteMember}
+              settlingIds={settlingIds}
               tab={activeTab}
             />
           </>

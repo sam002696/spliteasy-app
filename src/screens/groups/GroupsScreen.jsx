@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../design-system";
 import {
@@ -34,17 +34,26 @@ export function GroupsScreen() {
   const { loading } = useAppSelector(selectGroupsState);
   const groups = useAppSelector(selectGroups);
   const [activeFilter, setActiveFilter] = useState(apiGroupFilters.all);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const visibleGroups = useMemo(
     () => groups.map(mapApiGroupToListItem),
     [groups],
   );
 
-  useEffect(() => {
-    dispatch(fetchGroups(activeFilter));
-  }, [activeFilter, dispatch]);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchGroups(activeFilter));
+    }, [activeFilter, dispatch]),
+  );
 
-  const refreshGroups = useCallback(() => {
-    dispatch(fetchGroups(activeFilter));
+  const refreshGroups = useCallback(async () => {
+    setIsRefreshing(true);
+
+    try {
+      await dispatch(fetchGroups(activeFilter));
+    } finally {
+      setIsRefreshing(false);
+    }
   }, [activeFilter, dispatch]);
 
   const handleCreateGroup = () => {
@@ -71,7 +80,7 @@ export function GroupsScreen() {
         isLoading={loading.list && visibleGroups.length === 0}
         onOpenGroup={handleOpenGroup}
         onRefresh={refreshGroups}
-        refreshing={loading.list && visibleGroups.length > 0}
+        refreshing={isRefreshing}
         ListHeaderComponent={
           <GroupsIntro
             activeFilter={activeFilter}

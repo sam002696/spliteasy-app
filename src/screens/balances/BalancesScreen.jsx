@@ -3,11 +3,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../design-system";
 import {
   fetchBalances,
+  fetchGroups,
+  selectActiveGroupFilter,
   selectActiveBalanceFilter,
   selectBalanceCounts,
   selectBalances,
   selectBalancesState,
+  selectSettlingBalanceIds,
   setActiveBalanceFilter,
+  settleBalance,
   useAppDispatch,
   useAppSelector,
 } from "../../store";
@@ -43,6 +47,8 @@ export function BalancesScreen() {
   const balances = useAppSelector(selectBalances);
   const counts = useAppSelector(selectBalanceCounts);
   const activeFilter = useAppSelector(selectActiveBalanceFilter);
+  const activeGroupFilter = useAppSelector(selectActiveGroupFilter);
+  const settlingIds = useAppSelector(selectSettlingBalanceIds);
   const visibleBalances = useMemo(
     () => balances.map(mapApiBalanceToListItem),
     [balances],
@@ -63,6 +69,30 @@ export function BalancesScreen() {
     [dispatch],
   );
 
+  const handleBalanceAction = useCallback(
+    async (balance) => {
+      if (!balance.canSettle) {
+        return;
+      }
+
+      try {
+        await dispatch(
+          settleBalance({
+            balanceId: balance.id,
+            groupId: balance.groupId,
+            userId: balance.userId,
+          })
+        ).unwrap();
+      } catch {
+        return;
+      }
+
+      dispatch(fetchBalances(activeFilter));
+      dispatch(fetchGroups(activeGroupFilter));
+    },
+    [activeFilter, activeGroupFilter, dispatch],
+  );
+
   return (
     <SafeAreaView
       edges={["top"]}
@@ -74,8 +104,10 @@ export function BalancesScreen() {
       <BalancesList
         balances={visibleBalances}
         isLoading={loading.list && visibleBalances.length === 0}
+        onBalanceAction={handleBalanceAction}
         onRefresh={refreshBalances}
         refreshing={loading.list && visibleBalances.length > 0}
+        settlingIds={settlingIds}
         header={
           <BalancesIntro
             activeFilter={activeFilter}

@@ -3,7 +3,7 @@ import { Bell, CircleCheck } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { Avatar, Button, Card, ProgressBar, Text, useTheme } from "../../../design-system";
 
-export function BalanceCard({ balance }) {
+export function BalanceCard({ actionLoading = false, balance, onActionPress }) {
   const theme = useTheme();
   const isDebt = balance.tone === "negative";
   const Icon = isDebt ? CircleCheck : Bell;
@@ -31,6 +31,9 @@ export function BalanceCard({ balance }) {
           variant={isDebt ? "danger" : "primary"}
           size="sm"
           fullWidth
+          disabled={!balance.canSettle}
+          loading={actionLoading}
+          onPress={() => onActionPress?.(balance)}
           left={
             <Icon
               color={isDebt ? theme.colors.white : theme.semantic.accentText}

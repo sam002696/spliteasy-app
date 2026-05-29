@@ -37,16 +37,20 @@ export function mapApiBalanceToListItem(balance) {
 
   return {
     id: String(balance.id),
+    groupId: balance.group?.id,
+    userId: balance.user?.id,
     person: balance.user?.name || balance.user?.email || "Member",
     group: balance.group?.name || "Group",
     note: balance.label || "",
     amount: formatAmount(
       balance.amount,
-      balance.currency || balance.group?.base_currency
+      balance.currency || balance.group?.base_currency,
     ),
     tone,
     progress: Number(balance.settled_percentage || 0) / 100,
     action: getActionLabel(balance.action, tone),
+    canSettle:
+      tone === "negative" && Boolean(balance.group?.id && balance.user?.id),
     lastActivity: latestExpense?.description || "No recent expense",
   };
 }

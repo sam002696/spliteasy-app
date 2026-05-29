@@ -6,10 +6,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ModeToggle, TextField, useTheme } from "../../design-system";
 import {
   createExpense,
+  fetchBalances,
   fetchGroup,
   fetchGroupBalances,
   fetchGroupExpenses,
   fetchGroupMembers,
+  fetchGroups,
+  selectActiveBalanceFilter,
+  selectActiveGroupFilter,
   selectCurrentUser,
   selectExpenses,
   selectGroupMembers,
@@ -60,6 +64,8 @@ export function AddExpenseScreen({ groupId }) {
   const dispatch = useAppDispatch();
   const normalizedGroupId = String(groupId);
   const selectedGroup = useAppSelector(selectSelectedGroup);
+  const activeBalanceFilter = useAppSelector(selectActiveBalanceFilter);
+  const activeGroupFilter = useAppSelector(selectActiveGroupFilter);
   const members = useAppSelector(selectGroupMembers(normalizedGroupId));
   const currentUser = useAppSelector(selectCurrentUser);
   const { loading } = useAppSelector(selectExpenses);
@@ -136,7 +142,7 @@ export function AddExpenseScreen({ groupId }) {
       splitMethod,
     });
 
-    const result = dispatch(
+    const result = await dispatch(
       createExpense({
         expense,
         groupId: normalizedGroupId,
@@ -148,7 +154,9 @@ export function AddExpenseScreen({ groupId }) {
       dispatch(fetchGroupExpenses(normalizedGroupId));
       dispatch(fetchGroupMembers(normalizedGroupId));
       dispatch(fetchGroupBalances(normalizedGroupId));
-      closeModal();
+      dispatch(fetchGroups(activeGroupFilter));
+      dispatch(fetchBalances(activeBalanceFilter));
+      router.replace("/groups");
     }
   };
 

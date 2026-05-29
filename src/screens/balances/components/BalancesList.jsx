@@ -1,5 +1,10 @@
 import React, { useCallback } from "react";
-import { ActivityIndicator, FlatList, RefreshControl, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  View,
+} from "react-native";
 import { Text, useTheme } from "../../../design-system";
 import { OpenBalanceCard } from "./OpenBalanceCard";
 
@@ -43,14 +48,23 @@ export function BalancesList({
   balances,
   header,
   isLoading = false,
+  settlingIds = {},
+  onBalanceAction,
   onRefresh,
   refreshing = false,
 }) {
   const theme = useTheme();
 
   const renderItem = useCallback(
-    ({ item, index }) => <OpenBalanceCard balance={item} index={index} />,
-    [],
+    ({ item, index }) => (
+      <OpenBalanceCard
+        actionLoading={Boolean(settlingIds[item.id])}
+        balance={item}
+        index={index}
+        onActionPress={onBalanceAction}
+      />
+    ),
+    [onBalanceAction, settlingIds],
   );
 
   return (

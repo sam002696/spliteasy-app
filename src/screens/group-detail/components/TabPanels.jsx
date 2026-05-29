@@ -53,7 +53,7 @@ export function ExpensesPanel({ expenses }) {
   );
 }
 
-export function BalancesPanel({ balances }) {
+export function BalancesPanel({ balances, onBalanceAction, settlingIds = {} }) {
   const theme = useTheme();
 
   return (
@@ -61,7 +61,12 @@ export function BalancesPanel({ balances }) {
       <SectionTitle title="Balances" count={`${balances.length} open`} />
       {!balances.length ? <EmptyPanel>No open balances right now.</EmptyPanel> : null}
       {balances.map((balance) => (
-        <BalanceCard key={balance.id} balance={balance} />
+        <BalanceCard
+          actionLoading={Boolean(settlingIds[balance.id])}
+          key={balance.id}
+          balance={balance}
+          onActionPress={onBalanceAction}
+        />
       ))}
     </View>
   );
