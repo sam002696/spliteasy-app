@@ -1,7 +1,7 @@
-import React from "react";
-import { UserPlus } from "lucide-react-native";
+import React, { useState } from "react";
+import { MailPlus, UserPlus } from "lucide-react-native";
 import { View } from "react-native";
-import { Button, Text, useTheme } from "../../../design-system";
+import { Button, Text, TextField, useTheme } from "../../../design-system";
 import { BalanceCard } from "./BalanceCard";
 import { ExpenseRow } from "./ExpenseRow";
 import { MemberRow } from "./MemberRow";
@@ -66,16 +66,56 @@ export function BalancesPanel({ balances }) {
   );
 }
 
-export function MembersPanel({ members }) {
+function normalizeEmail(email) {
+  return email.trim().toLowerCase();
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeEmail(email));
+}
+
+export function MembersPanel({ inviting = false, members, onInviteMember }) {
   const theme = useTheme();
+  const [email, setEmail] = useState("");
+  const canInvite = isValidEmail(email) && !inviting;
+
+  const inviteMember = async () => {
+    if (!canInvite) {
+      return;
+    }
+
+    const didInvite = await onInviteMember?.(normalizeEmail(email));
+
+    if (didInvite) {
+      setEmail("");
+    }
+  };
 
   return (
     <View style={{ gap: theme.space[3] }}>
       <SectionTitle title="Members" count={`${members.length} people`} />
+      <TextField
+        label="Invite by email"
+        value={email}
+        onChangeText={setEmail}
+        placeholder="prangan@example.com"
+        autoCapitalize="none"
+        autoCorrect={false}
+        keyboardType="email-address"
+        left={
+          <MailPlus
+            color={theme.semantic.textMuted}
+            size={theme.space[5]}
+            strokeWidth={theme.borderWidths.medium}
+          />
+        }
+      />
       <Button
         title="Invite member"
         variant="dark"
         fullWidth
+        disabled={!canInvite}
+        loading={inviting}
         left={
           <UserPlus
             color={theme.semantic.accent}
@@ -83,6 +123,7 @@ export function MembersPanel({ members }) {
             strokeWidth={theme.borderWidths.medium}
           />
         }
+        onPress={inviteMember}
       />
       {!members.length ? <EmptyPanel>No members found.</EmptyPanel> : null}
       {members.map((member) => (

@@ -8,6 +8,7 @@ import {
   fetchGroupBalances,
   fetchGroupExpenses,
   fetchGroupMembers,
+  inviteGroupMember,
   selectExpensesByGroup,
   selectGroupBalances,
   selectGroupMembers,
@@ -28,13 +29,19 @@ import {
 import { groupDetailTabs } from "./data/groupDetailData";
 import { mapGroupDetail } from "./utils";
 
-function ActivePanel({ group, tab }) {
+function ActivePanel({ group, invitingMember, onInviteMember, tab }) {
   if (tab === "balances") {
     return <BalancesPanel balances={group.balances} />;
   }
 
   if (tab === "members") {
-    return <MembersPanel members={group.members} />;
+    return (
+      <MembersPanel
+        inviting={invitingMember}
+        members={group.members}
+        onInviteMember={onInviteMember}
+      />
+    );
   }
 
   return <ExpensesPanel expenses={group.expenses} />;
@@ -83,6 +90,24 @@ export function GroupDetailScreen({ groupId }) {
       pathname: "/add-expense",
       params: { groupId: normalizedGroupId },
     });
+  };
+
+  const inviteMember = async (email) => {
+    const result = await dispatch(
+      inviteGroupMember({
+        email,
+        groupId: normalizedGroupId,
+      })
+    );
+
+    if (inviteGroupMember.fulfilled.match(result)) {
+      dispatch(fetchGroup(normalizedGroupId));
+      dispatch(fetchGroupMembers(normalizedGroupId));
+      dispatch(fetchGroupBalances(normalizedGroupId));
+      return true;
+    }
+
+    return false;
   };
 
   const isLoading = !hasRequestedGroup || (loading.detail && !group);
@@ -140,7 +165,12 @@ export function GroupDetailScreen({ groupId }) {
             <GroupDetailHeader group={group} onBack={() => router.back()} />
             <GroupSummaryCard summary={group.summary} />
             <GroupTabSwitcher tabs={groupDetailTabs} value={activeTab} onChange={setActiveTab} />
-            <ActivePanel group={group} tab={activeTab} />
+            <ActivePanel
+              group={group}
+              invitingMember={loading.invite}
+              onInviteMember={inviteMember}
+              tab={activeTab}
+            />
           </>
         ) : null}
       </ScrollView>
