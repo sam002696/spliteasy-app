@@ -18,11 +18,8 @@ import {
   SelectedInviteRow,
 } from "./components";
 import { categoryOptions, currencyOptions } from "./data/createGroupOptions";
-import {
-  buildCreateGroupPayload,
-  isValidInviteEmail,
-  normalizeInviteEmail,
-} from "./utils";
+import { isValidEmail, normalizeEmail } from "../../utils";
+import { buildCreateGroupPayload } from "./utils";
 
 export function CreateGroupScreen() {
   const theme = useTheme();
@@ -34,7 +31,7 @@ export function CreateGroupScreen() {
   const [currency, setCurrency] = useState(currencyOptions[0].value);
   const [inviteEmail, setInviteEmail] = useState("");
   const [memberEmails, setMemberEmails] = useState([]);
-  const canAddEmail = isValidInviteEmail(inviteEmail);
+  const canAddEmail = isValidEmail(inviteEmail);
   const canCreate = groupName.trim().length > 1 && !loading.create;
 
   const closeModal = () => {
@@ -42,9 +39,9 @@ export function CreateGroupScreen() {
   };
 
   const addInviteEmail = (email) => {
-    const normalizedEmail = normalizeInviteEmail(email);
+    const normalizedEmail = normalizeEmail(email);
 
-    if (!isValidInviteEmail(normalizedEmail)) {
+    if (!isValidEmail(normalizedEmail)) {
       return;
     }
 
@@ -60,7 +57,7 @@ export function CreateGroupScreen() {
 
   const removeInviteEmail = (email) => {
     setMemberEmails((currentEmails) =>
-      currentEmails.filter((memberEmail) => memberEmail !== email)
+      currentEmails.filter((memberEmail) => memberEmail !== email),
     );
   };
 
@@ -76,8 +73,8 @@ export function CreateGroupScreen() {
           currency,
           memberEmails,
           name: groupName,
-        })
-      )
+        }),
+      ),
     );
 
     if (createGroup.fulfilled.match(result)) {
@@ -123,33 +120,62 @@ export function CreateGroupScreen() {
           </View>
         </Card>
 
-        <FormSection title="Category" subtitle="Used for group tags and quick scanning.">
+        <FormSection
+          title="Category"
+          subtitle="Used for group tags and quick scanning."
+        >
           <View style={{ gap: theme.space[3] }}>
-            <View style={{ alignItems: "center", flexDirection: "row", gap: theme.space[2] }}>
+            <View
+              style={{
+                alignItems: "center",
+                flexDirection: "row",
+                gap: theme.space[2],
+              }}
+            >
               <Tag
                 color={theme.semantic.textMuted}
                 size={theme.space[5]}
                 strokeWidth={theme.borderWidths.medium}
               />
             </View>
-            <SelectChips options={categoryOptions} value={category} onChange={setCategory} />
+            <SelectChips
+              options={categoryOptions}
+              value={category}
+              onChange={setCategory}
+            />
           </View>
         </FormSection>
 
-        <FormSection title="Base currency" subtitle="Group amounts will use this currency.">
+        <FormSection
+          title="Base currency"
+          subtitle="Group amounts will use this currency."
+        >
           <View style={{ gap: theme.space[3] }}>
-            <View style={{ alignItems: "center", flexDirection: "row", gap: theme.space[2] }}>
+            <View
+              style={{
+                alignItems: "center",
+                flexDirection: "row",
+                gap: theme.space[2],
+              }}
+            >
               <DollarSign
                 color={theme.semantic.textMuted}
                 size={theme.space[5]}
                 strokeWidth={theme.borderWidths.medium}
               />
             </View>
-            <SelectChips options={currencyOptions} value={currency} onChange={setCurrency} />
+            <SelectChips
+              options={currencyOptions}
+              value={currency}
+              onChange={setCurrency}
+            />
           </View>
         </FormSection>
 
-        <FormSection title="Invite members" subtitle="Add people now, or invite them later.">
+        <FormSection
+          title="Invite members"
+          subtitle="Add people now, or invite them later."
+        >
           <View style={{ gap: theme.space[3] }}>
             <View style={{ flexDirection: "row", gap: theme.space[2] }}>
               <View style={{ flex: 1 }}>

@@ -1,10 +1,4 @@
-export function normalizeInviteEmail(email) {
-  return email.trim().toLowerCase();
-}
-
-export function isValidInviteEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeInviteEmail(email));
-}
+import { normalizeEmail } from "../../../utils";
 
 export function buildCreateGroupPayload({
   category,
@@ -19,7 +13,7 @@ export function buildCreateGroupPayload({
   };
 
   if (memberEmails.length > 0) {
-    payload.member_emails = memberEmails.map(normalizeInviteEmail);
+    payload.member_emails = memberEmails.map(normalizeEmail);
   }
 
   return payload;

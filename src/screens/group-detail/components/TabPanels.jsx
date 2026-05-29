@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MailPlus, UserPlus } from "lucide-react-native";
 import { View } from "react-native";
 import { Button, Text, TextField, useTheme } from "../../../design-system";
+import { isValidEmail, normalizeEmail } from "../../../utils";
 import { BalanceCard } from "./BalanceCard";
 import { ExpenseRow } from "./ExpenseRow";
 import { MemberRow } from "./MemberRow";
@@ -64,14 +65,6 @@ export function BalancesPanel({ balances }) {
       ))}
     </View>
   );
-}
-
-function normalizeEmail(email) {
-  return email.trim().toLowerCase();
-}
-
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeEmail(email));
 }
 
 export function MembersPanel({ inviting = false, members, onInviteMember }) {
