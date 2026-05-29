@@ -6,7 +6,7 @@ export const authEndpoints = {
 };
 
 export const groupEndpoints = {
-  list: "/groups",
+  list: (filter = "all") => `/groups?filter=${encodeURIComponent(filter)}`,
   create: "/groups",
   detail: (groupId) => `/groups/${groupId}`,
   remove: (groupId) => `/groups/${groupId}`,

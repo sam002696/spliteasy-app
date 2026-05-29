@@ -5,15 +5,26 @@ import {
   rejectWithErrorToast,
 } from "../../utils/toastFeedback";
 
-export const fetchGroups = createAsyncThunk("groups/list", async (_, thunkApi) => {
-  const api = createThunkApi(thunkApi);
+export const groupFilters = {
+  all: "all",
+  owedToYou: "owed_to_you",
+  youOwe: "you_owe",
+  settled: "settled",
+};
 
-  try {
-    return await api.get(groupEndpoints.list);
-  } catch (error) {
-    return rejectWithErrorToast(thunkApi, error, "Unable to fetch groups");
+export const fetchGroups = createAsyncThunk(
+  "groups/list",
+  async (filter = groupFilters.all, thunkApi) => {
+    const api = createThunkApi(thunkApi);
+
+    try {
+      const response = await api.get(groupEndpoints.list(filter));
+      return { response, filter };
+    } catch (error) {
+      return rejectWithErrorToast(thunkApi, error, "Unable to fetch groups");
+    }
   }
-});
+);
 
 export const createGroup = createAsyncThunk(
   "groups/create",

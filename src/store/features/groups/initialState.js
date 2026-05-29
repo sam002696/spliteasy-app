@@ -1,5 +1,12 @@
 const initialState = {
   items: [],
+  activeFilter: "all",
+  itemsByFilter: {
+    all: [],
+    owed_to_you: [],
+    you_owe: [],
+    settled: [],
+  },
   selectedGroup: null,
   membersByGroupId: {},
   balancesByGroupId: {},

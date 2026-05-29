@@ -11,6 +11,7 @@ import {
   inviteGroupMember,
   leaveGroup,
   removeGroupMember,
+  groupFilters,
 } from "./thunks";
 
 const groupsSlice = createSlice({
@@ -31,9 +32,14 @@ const groupsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchGroups.fulfilled, (state, action) => {
+        const filter = action.payload.filter || groupFilters.all;
+        const groups = readData(action.payload.response, []);
+
         state.loading.list = false;
-        state.items = readData(action.payload, []);
-        state.message = action.payload.message;
+        state.activeFilter = filter;
+        state.items = groups;
+        state.itemsByFilter[filter] = groups;
+        state.message = action.payload.response.message;
       })
       .addCase(fetchGroups.rejected, (state, action) => {
         state.loading.list = false;
@@ -48,7 +54,12 @@ const groupsSlice = createSlice({
         const group = readData(action.payload);
 
         if (group) {
-          state.items.unshift(group);
+          state.itemsByFilter.all.unshift(group);
+
+          if (state.activeFilter === groupFilters.all) {
+            state.items.unshift(group);
+          }
+
           state.selectedGroup = group;
         }
 
@@ -79,6 +90,11 @@ const groupsSlice = createSlice({
         state.items = state.items.filter(
           (group) => group.id !== action.payload.groupId
         );
+        Object.keys(state.itemsByFilter).forEach((filter) => {
+          state.itemsByFilter[filter] = state.itemsByFilter[filter].filter(
+            (group) => group.id !== action.payload.groupId
+          );
+        });
 
         if (state.selectedGroup?.id === action.payload.groupId) {
           state.selectedGroup = null;
@@ -98,6 +114,11 @@ const groupsSlice = createSlice({
         state.items = state.items.filter(
           (group) => group.id !== action.payload.groupId
         );
+        Object.keys(state.itemsByFilter).forEach((filter) => {
+          state.itemsByFilter[filter] = state.itemsByFilter[filter].filter(
+            (group) => group.id !== action.payload.groupId
+          );
+        });
         state.message = action.payload.response.message;
       })
       .addCase(leaveGroup.rejected, (state, action) => {
