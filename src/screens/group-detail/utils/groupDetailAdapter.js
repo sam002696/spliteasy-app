@@ -141,6 +141,7 @@ export function mapGroupMembers(members = [], balancesData) {
 export function mapGroupDetail({ group, expenses, members, balancesData }) {
   return {
     id: String(group.id),
+    ownerId: group.owner_id,
     name: group.name,
     category: group.category,
     categoryTone: categoryToneByName[group.category] || "lime",

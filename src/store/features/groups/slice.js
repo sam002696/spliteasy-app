@@ -91,16 +91,17 @@ const groupsSlice = createSlice({
       })
       .addCase(deleteGroup.fulfilled, (state, action) => {
         state.loading.delete = false;
+        const deletedGroupId = String(action.payload.groupId);
         state.items = state.items.filter(
-          (group) => group.id !== action.payload.groupId
+          (group) => String(group.id) !== deletedGroupId
         );
         Object.keys(state.itemsByFilter).forEach((filter) => {
           state.itemsByFilter[filter] = state.itemsByFilter[filter].filter(
-            (group) => group.id !== action.payload.groupId
+            (group) => String(group.id) !== deletedGroupId
           );
         });
 
-        if (state.selectedGroup?.id === action.payload.groupId) {
+        if (String(state.selectedGroup?.id) === deletedGroupId) {
           state.selectedGroup = null;
         }
 
@@ -115,14 +116,18 @@ const groupsSlice = createSlice({
       })
       .addCase(leaveGroup.fulfilled, (state, action) => {
         state.loading.leave = false;
+        const leftGroupId = String(action.payload.groupId);
         state.items = state.items.filter(
-          (group) => group.id !== action.payload.groupId
+          (group) => String(group.id) !== leftGroupId
         );
         Object.keys(state.itemsByFilter).forEach((filter) => {
           state.itemsByFilter[filter] = state.itemsByFilter[filter].filter(
-            (group) => group.id !== action.payload.groupId
+            (group) => String(group.id) !== leftGroupId
           );
         });
+        if (String(state.selectedGroup?.id) === leftGroupId) {
+          state.selectedGroup = null;
+        }
         state.message = action.payload.response.message;
       })
       .addCase(leaveGroup.rejected, (state, action) => {

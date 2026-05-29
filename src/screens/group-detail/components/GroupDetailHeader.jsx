@@ -3,13 +3,14 @@ import { ChevronLeft, MoreHorizontal } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Badge, Text, useTheme } from "../../../design-system";
 
-function HeaderButton({ icon: Icon, label, onPress }) {
+function HeaderButton({ disabled = false, icon: Icon, label, onPress }) {
   const theme = useTheme();
 
   return (
     <Pressable
       accessibilityLabel={label}
       accessibilityRole="button"
+      disabled={disabled}
       hitSlop={theme.space[2]}
       onPress={onPress}
       style={({ pressed }) => [
@@ -18,7 +19,7 @@ function HeaderButton({ icon: Icon, label, onPress }) {
           backgroundColor: theme.semantic.surface,
           borderRadius: theme.radii.full,
           height: theme.sizes.iconButton,
-          opacity: pressed ? 0.78 : 1,
+          opacity: disabled ? 0.45 : pressed ? 0.78 : 1,
           width: theme.sizes.iconButton,
         },
       ]}
@@ -32,7 +33,7 @@ function HeaderButton({ icon: Icon, label, onPress }) {
   );
 }
 
-export function GroupDetailHeader({ group, onBack }) {
+export function GroupDetailHeader({ group, onBack, onOpenOptions, optionsDisabled = false }) {
   const theme = useTheme();
 
   return (
@@ -54,7 +55,12 @@ export function GroupDetailHeader({ group, onBack }) {
           </Text>
         </View>
       </View>
-      <HeaderButton icon={MoreHorizontal} label="Group options" />
+      <HeaderButton
+        disabled={optionsDisabled}
+        icon={MoreHorizontal}
+        label="Group options"
+        onPress={onOpenOptions}
+      />
     </View>
   );
 }

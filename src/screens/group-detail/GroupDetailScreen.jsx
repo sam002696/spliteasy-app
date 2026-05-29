@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, useTheme } from "../../design-system";
 import {
+  deleteGroup,
   fetchGroup,
   fetchGroupBalances,
   fetchGroupExpenses,
   fetchGroupMembers,
   inviteGroupMember,
+  leaveGroup,
+  selectCurrentUser,
   selectExpensesByGroup,
   selectGroupBalances,
   selectGroupMembers,
@@ -53,13 +56,18 @@ export function GroupDetailScreen({ groupId }) {
   const dispatch = useAppDispatch();
   const normalizedGroupId = String(groupId);
   const selectedGroup = useAppSelector(selectSelectedGroup);
+  const currentUser = useAppSelector(selectCurrentUser);
   const members = useAppSelector(selectGroupMembers(normalizedGroupId));
   const balancesData = useAppSelector(selectGroupBalances(normalizedGroupId));
   const expenses = useAppSelector(selectExpensesByGroup(normalizedGroupId));
   const { loading } = useAppSelector(selectGroupsState);
   const [activeTab, setActiveTab] = useState("expenses");
   const [hasRequestedGroup, setHasRequestedGroup] = useState(false);
-  const hasGroup = selectedGroup && String(selectedGroup.id) === normalizedGroupId;
+  const hasGroup =
+    selectedGroup && String(selectedGroup.id) === normalizedGroupId;
+  const isOwner =
+    currentUser?.id &&
+    String(selectedGroup?.owner_id) === String(currentUser.id);
   const group = useMemo(() => {
     if (!hasGroup) {
       return null;
@@ -97,7 +105,7 @@ export function GroupDetailScreen({ groupId }) {
       inviteGroupMember({
         email,
         groupId: normalizedGroupId,
-      })
+      }),
     );
 
     if (inviteGroupMember.fulfilled.match(result)) {
@@ -110,7 +118,55 @@ export function GroupDetailScreen({ groupId }) {
     return false;
   };
 
+  const goToGroups = () => {
+    router.replace("/groups");
+  };
+
+  const deleteCurrentGroup = async () => {
+    const result = await dispatch(deleteGroup(normalizedGroupId));
+
+    if (deleteGroup.fulfilled.match(result)) {
+      goToGroups();
+    }
+  };
+
+  const leaveCurrentGroup = async () => {
+    const result = await dispatch(leaveGroup(normalizedGroupId));
+
+    if (leaveGroup.fulfilled.match(result)) {
+      goToGroups();
+    }
+  };
+
+  const openGroupOptions = () => {
+    if (!group) {
+      return;
+    }
+
+    if (isOwner) {
+      Alert.alert("Group options", "Owners can delete this group.", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete group",
+          style: "destructive",
+          onPress: deleteCurrentGroup,
+        },
+      ]);
+      return;
+    }
+
+    Alert.alert("Group options", "Leave this group?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Leave group",
+        style: "destructive",
+        onPress: leaveCurrentGroup,
+      },
+    ]);
+  };
+
   const isLoading = !hasRequestedGroup || (loading.detail && !group);
+  const isMutatingGroup = loading.delete || loading.leave;
 
   return (
     <SafeAreaView
@@ -141,7 +197,7 @@ export function GroupDetailScreen({ groupId }) {
           </View>
         ) : null}
 
-        {!isLoading && !group ? (
+        {!isLoading && !isMutatingGroup && !group ? (
           <View
             style={{
               alignItems: "center",
@@ -162,9 +218,18 @@ export function GroupDetailScreen({ groupId }) {
 
         {group ? (
           <>
-            <GroupDetailHeader group={group} onBack={() => router.back()} />
+            <GroupDetailHeader
+              group={group}
+              onBack={() => router.back()}
+              onOpenOptions={openGroupOptions}
+              optionsDisabled={isMutatingGroup}
+            />
             <GroupSummaryCard summary={group.summary} />
-            <GroupTabSwitcher tabs={groupDetailTabs} value={activeTab} onChange={setActiveTab} />
+            <GroupTabSwitcher
+              tabs={groupDetailTabs}
+              value={activeTab}
+              onChange={setActiveTab}
+            />
             <ActivePanel
               group={group}
               invitingMember={loading.invite}
