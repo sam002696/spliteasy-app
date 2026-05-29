@@ -4,7 +4,13 @@ import { Text, useTheme } from "../../../design-system";
 import { AnimatedSection } from "./AnimatedSection";
 import { SettingsRow } from "./SettingsRow";
 
-export function SettingsSection({ title, rows, delay = 0 }) {
+export function SettingsSection({
+  title,
+  rows,
+  delay = 0,
+  disabledRowId,
+  onRowPress,
+}) {
   const theme = useTheme();
 
   return (
@@ -15,7 +21,12 @@ export function SettingsSection({ title, rows, delay = 0 }) {
         </Text>
         <View style={{ gap: theme.space[2] }}>
           {rows.map((row) => (
-            <SettingsRow key={row.id} row={row} />
+            <SettingsRow
+              disabled={disabledRowId === row.id}
+              key={row.id}
+              onPress={() => onRowPress?.(row)}
+              row={row}
+            />
           ))}
         </View>
       </View>

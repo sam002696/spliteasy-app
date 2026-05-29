@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "../../../design-system";
 
-export function SettingsRow({ row }) {
+export function SettingsRow({ disabled = false, onPress, row }) {
   const theme = useTheme();
   const Icon = row.icon;
   const tone = row.tone || "default";
@@ -12,6 +12,8 @@ export function SettingsRow({ row }) {
   return (
     <Pressable
       accessibilityRole="button"
+      disabled={disabled}
+      onPress={onPress}
       style={({ pressed }) => [
         styles.root,
         {
@@ -19,7 +21,7 @@ export function SettingsRow({ row }) {
           borderRadius: theme.radii.md,
           gap: theme.space[3],
           minHeight: theme.sizes.minTapTarget + theme.space[3],
-          opacity: pressed ? 0.78 : 1,
+          opacity: disabled ? 0.58 : pressed ? 0.78 : 1,
           paddingHorizontal: theme.space[4],
         },
       ]}
