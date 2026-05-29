@@ -19,12 +19,32 @@ function SectionTitle({ title, count }) {
   );
 }
 
+function EmptyPanel({ children }) {
+  const theme = useTheme();
+
+  return (
+    <View
+      style={{
+        alignItems: "center",
+        backgroundColor: theme.semantic.surface,
+        borderRadius: theme.radii.lg,
+        padding: theme.space[5],
+      }}
+    >
+      <Text variant="bodySmall" color="textMuted" align="center">
+        {children}
+      </Text>
+    </View>
+  );
+}
+
 export function ExpensesPanel({ expenses }) {
   const theme = useTheme();
 
   return (
     <View style={{ gap: theme.space[3] }}>
       <SectionTitle title="Expenses" count={`${expenses.length} items`} />
+      {!expenses.length ? <EmptyPanel>No expenses have been added yet.</EmptyPanel> : null}
       {expenses.map((expense) => (
         <ExpenseRow key={expense.id} expense={expense} />
       ))}
@@ -38,6 +58,7 @@ export function BalancesPanel({ balances }) {
   return (
     <View style={{ gap: theme.space[3] }}>
       <SectionTitle title="Balances" count={`${balances.length} open`} />
+      {!balances.length ? <EmptyPanel>No open balances right now.</EmptyPanel> : null}
       {balances.map((balance) => (
         <BalanceCard key={balance.id} balance={balance} />
       ))}
@@ -63,6 +84,7 @@ export function MembersPanel({ members }) {
           />
         }
       />
+      {!members.length ? <EmptyPanel>No members found.</EmptyPanel> : null}
       {members.map((member) => (
         <MemberRow key={member.id} member={member} />
       ))}

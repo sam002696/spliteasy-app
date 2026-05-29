@@ -1,8 +1,21 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
-import { ScrollView } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "../../design-system";
+import { Text, useTheme } from "../../design-system";
+import {
+  fetchGroup,
+  fetchGroupBalances,
+  fetchGroupExpenses,
+  fetchGroupMembers,
+  selectExpensesByGroup,
+  selectGroupBalances,
+  selectGroupMembers,
+  selectGroupsState,
+  selectSelectedGroup,
+  useAppDispatch,
+  useAppSelector,
+} from "../../store";
 import {
   AddExpenseFab,
   BalancesPanel,
@@ -12,7 +25,8 @@ import {
   GroupTabSwitcher,
   MembersPanel,
 } from "./components";
-import { getGroupDetail, groupDetailTabs } from "./data/groupDetailData";
+import { groupDetailTabs } from "./data/groupDetailData";
+import { mapGroupDetail } from "./utils";
 
 function ActivePanel({ group, tab }) {
   if (tab === "balances") {
@@ -29,14 +43,49 @@ function ActivePanel({ group, tab }) {
 export function GroupDetailScreen({ groupId }) {
   const theme = useTheme();
   const router = useRouter();
-  const group = useMemo(() => getGroupDetail(groupId), [groupId]);
+  const dispatch = useAppDispatch();
+  const normalizedGroupId = String(groupId);
+  const selectedGroup = useAppSelector(selectSelectedGroup);
+  const members = useAppSelector(selectGroupMembers(normalizedGroupId));
+  const balancesData = useAppSelector(selectGroupBalances(normalizedGroupId));
+  const expenses = useAppSelector(selectExpensesByGroup(normalizedGroupId));
+  const { loading } = useAppSelector(selectGroupsState);
   const [activeTab, setActiveTab] = useState("expenses");
+  const [hasRequestedGroup, setHasRequestedGroup] = useState(false);
+  const hasGroup = selectedGroup && String(selectedGroup.id) === normalizedGroupId;
+  const group = useMemo(() => {
+    if (!hasGroup) {
+      return null;
+    }
+
+    return mapGroupDetail({
+      balancesData,
+      expenses,
+      group: selectedGroup,
+      members,
+    });
+  }, [balancesData, expenses, hasGroup, members, selectedGroup]);
+
+  useEffect(() => {
+    if (!groupId) {
+      return;
+    }
+
+    setHasRequestedGroup(true);
+    dispatch(fetchGroup(normalizedGroupId));
+    dispatch(fetchGroupExpenses(normalizedGroupId));
+    dispatch(fetchGroupMembers(normalizedGroupId));
+    dispatch(fetchGroupBalances(normalizedGroupId));
+  }, [dispatch, groupId, normalizedGroupId]);
+
   const openAddExpense = () => {
     router.push({
       pathname: "/add-expense",
-      params: { groupId: group.id },
+      params: { groupId: normalizedGroupId },
     });
   };
+
+  const isLoading = !hasRequestedGroup || (loading.detail && !group);
 
   return (
     <SafeAreaView
@@ -49,16 +98,53 @@ export function GroupDetailScreen({ groupId }) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
+          flexGrow: 1,
           padding: theme.space[4],
           paddingBottom: theme.space[8] * 4,
         }}
       >
-        <GroupDetailHeader group={group} onBack={() => router.back()} />
-        <GroupSummaryCard summary={group.summary} />
-        <GroupTabSwitcher tabs={groupDetailTabs} value={activeTab} onChange={setActiveTab} />
-        <ActivePanel group={group} tab={activeTab} />
+        {isLoading ? (
+          <View
+            style={{
+              alignItems: "center",
+              flex: 1,
+              justifyContent: "center",
+              paddingVertical: theme.space[8],
+            }}
+          >
+            <ActivityIndicator color={theme.semantic.text} />
+          </View>
+        ) : null}
+
+        {!isLoading && !group ? (
+          <View
+            style={{
+              alignItems: "center",
+              flex: 1,
+              gap: theme.space[2],
+              justifyContent: "center",
+              paddingVertical: theme.space[8],
+            }}
+          >
+            <Text variant="sectionTitle" color="text">
+              Group not found
+            </Text>
+            <Text variant="bodySmall" color="textMuted" align="center">
+              Go back and try opening the group again.
+            </Text>
+          </View>
+        ) : null}
+
+        {group ? (
+          <>
+            <GroupDetailHeader group={group} onBack={() => router.back()} />
+            <GroupSummaryCard summary={group.summary} />
+            <GroupTabSwitcher tabs={groupDetailTabs} value={activeTab} onChange={setActiveTab} />
+            <ActivePanel group={group} tab={activeTab} />
+          </>
+        ) : null}
       </ScrollView>
-      <AddExpenseFab onPress={openAddExpense} />
+      {group ? <AddExpenseFab onPress={openAddExpense} /> : null}
     </SafeAreaView>
   );
 }
