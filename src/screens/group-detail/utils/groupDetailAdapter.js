@@ -80,7 +80,7 @@ export function mapGroupSummary(group, balancesData) {
   const totalSpend =
     balancesData?.total_group_spend || group.summary?.total_group_spend || 0;
   const openCount =
-    balancesData?.open_unsettled_count ?? group.expense_counts?.open ?? 0;
+    group.expense_counts?.open ?? balancesData?.open_unsettled_count ?? 0;
   const currency = balancesData?.base_currency || group.base_currency;
 
   return {
