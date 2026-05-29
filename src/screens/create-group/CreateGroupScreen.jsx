@@ -1,28 +1,88 @@
-import React, { useMemo, useState } from "react";
-import { DollarSign, Tag, Users } from "lucide-react-native";
-import { ScrollView, View } from "react-native";
+import React, { useState } from "react";
+import { DollarSign, MailPlus, Tag, Users } from "lucide-react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Card, TextField, useTheme } from "../../design-system";
+import { Card, Text, TextField, useTheme } from "../../design-system";
+import {
+  createGroup,
+  selectGroupsState,
+  useAppDispatch,
+  useAppSelector,
+} from "../../store";
 import {
   CreateGroupFooter,
   FormSection,
-  MemberInviteRow,
   ModalHeader,
   SelectChips,
+  SelectedInviteRow,
 } from "./components";
-import { categoryOptions, currencyOptions, suggestedMembers } from "./data/createGroupOptions";
+import { categoryOptions, currencyOptions } from "./data/createGroupOptions";
+import {
+  buildCreateGroupPayload,
+  isValidInviteEmail,
+  normalizeInviteEmail,
+} from "./utils";
 
 export function CreateGroupScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector(selectGroupsState);
   const [groupName, setGroupName] = useState("");
   const [category, setCategory] = useState(categoryOptions[0].value);
   const [currency, setCurrency] = useState(currencyOptions[0].value);
-  const canCreate = useMemo(() => groupName.trim().length > 1, [groupName]);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [memberEmails, setMemberEmails] = useState([]);
+  const canAddEmail = isValidInviteEmail(inviteEmail);
+  const canCreate = groupName.trim().length > 1 && !loading.create;
 
   const closeModal = () => {
     router.back();
+  };
+
+  const addInviteEmail = (email) => {
+    const normalizedEmail = normalizeInviteEmail(email);
+
+    if (!isValidInviteEmail(normalizedEmail)) {
+      return;
+    }
+
+    setMemberEmails((currentEmails) => {
+      if (currentEmails.includes(normalizedEmail)) {
+        return currentEmails;
+      }
+
+      return [...currentEmails, normalizedEmail];
+    });
+    setInviteEmail("");
+  };
+
+  const removeInviteEmail = (email) => {
+    setMemberEmails((currentEmails) =>
+      currentEmails.filter((memberEmail) => memberEmail !== email)
+    );
+  };
+
+  const createNewGroup = async () => {
+    if (!canCreate) {
+      return;
+    }
+
+    const result = await dispatch(
+      createGroup(
+        buildCreateGroupPayload({
+          category,
+          currency,
+          memberEmails,
+          name: groupName,
+        })
+      )
+    );
+
+    if (createGroup.fulfilled.match(result)) {
+      closeModal();
+    }
   };
 
   return (
@@ -90,14 +150,62 @@ export function CreateGroupScreen() {
         </FormSection>
 
         <FormSection title="Invite members" subtitle="Add people now, or invite them later.">
-          <View style={{ gap: theme.space[2] }}>
-            {suggestedMembers.map((member) => (
-              <MemberInviteRow key={member.id} member={member} />
+          <View style={{ gap: theme.space[3] }}>
+            <View style={{ flexDirection: "row", gap: theme.space[2] }}>
+              <View style={{ flex: 1 }}>
+                <TextField
+                  label="Email"
+                  value={inviteEmail}
+                  onChangeText={setInviteEmail}
+                  placeholder="nadia@example.com"
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  left={
+                    <MailPlus
+                      color={theme.semantic.textMuted}
+                      size={theme.space[5]}
+                      strokeWidth={theme.borderWidths.medium}
+                    />
+                  }
+                />
+              </View>
+              <Pressable
+                accessibilityRole="button"
+                disabled={!canAddEmail}
+                onPress={() => addInviteEmail(inviteEmail)}
+                style={({ pressed }) => ({
+                  alignItems: "center",
+                  alignSelf: "flex-end",
+                  backgroundColor: theme.semantic.surfaceStrong,
+                  borderRadius: theme.radii.full,
+                  height: theme.sizes.minTapTarget + theme.space[2],
+                  justifyContent: "center",
+                  opacity: !canAddEmail ? 0.45 : pressed ? 0.78 : 1,
+                  paddingHorizontal: theme.space[4],
+                })}
+              >
+                <Text variant="field" color="accent">
+                  Add
+                </Text>
+              </Pressable>
+            </View>
+
+            {memberEmails.map((email) => (
+              <SelectedInviteRow
+                key={email}
+                email={email}
+                onRemove={() => removeInviteEmail(email)}
+              />
             ))}
           </View>
         </FormSection>
 
-        <CreateGroupFooter canCreate={canCreate} onCancel={closeModal} onCreate={closeModal} />
+        <CreateGroupFooter
+          canCreate={canCreate}
+          loading={loading.create}
+          onCancel={closeModal}
+          onCreate={createNewGroup}
+        />
       </ScrollView>
     </SafeAreaView>
   );

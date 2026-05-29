@@ -3,7 +3,7 @@ import { ArrowRight, X } from "lucide-react-native";
 import { View } from "react-native";
 import { Button, useTheme } from "../../../design-system";
 
-export function CreateGroupFooter({ canCreate, onCancel, onCreate }) {
+export function CreateGroupFooter({ canCreate, loading = false, onCancel, onCreate }) {
   const theme = useTheme();
 
   return (
@@ -18,6 +18,7 @@ export function CreateGroupFooter({ canCreate, onCancel, onCreate }) {
       <Button
         title="Create"
         disabled={!canCreate}
+        loading={loading}
         style={{ flex: 1 }}
         right={<ArrowRight color={theme.semantic.accentText} size={theme.space[4]} />}
         onPress={onCreate}

@@ -5,11 +5,11 @@
  */
 
 export const categoryOptions = [
-  { label: "Roommates", value: "roommates" },
-  { label: "Trip", value: "trip" },
-  { label: "Family", value: "family" },
-  { label: "Friends", value: "friends" },
-  { label: "Team", value: "team" },
+  { label: "Roommates", value: "Roommates" },
+  { label: "Trip", value: "Trip" },
+  { label: "Family", value: "Family" },
+  { label: "Friends", value: "Friends" },
+  { label: "Team", value: "Team" },
 ];
 
 export const currencyOptions = [
