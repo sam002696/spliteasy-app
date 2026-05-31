@@ -128,6 +128,7 @@ export function mapHomeActivity(activity) {
     title: activity.title,
     headline: activity.title,
     amount: formatAmount(activity.amount, activity.currency),
+    label: activity.position_label,
     tone: getPositionTone(activity.position_type),
     timestamp: formatRelativeDate(activity.created_at),
   };

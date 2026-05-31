@@ -3,10 +3,9 @@ import { StyleSheet, View } from "react-native";
 import { Avatar, Text, useTheme } from "../../../design-system";
 
 export const ActivityItem = memo(function ActivityItem({ activity }) {
+  console.log("activity", activity);
   const theme = useTheme();
-  const isDebt = activity.tone === "negative";
   const amount = String(activity.amount).replace(/^[+-]\s*/, "");
-  const amountLabel = isDebt ? "You owe" : activity.action === "settled" ? "Settled" : "You are owed";
   const headline = activity.headline;
 
   return (
@@ -28,7 +27,11 @@ export const ActivityItem = memo(function ActivityItem({ activity }) {
           </Text>
         ) : (
           <Text variant="bodySmall" color="text" numberOfLines={1}>
-            <Text variant="bodySmall" color="text" style={{ fontWeight: theme.fontWeights.semibold }}>
+            <Text
+              variant="bodySmall"
+              color="text"
+              style={{ fontWeight: theme.fontWeights.semibold }}
+            >
               {activity.user}
             </Text>{" "}
             {activity.action} {activity.title}
@@ -43,7 +46,7 @@ export const ActivityItem = memo(function ActivityItem({ activity }) {
           {amount}
         </Text>
         <Text variant="micro" color="textMuted">
-          {amountLabel}
+          {activity.label}
         </Text>
       </View>
     </View>
