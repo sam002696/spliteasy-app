@@ -5,8 +5,11 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { Avatar, Text, useTheme } from "../../../design-system";
 import {
   fetchPendingInvitations,
+  fetchNotifications,
+  notificationFilters,
   selectCurrentUser,
   selectPendingInvitationsCount,
+  selectUnreadNotificationsCount,
   useAppDispatch,
   useAppSelector,
 } from "../../../store";
@@ -66,11 +69,13 @@ export function TopBar() {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(selectCurrentUser);
   const pendingInvitationsCount = useAppSelector(selectPendingInvitationsCount);
+  const unreadNotificationsCount = useAppSelector(selectUnreadNotificationsCount);
   const displayName = currentUser?.name || currentUser?.email || "there";
   const greeting = getGreeting();
 
   useEffect(() => {
     dispatch(fetchPendingInvitations());
+    dispatch(fetchNotifications({ filter: notificationFilters.all }));
   }, [dispatch]);
 
   return (
@@ -94,7 +99,12 @@ export function TopBar() {
             label="Group requests"
             onPress={() => router.push("/group-requests")}
           />
-          <TopBarActionButton icon={BellDot} label="Notifications" />
+          <TopBarActionButton
+            count={unreadNotificationsCount}
+            icon={BellDot}
+            label="Notifications"
+            onPress={() => router.push("/notifications")}
+          />
         </View>
       </View>
     </FadeInView>

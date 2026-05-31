@@ -82,7 +82,10 @@ const notificationsSlice = createSlice({
         const { notificationId, response } = action.payload;
 
         delete state.loading.markReadById[notificationId];
-        state.items = mergeNotificationReadState(state.items, notificationId);
+        state.items =
+          state.activeFilter === notificationFilters.unread
+            ? removeNotificationById(state.items, notificationId)
+            : mergeNotificationReadState(state.items, notificationId);
         state.itemsByFilter.all = mergeNotificationReadState(
           state.itemsByFilter.all,
           notificationId,
@@ -108,11 +111,14 @@ const notificationsSlice = createSlice({
       })
       .addCase(markAllNotificationsRead.fulfilled, (state, action) => {
         state.loading.markAllRead = false;
-        state.items = state.items.map((notification) => ({
-          ...notification,
-          is_read: true,
-          read_at: notification.read_at || new Date().toISOString(),
-        }));
+        state.items =
+          state.activeFilter === notificationFilters.unread
+            ? []
+            : state.items.map((notification) => ({
+                ...notification,
+                is_read: true,
+                read_at: notification.read_at || new Date().toISOString(),
+              }));
         state.itemsByFilter.all = state.itemsByFilter.all.map((notification) => ({
           ...notification,
           is_read: true,
