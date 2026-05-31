@@ -6,4 +6,5 @@ export * from "./features/expenses";
 export * from "./features/groups";
 export * from "./features/home";
 export * from "./features/invitations";
+export * from "./features/notifications";
 export * from "./features/toasts";

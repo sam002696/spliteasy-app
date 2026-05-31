@@ -103,6 +103,7 @@ export function createThunkApi(thunkApi) {
   return {
     get: (path) => apiRequest(path, { method: "GET", token }),
     post: (path, body) => apiRequest(path, { method: "POST", body, token }),
+    patch: (path, body) => apiRequest(path, { method: "PATCH", body, token }),
     delete: (path) => apiRequest(path, { method: "DELETE", token }),
     reject: (error, fallbackMessage) =>
       thunkApi.rejectWithValue(normalizeApiError(error, fallbackMessage)),

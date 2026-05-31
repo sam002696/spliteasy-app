@@ -13,6 +13,7 @@ This folder contains the app-wide Redux Toolkit setup for API-backed state.
 - `features/home`: dashboard summary, active groups, and recent activity.
 - `features/expenses`: group expenses and single expense state.
 - `features/invitations`: pending invitations, accept, reject.
+- `features/notifications`: notification list, unread count, and read state.
 - `features/toasts`: app-level success, error, info, and warning messages.
 
 Each feature folder follows the same shape:

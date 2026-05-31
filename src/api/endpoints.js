@@ -9,6 +9,15 @@ export const homeEndpoints = {
   dashboard: "/home",
 };
 
+export const notificationEndpoints = {
+  list: ({ filter = "all", page = 1, perPage = 20 } = {}) =>
+    `/notifications?filter=${encodeURIComponent(filter)}&per_page=${encodeURIComponent(
+      perPage,
+    )}&page=${encodeURIComponent(page)}`,
+  markRead: (notificationId) => `/notifications/${notificationId}/read`,
+  markAllRead: "/notifications/read-all",
+};
+
 export const groupEndpoints = {
   list: (filter = "all") => `/groups?filter=${encodeURIComponent(filter)}`,
   create: "/groups",

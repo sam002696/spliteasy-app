@@ -5,6 +5,7 @@ import expensesReducer from "./features/expenses";
 import groupsReducer from "./features/groups";
 import homeReducer from "./features/home";
 import invitationsReducer from "./features/invitations";
+import notificationsReducer from "./features/notifications";
 import toastsReducer from "./features/toasts";
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   home: homeReducer,
   expenses: expensesReducer,
   invitations: invitationsReducer,
+  notifications: notificationsReducer,
   toasts: toastsReducer,
 });
 
