@@ -10,17 +10,12 @@ import {
   useAppSelector,
 } from "../../store";
 import {
-  ProfileFooter,
+  // ProfileFooter,
   ProfileHeader,
   ProfileIdentityCard,
   SettingsSection,
 } from "./components";
-import {
-  accountRows,
-  profileActions,
-  profileUser,
-  settingsRows,
-} from "./data/profileData";
+import { accountRows, profileActions, settingsRows } from "./data/profileData";
 
 export function ProfileScreen() {
   const theme = useTheme();
@@ -72,7 +67,7 @@ export function ProfileScreen() {
         }}
       >
         <ProfileHeader />
-        <ProfileIdentityCard user={profileUser} />
+        <ProfileIdentityCard />
         <SettingsSection
           title="Profile"
           rows={profileActions}
@@ -90,7 +85,7 @@ export function ProfileScreen() {
           disabledRowId={loading.logout ? "sign-out" : undefined}
           onRowPress={handleAccountRowPress}
         />
-        <ProfileFooter />
+        {/* <ProfileFooter /> */}
       </ScrollView>
     </SafeAreaView>
   );

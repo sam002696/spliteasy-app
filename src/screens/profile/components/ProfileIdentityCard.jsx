@@ -3,30 +3,33 @@ import { PencilLine } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { Avatar, Button, Card, Text, useTheme } from "../../../design-system";
 import { AnimatedSection } from "./AnimatedSection";
+import { selectCurrentUser, useAppSelector } from "../../../store";
 
-export function ProfileIdentityCard({ user }) {
+export function ProfileIdentityCard() {
   const theme = useTheme();
+  const currentUser = useAppSelector(selectCurrentUser);
 
   return (
     <AnimatedSection delay={theme.motion.fast}>
       <Card variant="black" style={{ marginBottom: theme.space[6] }}>
         <View style={[styles.root, { gap: theme.space[4] }]}>
           <Avatar
-            name={user.name}
+            name={currentUser.name}
             size="lg"
+            textColor="accentText"
             style={{
               backgroundColor: theme.semantic.accent,
             }}
           />
           <View style={{ flex: 1, gap: theme.space[1] }}>
             <Text variant="sectionTitle" color="white" numberOfLines={1}>
-              {user.name}
+              {currentUser.name}
             </Text>
             <Text variant="bodySmall" color="white60" numberOfLines={1}>
-              {user.email}
+              {currentUser.email}
             </Text>
             <Text variant="label" color="white50">
-              {user.plan}
+              Split summary
             </Text>
           </View>
         </View>
