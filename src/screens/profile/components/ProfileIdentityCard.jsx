@@ -9,6 +9,10 @@ export function ProfileIdentityCard() {
   const theme = useTheme();
   const currentUser = useAppSelector(selectCurrentUser);
 
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <AnimatedSection delay={theme.motion.fast}>
       <Card variant="black" style={{ marginBottom: theme.space[6] }}>
