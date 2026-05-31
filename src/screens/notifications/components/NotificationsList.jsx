@@ -35,9 +35,11 @@ function EmptyNotifications({ isLoading }) {
 }
 
 export function NotificationsList({
+  footer,
   header,
   isLoading = false,
   notifications,
+  onEndReached,
   onMarkRead,
   onRefresh,
   readingIds = {},
@@ -63,6 +65,9 @@ export function NotificationsList({
       renderItem={renderItem}
       ListHeaderComponent={header}
       ListEmptyComponent={<EmptyNotifications isLoading={isLoading} />}
+      ListFooterComponent={footer}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.4}
       refreshControl={
         onRefresh ? (
           <RefreshControl

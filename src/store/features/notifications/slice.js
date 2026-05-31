@@ -26,6 +26,26 @@ function removeNotificationById(notifications, notificationId) {
   );
 }
 
+function mergeNotifications(currentNotifications, nextNotifications) {
+  const seenIds = new Set(
+    currentNotifications.map((notification) => String(notification.id)),
+  );
+
+  return [
+    ...currentNotifications,
+    ...nextNotifications.filter((notification) => {
+      const notificationId = String(notification.id);
+
+      if (seenIds.has(notificationId)) {
+        return false;
+      }
+
+      seenIds.add(notificationId);
+      return true;
+    }),
+  ];
+}
+
 const notificationsSlice = createSlice({
   name: "notifications",
   initialState,
@@ -43,10 +63,12 @@ const notificationsSlice = createSlice({
     builder
       .addCase(fetchNotifications.pending, (state, action) => {
         const filter = action.meta.arg?.filter || notificationFilters.all;
+        const page = action.meta.arg?.page || 1;
 
         state.loading.list = true;
         state.activeFilter = filter;
-        state.items = state.itemsByFilter[filter] || [];
+        state.items =
+          page === 1 ? state.itemsByFilter[filter] || [] : state.items;
         state.error = null;
       })
       .addCase(fetchNotifications.fulfilled, (state, action) => {
@@ -60,8 +82,11 @@ const notificationsSlice = createSlice({
 
         state.loading.list = false;
         state.activeFilter = filter;
-        state.items = notifications;
-        state.itemsByFilter[filter] = notifications;
+        state.items =
+          action.payload.page > 1
+            ? mergeNotifications(state.items, notifications)
+            : notifications;
+        state.itemsByFilter[filter] = state.items;
         state.unreadCount =
           meta.unread_count ?? data.unread_count ?? state.unreadCount;
         state.pagination = {
