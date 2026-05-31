@@ -5,8 +5,9 @@ import { FadeInView } from "./FadeInView";
 import { GroupCard } from "./GroupCard";
 import { SectionHeader } from "./SectionHeader";
 
-export function ActiveGroupsSection({ groups, onOpenGroup }) {
+export function ActiveGroupsSection({ activeCount, groups, onOpenGroup }) {
   const theme = useTheme();
+  const count = activeCount ?? groups.length;
 
   const renderItem = useCallback(
     ({ item, index }) => (
@@ -18,7 +19,7 @@ export function ActiveGroupsSection({ groups, onOpenGroup }) {
   return (
     <FadeInView delay={theme.motion.spring}>
       <View style={{ marginBottom: theme.space[6] }}>
-        <SectionHeader title="Active groups" action={`${groups.length} live`} />
+        <SectionHeader title="Active groups" action={`${count} live`} />
         <FlatList
           data={groups}
           horizontal

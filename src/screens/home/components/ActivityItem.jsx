@@ -7,6 +7,7 @@ export const ActivityItem = memo(function ActivityItem({ activity }) {
   const isDebt = activity.tone === "negative";
   const amount = String(activity.amount).replace(/^[+-]\s*/, "");
   const amountLabel = isDebt ? "You owe" : activity.action === "settled" ? "Settled" : "You are owed";
+  const headline = activity.headline;
 
   return (
     <View
@@ -21,12 +22,18 @@ export const ActivityItem = memo(function ActivityItem({ activity }) {
     >
       <Avatar name={activity.user} size="md" />
       <View style={[styles.content, { gap: theme.space[1] }]}>
-        <Text variant="bodySmall" color="text" numberOfLines={1}>
-          <Text variant="bodySmall" color="text" style={{ fontWeight: theme.fontWeights.semibold }}>
-            {activity.user}
-          </Text>{" "}
-          {activity.action} {activity.title}
-        </Text>
+        {headline ? (
+          <Text variant="bodySmall" color="text" numberOfLines={1}>
+            {headline}
+          </Text>
+        ) : (
+          <Text variant="bodySmall" color="text" numberOfLines={1}>
+            <Text variant="bodySmall" color="text" style={{ fontWeight: theme.fontWeights.semibold }}>
+              {activity.user}
+            </Text>{" "}
+            {activity.action} {activity.title}
+          </Text>
+        )}
         <Text variant="label" color="textMuted">
           {activity.timestamp}
         </Text>
