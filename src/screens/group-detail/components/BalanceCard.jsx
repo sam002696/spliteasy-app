@@ -31,7 +31,7 @@ export function BalanceCard({ actionLoading = false, balance, onActionPress }) {
           variant={isDebt ? "danger" : "primary"}
           size="sm"
           fullWidth
-          disabled={!balance.canSettle}
+          disabled={!balance.canSettle && !balance.canRemind}
           loading={actionLoading}
           onPress={() => onActionPress?.(balance)}
           left={

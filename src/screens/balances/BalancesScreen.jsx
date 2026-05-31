@@ -4,12 +4,15 @@ import { useTheme } from "../../design-system";
 import {
   fetchBalances,
   fetchGroups,
+  fetchHomeDashboard,
   selectActiveGroupFilter,
   selectActiveBalanceFilter,
   selectBalanceCounts,
   selectBalances,
   selectBalancesState,
+  selectRemindingBalanceIds,
   selectSettlingBalanceIds,
+  remindBalance,
   setActiveBalanceFilter,
   settleBalance,
   useAppDispatch,
@@ -48,6 +51,7 @@ export function BalancesScreen() {
   const counts = useAppSelector(selectBalanceCounts);
   const activeFilter = useAppSelector(selectActiveBalanceFilter);
   const activeGroupFilter = useAppSelector(selectActiveGroupFilter);
+  const remindingIds = useAppSelector(selectRemindingBalanceIds);
   const settlingIds = useAppSelector(selectSettlingBalanceIds);
   const visibleBalances = useMemo(
     () => balances.map(mapApiBalanceToListItem),
@@ -71,24 +75,39 @@ export function BalancesScreen() {
 
   const handleBalanceAction = useCallback(
     async (balance) => {
-      if (!balance.canSettle) {
+      if (balance.canRemind) {
+        try {
+          await dispatch(
+            remindBalance({
+              balanceId: balance.id,
+              groupId: balance.groupId,
+              userId: balance.userId,
+            })
+          ).unwrap();
+        } catch {
+          return;
+        }
+
+        dispatch(fetchHomeDashboard());
         return;
       }
 
-      try {
-        await dispatch(
-          settleBalance({
-            balanceId: balance.id,
-            groupId: balance.groupId,
-            userId: balance.userId,
-          })
-        ).unwrap();
-      } catch {
-        return;
-      }
+      if (balance.canSettle) {
+        try {
+          await dispatch(
+            settleBalance({
+              balanceId: balance.id,
+              groupId: balance.groupId,
+              userId: balance.userId,
+            })
+          ).unwrap();
+        } catch {
+          return;
+        }
 
-      dispatch(fetchBalances(activeFilter));
-      dispatch(fetchGroups(activeGroupFilter));
+        dispatch(fetchBalances(activeFilter));
+        dispatch(fetchGroups(activeGroupFilter));
+      }
     },
     [activeFilter, activeGroupFilter, dispatch],
   );
@@ -107,7 +126,7 @@ export function BalancesScreen() {
         onBalanceAction={handleBalanceAction}
         onRefresh={refreshBalances}
         refreshing={loading.list && visibleBalances.length > 0}
-        settlingIds={settlingIds}
+        settlingIds={{ ...remindingIds, ...settlingIds }}
         header={
           <BalancesIntro
             activeFilter={activeFilter}

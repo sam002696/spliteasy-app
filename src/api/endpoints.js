@@ -39,6 +39,8 @@ export const expenseEndpoints = {
 
 export const balanceEndpoints = {
   list: (filter = "open") => `/balances?filter=${encodeURIComponent(filter)}`,
+  remind: (groupId, userId) =>
+    `/balances/groups/${groupId}/users/${userId}/remind`,
   settle: (groupId, userId) =>
     `/balances/groups/${groupId}/users/${userId}/settle`,
 };

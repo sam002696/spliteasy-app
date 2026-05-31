@@ -1,7 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { readData } from "../../utils/readData";
 import initialState from "./initialState";
-import { balanceFilters, fetchBalances, settleBalance } from "./thunks";
+import {
+  balanceFilters,
+  fetchBalances,
+  remindBalance,
+  settleBalance,
+} from "./thunks";
 
 function removeBalanceById(balances, balanceId) {
   return balances.filter((balance) => String(balance.id) !== String(balanceId));
@@ -48,6 +53,33 @@ const balancesSlice = createSlice({
       })
       .addCase(fetchBalances.rejected, (state, action) => {
         state.loading.list = false;
+        state.error = action.payload;
+      })
+      .addCase(remindBalance.pending, (state, action) => {
+        const balanceId = action.meta.arg?.balanceId;
+
+        if (balanceId) {
+          state.loading.remindById[balanceId] = true;
+        }
+
+        state.error = null;
+      })
+      .addCase(remindBalance.fulfilled, (state, action) => {
+        const { balanceId, response } = action.payload;
+
+        if (balanceId) {
+          delete state.loading.remindById[balanceId];
+        }
+
+        state.message = response.message;
+      })
+      .addCase(remindBalance.rejected, (state, action) => {
+        const balanceId = action.meta.arg?.balanceId;
+
+        if (balanceId) {
+          delete state.loading.remindById[balanceId];
+        }
+
         state.error = action.payload;
       })
       .addCase(settleBalance.pending, (state, action) => {

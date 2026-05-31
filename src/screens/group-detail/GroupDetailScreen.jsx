@@ -10,8 +10,10 @@ import {
   fetchGroupExpenses,
   fetchGroupMembers,
   fetchGroups,
+  fetchHomeDashboard,
   inviteGroupMember,
   leaveGroup,
+  remindBalance,
   selectActiveGroupFilter,
   selectCurrentUser,
   selectExpensesByGroup,
@@ -19,6 +21,7 @@ import {
   selectGroupMembers,
   selectGroupsState,
   selectSelectedGroup,
+  selectRemindingBalanceIds,
   selectSettlingBalanceIds,
   settleBalance,
   useAppDispatch,
@@ -78,6 +81,7 @@ export function GroupDetailScreen({ groupId }) {
   const members = useAppSelector(selectGroupMembers(normalizedGroupId));
   const balancesData = useAppSelector(selectGroupBalances(normalizedGroupId));
   const expenses = useAppSelector(selectExpensesByGroup(normalizedGroupId));
+  const remindingIds = useAppSelector(selectRemindingBalanceIds);
   const settlingIds = useAppSelector(selectSettlingBalanceIds);
   const { loading } = useAppSelector(selectGroupsState);
   const [activeTab, setActiveTab] = useState("expenses");
@@ -138,26 +142,42 @@ export function GroupDetailScreen({ groupId }) {
   };
 
   const settleGroupBalance = async (balance) => {
-    if (!balance.canSettle) {
+    if (balance.canRemind) {
+      try {
+        await dispatch(
+          remindBalance({
+            balanceId: balance.id,
+            groupId: balance.groupId,
+            userId: balance.userId,
+          }),
+        ).unwrap();
+      } catch {
+        return;
+      }
+
+      dispatch(fetchHomeDashboard());
       return;
     }
 
-    try {
-      await dispatch(
-        settleBalance({
-          balanceId: balance.id,
-          groupId: balance.groupId,
-          userId: balance.userId,
-        }),
-      ).unwrap();
-    } catch {
-      return;
-    }
+    if (balance.canSettle) {
+      try {
+        await dispatch(
+          settleBalance({
+            balanceId: balance.id,
+            groupId: balance.groupId,
+            userId: balance.userId,
+          }),
+        ).unwrap();
+      } catch {
+        return;
+      }
 
-    dispatch(fetchGroup(normalizedGroupId));
-    dispatch(fetchGroupBalances(normalizedGroupId));
-    dispatch(fetchGroupExpenses(normalizedGroupId));
-    dispatch(fetchGroups(activeGroupFilter));
+      dispatch(fetchGroup(normalizedGroupId));
+      dispatch(fetchGroupBalances(normalizedGroupId));
+      dispatch(fetchGroupExpenses(normalizedGroupId));
+      dispatch(fetchGroups(activeGroupFilter));
+      dispatch(fetchHomeDashboard());
+    }
   };
 
   const goToGroups = () => {
@@ -277,7 +297,7 @@ export function GroupDetailScreen({ groupId }) {
               invitingMember={loading.invite}
               onBalanceAction={settleGroupBalance}
               onInviteMember={inviteMember}
-              settlingIds={settlingIds}
+              settlingIds={{ ...remindingIds, ...settlingIds }}
               tab={activeTab}
             />
           </>

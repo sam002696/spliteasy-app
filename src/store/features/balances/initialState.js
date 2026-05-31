@@ -13,6 +13,7 @@ const initialState = {
   },
   loading: {
     list: false,
+    remindById: {},
     settleById: {},
   },
   error: null,

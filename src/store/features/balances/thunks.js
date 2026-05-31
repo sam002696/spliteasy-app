@@ -45,3 +45,24 @@ export const settleBalance = createAsyncThunk(
     }
   }
 );
+
+export const remindBalance = createAsyncThunk(
+  "balances/remind",
+  async ({ balanceId, groupId, userId }, thunkApi) => {
+    const api = createThunkApi(thunkApi);
+
+    try {
+      const response = await api.post(balanceEndpoints.remind(groupId, userId));
+      dispatchSuccessToast(thunkApi, response, "Reminder sent successfully.");
+
+      return {
+        balanceId,
+        groupId,
+        response,
+        userId,
+      };
+    } catch (error) {
+      return rejectWithErrorToast(thunkApi, error, "Unable to send reminder");
+    }
+  }
+);

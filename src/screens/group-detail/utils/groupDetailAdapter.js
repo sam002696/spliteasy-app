@@ -122,6 +122,9 @@ export function mapGroupBalances(balancesData) {
       tone,
       progress: totalSpend > 0 ? Math.min(amount / totalSpend, 1) : 0,
       action: tone === "negative" ? "Mark settled" : "Remind",
+      canRemind:
+        tone === "positive" &&
+        Boolean(balancesData?.group_id && balance.user?.id),
       canSettle:
         tone === "negative" &&
         Boolean(balancesData?.group_id && balance.user?.id),

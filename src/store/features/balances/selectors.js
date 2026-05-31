@@ -4,6 +4,8 @@ export const selectBalancesState = (state) => state.balances;
 export const selectBalances = (state) => state.balances.items;
 export const selectBalanceCounts = (state) => state.balances.counts;
 export const selectActiveBalanceFilter = (state) => state.balances.activeFilter;
+export const selectRemindingBalanceIds = (state) =>
+  state.balances.loading.remindById;
 export const selectSettlingBalanceIds = (state) =>
   state.balances.loading.settleById;
 

@@ -49,6 +49,8 @@ export function mapApiBalanceToListItem(balance) {
     tone,
     progress: Number(balance.settled_percentage || 0) / 100,
     action: getActionLabel(balance.action, tone),
+    canRemind:
+      tone === "positive" && Boolean(balance.group?.id && balance.user?.id),
     canSettle:
       tone === "negative" && Boolean(balance.group?.id && balance.user?.id),
     lastActivity: latestExpense?.description || "No recent expense",
