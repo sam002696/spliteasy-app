@@ -3,7 +3,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "../../design-system";
+import { Text, useTheme } from "../../design-system";
 import {
   fetchHomeDashboard,
   selectHomeActiveGroups,
@@ -28,6 +28,29 @@ import {
 } from "./utils";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
+function EmptyActivity() {
+  const theme = useTheme();
+
+  return (
+    <View
+      style={{
+        alignItems: "center",
+        backgroundColor: theme.semantic.surface,
+        borderRadius: theme.radii.lg,
+        gap: theme.space[2],
+        padding: theme.space[6],
+      }}
+    >
+      <Text variant="sectionTitle" color="text">
+        No recent activity
+      </Text>
+      <Text variant="bodySmall" color="textMuted" align="center">
+        New expenses, settlements, and group updates will appear here.
+      </Text>
+    </View>
+  );
+}
 
 function HomeHeader({ activeGroupsCount, groups, onOpenGroup, summary }) {
   return (
@@ -112,6 +135,7 @@ export function HomeScreen() {
         data={mappedActivities}
         keyExtractor={(item) => item.id}
         renderItem={renderActivity}
+        ListEmptyComponent={<EmptyActivity />}
         ListHeaderComponent={
           <HomeHeader
             activeGroupsCount={activeGroupsCount}
