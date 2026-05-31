@@ -5,6 +5,10 @@ export const authEndpoints = {
   me: "/auth/me",
 };
 
+export const homeEndpoints = {
+  dashboard: "/home",
+};
+
 export const groupEndpoints = {
   list: (filter = "all") => `/groups?filter=${encodeURIComponent(filter)}`,
   create: "/groups",

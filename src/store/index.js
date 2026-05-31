@@ -4,5 +4,6 @@ export * from "./features/auth";
 export * from "./features/balances";
 export * from "./features/expenses";
 export * from "./features/groups";
+export * from "./features/home";
 export * from "./features/invitations";
 export * from "./features/toasts";
