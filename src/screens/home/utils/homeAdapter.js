@@ -121,14 +121,19 @@ export function mapHomeGroup(group) {
 }
 
 export function mapHomeActivity(activity) {
+  const hasAmount =
+    activity.amount !== null &&
+    activity.amount !== undefined &&
+    activity.currency;
+
   return {
     id: String(activity.id),
     user: activity.actor?.name || activity.actor?.initials || "Someone",
     action: getActivityAction(activity.type),
     title: activity.title,
     headline: activity.title,
-    amount: formatAmount(activity.amount, activity.currency),
-    label: activity.position_label,
+    amount: hasAmount ? formatAmount(activity.amount, activity.currency) : null,
+    label: hasAmount ? activity.position_label : null,
     tone: getPositionTone(activity.position_type),
     timestamp: formatRelativeDate(activity.created_at),
   };

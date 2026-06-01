@@ -3,9 +3,11 @@ import { StyleSheet, View } from "react-native";
 import { Avatar, Text, useTheme } from "../../../design-system";
 
 export const ActivityItem = memo(function ActivityItem({ activity }) {
-  console.log("activity", activity);
   const theme = useTheme();
-  const amount = String(activity.amount).replace(/^[+-]\s*/, "");
+  const hasAmount = activity.amount !== null && activity.amount !== undefined;
+  const amount = hasAmount
+    ? String(activity.amount).replace(/^[+-]\s*/, "")
+    : null;
   const headline = activity.headline;
 
   return (
@@ -41,14 +43,18 @@ export const ActivityItem = memo(function ActivityItem({ activity }) {
           {activity.timestamp}
         </Text>
       </View>
-      <View style={styles.amount}>
-        <Text variant="field" color={activity.tone}>
-          {amount}
-        </Text>
-        <Text variant="micro" color="textMuted">
-          {activity.label}
-        </Text>
-      </View>
+      {hasAmount ? (
+        <View style={styles.amount}>
+          <Text variant="field" color={activity.tone}>
+            {amount}
+          </Text>
+          {activity.label ? (
+            <Text variant="micro" color="textMuted">
+              {activity.label}
+            </Text>
+          ) : null}
+        </View>
+      ) : null}
     </View>
   );
 });
