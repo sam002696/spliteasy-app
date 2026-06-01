@@ -132,12 +132,13 @@ export function mapGroupBalances(balancesData) {
   });
 }
 
-export function mapGroupMembers(members = [], balancesData) {
+export function mapGroupMembers(members = [], balancesData, currentUserId) {
   return members.map((member) => {
     const balance = getMemberBalance(member, balancesData);
 
     return {
       id: String(member.id),
+      isCurrentUser: String(member.id) === String(currentUserId),
       name: member.name,
       email: member.email,
       status: getMemberStatus(member),
@@ -146,7 +147,13 @@ export function mapGroupMembers(members = [], balancesData) {
   });
 }
 
-export function mapGroupDetail({ group, expenses, members, balancesData }) {
+export function mapGroupDetail({
+  balancesData,
+  currentUserId,
+  expenses,
+  group,
+  members,
+}) {
   return {
     id: String(group.id),
     ownerId: group.owner_id,
@@ -157,6 +164,6 @@ export function mapGroupDetail({ group, expenses, members, balancesData }) {
     summary: mapGroupSummary(group, balancesData),
     expenses: mapGroupExpenses(expenses),
     balances: mapGroupBalances(balancesData),
-    members: mapGroupMembers(members, balancesData),
+    members: mapGroupMembers(members, balancesData, currentUserId),
   };
 }

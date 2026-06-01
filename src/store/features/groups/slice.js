@@ -149,21 +149,24 @@ const groupsSlice = createSlice({
         state.loading.members = false;
         state.error = action.payload;
       })
-      .addCase(removeGroupMember.pending, (state) => {
+      .addCase(removeGroupMember.pending, (state, action) => {
         state.loading.removeMember = true;
+        state.loading.removeMemberById[action.meta.arg.memberId] = true;
       })
       .addCase(removeGroupMember.fulfilled, (state, action) => {
         state.loading.removeMember = false;
         const members = state.membersByGroupId[action.payload.groupId] || [];
 
         state.membersByGroupId[action.payload.groupId] = members.filter(
-          (member) => member.id !== action.payload.memberId
+          (member) => String(member.id) !== String(action.payload.memberId)
         );
+        delete state.loading.removeMemberById[action.payload.memberId];
 
         state.message = action.payload.response.message;
       })
       .addCase(removeGroupMember.rejected, (state, action) => {
         state.loading.removeMember = false;
+        delete state.loading.removeMemberById[action.meta.arg.memberId];
         state.error = action.payload;
       })
       .addCase(inviteGroupMember.pending, (state) => {

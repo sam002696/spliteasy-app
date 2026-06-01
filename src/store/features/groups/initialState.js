@@ -18,6 +18,7 @@ const initialState = {
     leave: false,
     members: false,
     removeMember: false,
+    removeMemberById: {},
     invite: false,
     balances: false,
   },

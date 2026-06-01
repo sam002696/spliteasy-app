@@ -6,6 +6,7 @@ const initialState = {
     create: false,
     detail: false,
     delete: false,
+    deleteById: {},
   },
   error: null,
   message: null,

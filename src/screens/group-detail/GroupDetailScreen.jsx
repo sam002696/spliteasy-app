@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, useTheme } from "../../design-system";
 import {
   deleteGroup,
+  deleteExpense,
   fetchGroup,
   fetchGroupBalances,
   fetchGroupExpenses,
@@ -14,8 +15,10 @@ import {
   inviteGroupMember,
   leaveGroup,
   remindBalance,
+  removeGroupMember,
   selectActiveGroupFilter,
   selectCurrentUser,
+  selectExpenses,
   selectExpensesByGroup,
   selectGroupBalances,
   selectGroupMembers,
@@ -40,10 +43,14 @@ import { groupDetailTabs } from "./data/groupDetailData";
 import { mapGroupDetail } from "./utils";
 
 function ActivePanel({
+  deletingExpenseIds,
   group,
   invitingMember,
   onBalanceAction,
+  onDeleteExpense,
+  onDeleteMember,
   onInviteMember,
+  removingMemberIds,
   settlingIds,
   tab,
 }) {
@@ -62,12 +69,20 @@ function ActivePanel({
       <MembersPanel
         inviting={invitingMember}
         members={group.members}
+        onDeleteMember={onDeleteMember}
         onInviteMember={onInviteMember}
+        removingMemberIds={removingMemberIds}
       />
     );
   }
 
-  return <ExpensesPanel expenses={group.expenses} />;
+  return (
+    <ExpensesPanel
+      deletingExpenseIds={deletingExpenseIds}
+      expenses={group.expenses}
+      onDeleteExpense={onDeleteExpense}
+    />
+  );
 }
 
 export function GroupDetailScreen({ groupId }) {
@@ -81,6 +96,7 @@ export function GroupDetailScreen({ groupId }) {
   const members = useAppSelector(selectGroupMembers(normalizedGroupId));
   const balancesData = useAppSelector(selectGroupBalances(normalizedGroupId));
   const expenses = useAppSelector(selectExpensesByGroup(normalizedGroupId));
+  const { loading: expenseLoading } = useAppSelector(selectExpenses);
   const remindingIds = useAppSelector(selectRemindingBalanceIds);
   const settlingIds = useAppSelector(selectSettlingBalanceIds);
   const { loading } = useAppSelector(selectGroupsState);
@@ -98,11 +114,19 @@ export function GroupDetailScreen({ groupId }) {
 
     return mapGroupDetail({
       balancesData,
+      currentUserId: currentUser?.id,
       expenses,
       group: selectedGroup,
       members,
     });
-  }, [balancesData, expenses, hasGroup, members, selectedGroup]);
+  }, [
+    balancesData,
+    currentUser?.id,
+    expenses,
+    hasGroup,
+    members,
+    selectedGroup,
+  ]);
 
   useEffect(() => {
     if (!groupId) {
@@ -139,6 +163,41 @@ export function GroupDetailScreen({ groupId }) {
     }
 
     return false;
+  };
+
+  const refreshGroupDetailData = () => {
+    dispatch(fetchGroup(normalizedGroupId));
+    dispatch(fetchGroupBalances(normalizedGroupId));
+    dispatch(fetchGroupExpenses(normalizedGroupId));
+    dispatch(fetchGroupMembers(normalizedGroupId));
+    dispatch(fetchGroups(activeGroupFilter));
+    dispatch(fetchHomeDashboard());
+  };
+
+  const removeMember = async (member) => {
+    const result = await dispatch(
+      removeGroupMember({
+        groupId: normalizedGroupId,
+        memberId: member.id,
+      }),
+    );
+
+    if (removeGroupMember.fulfilled.match(result)) {
+      refreshGroupDetailData();
+    }
+  };
+
+  const removeExpense = async (expense) => {
+    const result = await dispatch(
+      deleteExpense({
+        expenseId: expense.id,
+        groupId: normalizedGroupId,
+      }),
+    );
+
+    if (deleteExpense.fulfilled.match(result)) {
+      refreshGroupDetailData();
+    }
   };
 
   const settleGroupBalance = async (balance) => {
@@ -294,9 +353,13 @@ export function GroupDetailScreen({ groupId }) {
             />
             <ActivePanel
               group={group}
+              deletingExpenseIds={expenseLoading.deleteById || {}}
               invitingMember={loading.invite}
               onBalanceAction={settleGroupBalance}
+              onDeleteExpense={removeExpense}
+              onDeleteMember={removeMember}
               onInviteMember={inviteMember}
+              removingMemberIds={loading.removeMemberById || {}}
               settlingIds={{ ...remindingIds, ...settlingIds }}
               tab={activeTab}
             />

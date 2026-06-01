@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MailPlus, UserPlus } from "lucide-react-native";
 import { View } from "react-native";
+import { SwipeToDeleteRow } from "../../../components";
 import { Button, Text, TextField, useTheme } from "../../../design-system";
 import { isValidEmail, normalizeEmail } from "../../../utils";
 import { BalanceCard } from "./BalanceCard";
@@ -39,7 +40,11 @@ function EmptyPanel({ children }) {
   );
 }
 
-export function ExpensesPanel({ expenses }) {
+export function ExpensesPanel({
+  deletingExpenseIds = {},
+  expenses,
+  onDeleteExpense,
+}) {
   const theme = useTheme();
 
   return (
@@ -47,7 +52,13 @@ export function ExpensesPanel({ expenses }) {
       <SectionTitle title="Expenses" count={`${expenses.length} items`} />
       {!expenses.length ? <EmptyPanel>No expenses have been added yet.</EmptyPanel> : null}
       {expenses.map((expense) => (
-        <ExpenseRow key={expense.id} expense={expense} />
+        <SwipeToDeleteRow
+          deleting={Boolean(deletingExpenseIds[expense.id])}
+          key={expense.id}
+          onDelete={() => onDeleteExpense?.(expense)}
+        >
+          <ExpenseRow expense={expense} />
+        </SwipeToDeleteRow>
       ))}
     </View>
   );
@@ -72,7 +83,13 @@ export function BalancesPanel({ balances, onBalanceAction, settlingIds = {} }) {
   );
 }
 
-export function MembersPanel({ inviting = false, members, onInviteMember }) {
+export function MembersPanel({
+  inviting = false,
+  members,
+  onDeleteMember,
+  onInviteMember,
+  removingMemberIds = {},
+}) {
   const theme = useTheme();
   const [email, setEmail] = useState("");
   const canInvite = isValidEmail(email) && !inviting;
@@ -125,7 +142,14 @@ export function MembersPanel({ inviting = false, members, onInviteMember }) {
       />
       {!members.length ? <EmptyPanel>No members found.</EmptyPanel> : null}
       {members.map((member) => (
-        <MemberRow key={member.id} member={member} />
+        <SwipeToDeleteRow
+          deleting={Boolean(removingMemberIds[member.id])}
+          disabled={member.isCurrentUser || member.status === "Owner"}
+          key={member.id}
+          onDelete={() => onDeleteMember?.(member)}
+        >
+          <MemberRow member={member} />
+        </SwipeToDeleteRow>
       ))}
     </View>
   );

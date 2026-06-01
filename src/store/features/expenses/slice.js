@@ -70,8 +70,9 @@ const expensesSlice = createSlice({
         state.loading.detail = false;
         state.error = action.payload;
       })
-      .addCase(deleteExpense.pending, (state) => {
+      .addCase(deleteExpense.pending, (state, action) => {
         state.loading.delete = true;
+        state.loading.deleteById[action.meta.arg.expenseId] = true;
       })
       .addCase(deleteExpense.fulfilled, (state, action) => {
         state.loading.delete = false;
@@ -79,18 +80,20 @@ const expensesSlice = createSlice({
 
         if (groupId && state.byGroupId[groupId]) {
           state.byGroupId[groupId] = state.byGroupId[groupId].filter(
-            (expense) => expense.id !== expenseId
+            (expense) => String(expense.id) !== String(expenseId)
           );
         }
 
-        if (state.selectedExpense?.id === expenseId) {
+        if (String(state.selectedExpense?.id) === String(expenseId)) {
           state.selectedExpense = null;
         }
 
+        delete state.loading.deleteById[expenseId];
         state.message = action.payload.response.message;
       })
       .addCase(deleteExpense.rejected, (state, action) => {
         state.loading.delete = false;
+        delete state.loading.deleteById[action.meta.arg.expenseId];
         state.error = action.payload;
       });
   },
