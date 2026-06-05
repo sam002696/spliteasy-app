@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { Provider } from "react-redux";
 import { ThemeProvider, useTheme } from "../src/design-system";
@@ -45,6 +46,18 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    "PlusJakartaSans-Regular": require("../src/fonts/PlusJakartaSans-Regular.ttf"),
+    "PlusJakartaSans-Medium": require("../src/fonts/PlusJakartaSans-Medium.ttf"),
+    "PlusJakartaSans-SemiBold": require("../src/fonts/PlusJakartaSans-SemiBold.ttf"),
+    "PlusJakartaSans-Bold": require("../src/fonts/PlusJakartaSans-Bold.ttf"),
+    "PlusJakartaSans-ExtraBold": require("../src/fonts/PlusJakartaSans-ExtraBold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <Provider store={store}>
       <ThemeProvider>

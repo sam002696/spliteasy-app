@@ -39,18 +39,32 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
           {
             backgroundColor: isFocused ? theme.semantic.surfaceStrong : theme.colors.transparent,
             borderRadius: theme.radii.full,
-          minHeight: theme.sizes.minTapTarget,
-          paddingHorizontal: theme.space[3],
-          gap: theme.space[1],
-        },
+            gap: theme.space[1],
+            minHeight: theme.sizes.minTapTarget,
+            paddingHorizontal: isFocused ? theme.space[2] : 0,
+          },
           animatedStyle,
         ]}
       >
-        <Icon
-          color={isFocused ? theme.semantic.accent : theme.semantic.textMuted}
-          size={theme.space[5]}
-          strokeWidth={theme.borderWidths.medium}
-        />
+        <View
+          style={[
+            styles.iconWrap,
+            {
+              backgroundColor: isFocused
+                ? theme.semantic.accent
+                : theme.colors.transparent,
+              borderRadius: theme.radii.full,
+              height: theme.space[6],
+              width: theme.space[6],
+            },
+          ]}
+        >
+          <Icon
+            color={isFocused ? theme.semantic.accentText : theme.semantic.textMuted}
+            size={theme.space[5] - 2}
+            strokeWidth={theme.borderWidths.medium}
+          />
+        </View>
         {isFocused ? (
           <Text variant="micro" color="accent" numberOfLines={1}>
             {item.label}
@@ -71,8 +85,7 @@ export function BottomTabBar({ state, descriptors, navigation }) {
         styles.container,
         {
           backgroundColor: theme.semantic.background,
-          borderTopColor: theme.semantic.border,
-          borderTopWidth: theme.borderWidths.hairline,
+          borderTopWidth: 0,
           paddingBottom: Math.max(insets.bottom, theme.space[3]),
           paddingHorizontal: theme.space[4],
           paddingTop: theme.space[3],
@@ -87,7 +100,8 @@ export function BottomTabBar({ state, descriptors, navigation }) {
             borderColor: theme.semantic.border,
             borderRadius: theme.radii.full,
             borderWidth: theme.borderWidths.hairline,
-            padding: theme.space[2],
+            padding: theme.space[1],
+            ...theme.shadows.soft,
           },
         ]}
       >
@@ -151,6 +165,11 @@ const styles = StyleSheet.create({
   item: {
     alignItems: "center",
     flexDirection: "row",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  iconWrap: {
+    alignItems: "center",
     justifyContent: "center",
   },
 });

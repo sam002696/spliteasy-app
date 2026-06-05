@@ -144,7 +144,7 @@ export function HomeScreen() {
             summary={mappedSummary}
           />
         }
-        ListFooterComponent={<View style={{ height: theme.space[6] }} />}
+        ListFooterComponent={<View style={{ height: theme.space[8] * 4 }} />}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}

@@ -68,11 +68,11 @@ export function ProfileScreen() {
       >
         <ProfileHeader />
         <ProfileIdentityCard />
-        <SettingsSection
+        {/* <SettingsSection
           title="Profile"
           rows={profileActions}
           delay={theme.motion.normal}
-        />
+        /> */}
         <SettingsSection
           title="Settings"
           rows={settingsRows}

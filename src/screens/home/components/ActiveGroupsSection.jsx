@@ -28,7 +28,6 @@ export function ActiveGroupsSection({ activeCount, groups, onOpenGroup }) {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             gap: theme.space[3],
-            paddingTop: theme.space[3],
             paddingRight: theme.space[4],
           }}
         />

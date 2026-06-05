@@ -5,13 +5,13 @@ import { useTheme } from "../theme";
 const variants = {
   limeHero: {
     background: "accent",
-    radius: "hero",
-    padding: 4,
+    radius: "xl",
+    padding: 6,
   },
   black: {
     background: "surfaceStrong",
-    radius: "lg",
-    padding: 4,
+    radius: "xl",
+    padding: 5,
   },
   neutral: {
     background: "surface",

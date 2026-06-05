@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -7,7 +7,14 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { Avatar, Badge, Card, Divider, Text, useTheme } from "../../../design-system";
+import {
+  Avatar,
+  Badge,
+  Card,
+  ProgressBar,
+  Text,
+  useTheme,
+} from "../../../design-system";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -34,10 +41,12 @@ function AvatarStack({ members }) {
           name={member}
           size="sm"
           style={{
+            backgroundColor: theme.semantic.accent,
             borderColor: theme.semantic.surfaceStrong,
             borderWidth: theme.borderWidths.medium,
             marginLeft: index === 0 ? 0 : -theme.space[2],
           }}
+          textColor="accentText"
         />
       ))}
     </View>
@@ -46,12 +55,15 @@ function AvatarStack({ members }) {
 
 export function GroupCard({ group, index = 0, onPress }) {
   const theme = useTheme();
+  const { width } = useWindowDimensions();
   const pressed = useSharedValue(0);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(theme.space[4]);
-  const cardWidth = theme.space[8] * 8 + theme.space[6];
-  const cardMinHeight = theme.space[8] * 5 + theme.space[6];
+  const cardWidth = Math.min(width * 0.78, 300);
+  const cardMinHeight = 230;
   const position = getPositionCopy(group);
+  const progressTone =
+    group.balanceTone === "negative" ? "negative" : "positive";
 
   useEffect(() => {
     const delay = theme.motion.fast + index * (theme.motion.fast / 3);
@@ -86,39 +98,51 @@ export function GroupCard({ group, index = 0, onPress }) {
     >
       <Card variant="black" style={{ minHeight: cardMinHeight }}>
         <View style={styles.cardTop}>
-          <View style={{ flex: 1, gap: theme.space[1] }}>
+          <View style={{ flex: 1, gap: theme.space[2] }}>
             <Text variant="cardTitle" color="white" numberOfLines={1}>
               {group.name}
             </Text>
-            <Text variant="label" color="white50">
+            <Text variant="bodySmall" color="white50">
               {group.memberCount} members
             </Text>
           </View>
-          <Badge label={group.category} tone={group.categoryTone} />
+          <Badge
+            label={group.category}
+            tone={group.categoryTone}
+            style={{ minHeight: 28, paddingHorizontal: theme.space[3] }}
+          />
         </View>
 
         <View style={{ marginTop: theme.space[5], gap: theme.space[1] }}>
           <Text variant="label" color="white50">
             Latest expense
           </Text>
-          <Text variant="bodySmall" color="white" numberOfLines={1}>
+          <Text variant="body" color="white" numberOfLines={1}>
             {group.latestExpense}
           </Text>
         </View>
 
-        <Divider color="white10" style={{ marginVertical: theme.space[4] }} />
-
-        <View style={styles.cardBottom}>
-          <View style={{ gap: theme.space[1] }}>
-            <Text variant="cardAmount" color={group.balanceTone}>
+        <View style={[styles.cardBottom, { marginTop: "auto" }]}>
+          <View style={{ flex: 1, gap: theme.space[1] }}>
+            <Text variant="cardAmount" color={progressTone} numberOfLines={1}>
               {position.amount}
             </Text>
-            <Text variant="label" color="white50">
+            <Text variant="bodySmall" color="white50">
               {position.label}
             </Text>
           </View>
           <AvatarStack members={group.members} />
         </View>
+        <ProgressBar
+          value={group.settlementProgress}
+          max={1}
+          tone={progressTone}
+          height={theme.space[2]}
+          style={{
+            backgroundColor: theme.rgba.white10,
+            marginTop: theme.space[3],
+          }}
+        />
       </Card>
     </AnimatedPressable>
   );

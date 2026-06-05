@@ -31,9 +31,9 @@ function TopBarActionButton({ count = 0, icon: Icon, label, onPress }) {
         {
           backgroundColor: theme.semantic.surfaceStrong,
           borderRadius: theme.radii.full,
-          height: theme.sizes.iconButton,
+          height: theme.sizes.avatarMd,
           opacity: pressed ? 0.78 : 1,
-          width: theme.sizes.iconButton,
+          width: theme.sizes.avatarMd,
         },
       ]}
     >
@@ -69,7 +69,9 @@ export function TopBar() {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(selectCurrentUser);
   const pendingInvitationsCount = useAppSelector(selectPendingInvitationsCount);
-  const unreadNotificationsCount = useAppSelector(selectUnreadNotificationsCount);
+  const unreadNotificationsCount = useAppSelector(
+    selectUnreadNotificationsCount,
+  );
   const displayName = currentUser?.name || currentUser?.email || "there";
   const greeting = getGreeting();
 
@@ -82,12 +84,18 @@ export function TopBar() {
     <FadeInView delay={0}>
       <View style={[styles.root, { marginBottom: theme.space[4] }]}>
         <View style={[styles.identity, { gap: theme.space[3] }]}>
-          <Avatar name={displayName} />
+          <Avatar
+            name={displayName}
+            textColor="accent"
+            style={{
+              backgroundColor: theme.semantic.surfaceStrong,
+            }}
+          />
           <View>
-            <Text variant="label" color="textMuted">
+            <Text variant="label" color="textMuted" style={styles.greeting}>
               {greeting},
             </Text>
-            <Text variant="cardTitle" color="text">
+            <Text variant="cardTitle" color="text" numberOfLines={1}>
               {displayName}
             </Text>
           </View>
@@ -96,6 +104,7 @@ export function TopBar() {
           <TopBarActionButton
             count={pendingInvitationsCount}
             icon={UserPlus}
+            color={theme.semantic.secondaryAccent}
             label="Group requests"
             onPress={() => router.push("/group-requests")}
           />
@@ -134,6 +143,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  greeting: {
+    marginBottom: -2,
   },
   identity: {
     alignItems: "center",

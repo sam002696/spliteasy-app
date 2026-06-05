@@ -1,15 +1,17 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Text } from "../../../design-system";
+import { Text, useTheme } from "../../../design-system";
 
 export function SectionHeader({ title, action }) {
+  const theme = useTheme();
+
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { marginBottom: theme.space[3] }]}>
       <Text variant="sectionTitle" color="text">
         {title}
       </Text>
       {action ? (
-        <Text variant="micro" color="textMuted">
+        <Text variant="field" color="secondaryAccent">
           {action}
         </Text>
       ) : null}

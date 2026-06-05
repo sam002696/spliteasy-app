@@ -16,10 +16,12 @@ export function MemberStack({ members, count }) {
           name={member}
           size="sm"
           style={{
+            backgroundColor: theme.semantic.accent,
             borderColor: theme.semantic.surfaceStrong,
             borderWidth: theme.borderWidths.medium,
             marginLeft: index === 0 ? 0 : -theme.space[2],
           }}
+          textColor="accentText"
         />
       ))}
       {remaining > 0 ? (

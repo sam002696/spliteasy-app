@@ -18,7 +18,7 @@ function formatAmount(amount, currency = "BDT") {
   const value = Number(amount || 0);
   const symbol = currencySymbols[currency] || currency;
 
-  return `${symbol} ${value.toLocaleString("en-US", {
+  return `${symbol}${value.toLocaleString("en-US", {
     maximumFractionDigits: value % 1 === 0 ? 0 : 2,
     minimumFractionDigits: value % 1 === 0 ? 0 : 2,
   })}`;
@@ -99,6 +99,7 @@ export function mapHomeSummary(summary) {
 
   return {
     netPosition: formatAmount(summary?.net_position?.amount, currency),
+    netPositionLabel: summary?.net_position?.label || "Split status",
     owedToYou: formatAmount(summary?.owed_to_you, currency),
     youOwe: formatAmount(summary?.you_owe, currency),
   };
@@ -117,6 +118,7 @@ export function mapHomeGroup(group) {
     category: group.category,
     categoryTone: categoryToneByName[group.category] || "lime",
     members: getMembers(group),
+    settlementProgress: Number(group.summary?.settled_percentage || 0) / 100,
   };
 }
 

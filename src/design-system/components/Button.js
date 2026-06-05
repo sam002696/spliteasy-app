@@ -35,7 +35,7 @@ const buttonSizes = {
   sm: {
     minHeight: 36,
     paddingHorizontal: 14,
-    textVariant: "bodySmall",
+    textVariant: "field",
   },
   md: {
     minHeight: 44,
