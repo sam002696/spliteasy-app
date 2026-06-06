@@ -6,6 +6,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../store";
+import { getStoredOnboardingCompleted } from "../storage/onboardingStorage";
 
 export function AuthGate() {
   const router = useRouter();
@@ -14,9 +15,18 @@ export function AuthGate() {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const [hasCheckedSession, setHasCheckedSession] = useState(false);
+  const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
+
+    getStoredOnboardingCompleted().then((completed) => {
+      if (isMounted) {
+        setHasCompletedOnboarding(completed);
+        setHasCheckedOnboarding(true);
+      }
+    });
 
     dispatch(bootstrapAuth()).finally(() => {
       if (isMounted) {
@@ -30,22 +40,48 @@ export function AuthGate() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!hasCheckedSession || !rootNavigationState?.key) {
+    if (!hasCheckedOnboarding || !hasCheckedSession || !rootNavigationState?.key) {
       return;
     }
 
     const routeGroup = segments[0];
     const isAuthRoute = routeGroup === "(auth)";
+    const isOnboardingRoute = routeGroup === "onboarding";
+
+    if (!hasCompletedOnboarding) {
+      if (isOnboardingRoute) {
+        return;
+      }
+
+      getStoredOnboardingCompleted().then((completed) => {
+        if (completed) {
+          setHasCompletedOnboarding(true);
+          return;
+        }
+
+        router.replace("/onboarding");
+      });
+
+      return;
+    }
 
     if (!isAuthenticated && !isAuthRoute) {
       router.replace("/login");
       return;
     }
 
-    if (isAuthenticated && isAuthRoute) {
+    if (isAuthenticated && (isAuthRoute || isOnboardingRoute)) {
       router.replace("/(tabs)");
     }
-  }, [hasCheckedSession, isAuthenticated, rootNavigationState?.key, router, segments]);
+  }, [
+    hasCheckedOnboarding,
+    hasCheckedSession,
+    hasCompletedOnboarding,
+    isAuthenticated,
+    rootNavigationState?.key,
+    router,
+    segments,
+  ]);
 
   return null;
 }

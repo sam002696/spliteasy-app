@@ -21,6 +21,7 @@ function RootNavigator() {
           },
         }}
       >
+        <Stack.Screen name="onboarding" />
         <Stack.Screen name="(auth)/login" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="groups/[groupId]" />
