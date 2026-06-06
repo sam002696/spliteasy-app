@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { useCallback, useEffect } from "react";
+import { AppState } from "react-native";
 import {
   balanceFilters,
   fetchBalances,
@@ -15,9 +16,8 @@ import {
 } from "../../store";
 import {
   extractNotificationPayload,
-  registerForExpoPushNotifications,
-  saveExpoPushToken,
   subscribeToExpoNotificationEvents,
+  syncExpoPushToken,
 } from "../push/expoNotifications";
 import {
   disconnectRealtimeNotifications,
@@ -41,6 +41,12 @@ function shouldRefreshMoneyData(type) {
     "member.",
     "settlement.",
   ].some((prefix) => String(type || "").startsWith(prefix));
+}
+
+function logPushSyncError(error) {
+  if (__DEV__) {
+    console.warn("[Push] Unable to sync Expo push token", error?.message || error);
+  }
 }
 
 export function NotificationRuntime() {
@@ -87,9 +93,7 @@ export function NotificationRuntime() {
       return undefined;
     }
 
-    registerForExpoPushNotifications()
-      .then((registration) => saveExpoPushToken(registration?.token))
-      .catch(() => {});
+    syncExpoPushToken({ shouldRequestPermission: true }).catch(logPushSyncError);
 
     return subscribeToExpoNotificationEvents({
       onNotification: (notification) => {
@@ -101,6 +105,24 @@ export function NotificationRuntime() {
       },
     });
   }, [handleNotification, isAuthenticated, router]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return undefined;
+    }
+
+    const subscription = AppState.addEventListener("change", (nextState) => {
+      if (nextState === "active") {
+        syncExpoPushToken({ shouldRequestPermission: false }).catch(
+          logPushSyncError,
+        );
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [isAuthenticated]);
 
   return null;
 }

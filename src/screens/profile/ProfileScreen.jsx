@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
-import { ScrollView } from "react-native";
+import { AppState, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../design-system";
 import {
@@ -16,12 +16,114 @@ import {
   SettingsSection,
 } from "./components";
 import { accountRows, profileActions, settingsRows } from "./data/profileData";
+import {
+  disableExpoPushNotifications,
+  enableExpoPushNotifications,
+  getExpoPushNotificationStatus,
+} from "../../services/push/expoNotifications";
+
+function getPushStatusLabel({ isLoading, permissionStatus, preferenceEnabled }) {
+  if (isLoading) {
+    return "Updating...";
+  }
+
+  if (!preferenceEnabled) {
+    return "Push disabled";
+  }
+
+  if (permissionStatus === "granted") {
+    return "Push enabled";
+  }
+
+  if (permissionStatus === "denied") {
+    return "Permission denied";
+  }
+
+  return "Permission required";
+}
 
 export function ProfileScreen() {
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector(selectAuth);
+  const [pushStatus, setPushStatus] = useState({
+    permissionStatus: "undetermined",
+    preferenceEnabled: true,
+    pushEnabled: false,
+  });
+  const [isPushUpdating, setIsPushUpdating] = useState(false);
+
+  const refreshPushStatus = useCallback(async () => {
+    try {
+      const status = await getExpoPushNotificationStatus();
+      setPushStatus(status);
+    } catch {
+      setPushStatus((currentStatus) => ({
+        ...currentStatus,
+        permissionStatus: "unavailable",
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshPushStatus();
+  }, [refreshPushStatus]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextState) => {
+      if (nextState === "active") {
+        refreshPushStatus();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [refreshPushStatus]);
+
+  const handlePushToggle = useCallback(
+    async (nextValue) => {
+      setIsPushUpdating(true);
+
+      try {
+        const status = nextValue
+          ? await enableExpoPushNotifications()
+          : await disableExpoPushNotifications();
+
+        setPushStatus((currentStatus) => ({
+          ...currentStatus,
+          ...status,
+          preferenceEnabled: nextValue,
+          pushEnabled:
+            nextValue && (status?.permissionStatus || currentStatus.permissionStatus) === "granted",
+        }));
+      } finally {
+        setIsPushUpdating(false);
+      }
+    },
+    [],
+  );
+
+  const profileSettingsRows = useMemo(
+    () =>
+      settingsRows.map((row) =>
+        row.id === "notifications"
+          ? {
+              ...row,
+              control: "switch",
+              onValueChange: handlePushToggle,
+              value: getPushStatusLabel({
+                isLoading: isPushUpdating,
+                permissionStatus: pushStatus.permissionStatus,
+                preferenceEnabled: pushStatus.preferenceEnabled,
+              }),
+              valueEnabled: pushStatus.preferenceEnabled,
+            }
+          : row,
+      ),
+    [handlePushToggle, isPushUpdating, pushStatus],
+  );
   const accountSettingsRows = useMemo(
     () =>
       accountRows.map((row) =>
@@ -75,8 +177,9 @@ export function ProfileScreen() {
         /> */}
         <SettingsSection
           title="Settings"
-          rows={settingsRows}
+          rows={profileSettingsRows}
           delay={theme.motion.spring}
+          disabledRowId={isPushUpdating ? "notifications" : undefined}
         />
         <SettingsSection
           title="Account"

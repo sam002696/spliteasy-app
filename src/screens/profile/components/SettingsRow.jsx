@@ -1,6 +1,6 @@
 import React from "react";
 import { ChevronRight } from "lucide-react-native";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Switch, View } from "react-native";
 import { Text, useTheme } from "../../../design-system";
 
 export function SettingsRow({ disabled = false, onPress, row }) {
@@ -8,12 +8,14 @@ export function SettingsRow({ disabled = false, onPress, row }) {
   const Icon = row.icon;
   const tone = row.tone || "default";
   const isDanger = tone === "danger";
+  const hasSwitch = row.control === "switch";
 
   return (
     <Pressable
-      accessibilityRole="button"
+      accessibilityRole={hasSwitch ? "switch" : "button"}
+      accessibilityState={hasSwitch ? { checked: row.valueEnabled } : undefined}
       disabled={disabled}
-      onPress={onPress}
+      onPress={hasSwitch ? undefined : onPress}
       style={({ pressed }) => [
         styles.root,
         {
@@ -50,11 +52,28 @@ export function SettingsRow({ disabled = false, onPress, row }) {
           {row.value}
         </Text>
       </View>
-      <ChevronRight
-        color={isDanger ? theme.semantic.danger : theme.semantic.textMuted}
-        size={theme.space[5]}
-        strokeWidth={theme.borderWidths.medium}
-      />
+      {hasSwitch ? (
+        <View style={styles.switchSlot}>
+          <Switch
+            disabled={disabled}
+            ios_backgroundColor={theme.semantic.border}
+            onValueChange={row.onValueChange}
+            style={styles.switch}
+            thumbColor={theme.colors.white}
+            trackColor={{
+              false: theme.semantic.border,
+              true: theme.semantic.accent,
+            }}
+            value={row.valueEnabled}
+          />
+        </View>
+      ) : (
+        <ChevronRight
+          color={isDanger ? theme.semantic.danger : theme.semantic.textMuted}
+          size={theme.space[5]}
+          strokeWidth={theme.borderWidths.medium}
+        />
+      )}
     </Pressable>
   );
 }
@@ -63,5 +82,15 @@ const styles = StyleSheet.create({
   root: {
     alignItems: "center",
     flexDirection: "row",
+  },
+  switch: {
+    transform: [{ scale: 0.86 }],
+  },
+  switchSlot: {
+    alignItems: "center",
+    height: 44,
+    justifyContent: "center",
+    marginRight: -4,
+    width: 58,
   },
 });
