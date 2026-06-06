@@ -46,6 +46,28 @@ function mergeNotifications(currentNotifications, nextNotifications) {
   ];
 }
 
+function hasNotification(notifications, notificationId) {
+  return notifications.some(
+    (notification) => String(notification.id) === String(notificationId),
+  );
+}
+
+function prependNotification(notifications, notification) {
+  if (!notification?.id) {
+    return notifications;
+  }
+
+  if (hasNotification(notifications, notification.id)) {
+    return notifications.map((item) =>
+      String(item.id) === String(notification.id)
+        ? { ...item, ...notification }
+        : item,
+    );
+  }
+
+  return [notification, ...notifications];
+}
+
 const notificationsSlice = createSlice({
   name: "notifications",
   initialState,
@@ -57,6 +79,46 @@ const notificationsSlice = createSlice({
       const filter = action.payload || notificationFilters.all;
       state.activeFilter = filter;
       state.items = state.itemsByFilter[filter] || [];
+    },
+    receiveNotification(state, action) {
+      const notification = action.payload;
+
+      if (!notification?.id) {
+        return;
+      }
+
+      const wasKnown = hasNotification(
+        state.itemsByFilter.all,
+        notification.id,
+      );
+      const isUnread = !notification.is_read;
+
+      state.itemsByFilter.all = prependNotification(
+        state.itemsByFilter.all,
+        notification,
+      );
+
+      if (isUnread) {
+        state.itemsByFilter.unread = prependNotification(
+          state.itemsByFilter.unread,
+          notification,
+        );
+      } else {
+        state.itemsByFilter.read = prependNotification(
+          state.itemsByFilter.read,
+          notification,
+        );
+      }
+
+      state.items = state.itemsByFilter[state.activeFilter] || [];
+
+      if (!wasKnown && isUnread) {
+        state.unreadCount += 1;
+      }
+
+      if (!wasKnown) {
+        state.pagination.total += 1;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -161,7 +223,10 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const { clearNotificationsError, setActiveNotificationFilter } =
-  notificationsSlice.actions;
+export const {
+  clearNotificationsError,
+  receiveNotification,
+  setActiveNotificationFilter,
+} = notificationsSlice.actions;
 
 export default notificationsSlice.reducer;
