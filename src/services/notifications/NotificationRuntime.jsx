@@ -16,6 +16,7 @@ import {
 import {
   extractNotificationPayload,
   registerForExpoPushNotifications,
+  saveExpoPushToken,
   subscribeToExpoNotificationEvents,
 } from "../push/expoNotifications";
 import {
@@ -86,7 +87,9 @@ export function NotificationRuntime() {
       return undefined;
     }
 
-    registerForExpoPushNotifications().catch(() => {});
+    registerForExpoPushNotifications()
+      .then((registration) => saveExpoPushToken(registration?.token))
+      .catch(() => {});
 
     return subscribeToExpoNotificationEvents({
       onNotification: (notification) => {

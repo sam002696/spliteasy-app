@@ -16,6 +16,7 @@ export const notificationEndpoints = {
     )}&page=${encodeURIComponent(page)}`,
   markRead: (notificationId) => `/notifications/${notificationId}/read`,
   markAllRead: "/notifications/read-all",
+  pushTokens: "/notifications/push-tokens",
 };
 
 export const groupEndpoints = {

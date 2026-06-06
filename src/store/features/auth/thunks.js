@@ -5,6 +5,7 @@ import {
   getStoredAuthToken,
   setStoredAuthToken,
 } from "../../../api/tokenStorage";
+import { unregisterExpoPushToken } from "../../../services/push/expoNotifications";
 import {
   dispatchSuccessToast,
   rejectWithErrorToast,
@@ -113,6 +114,7 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkApi) => {
   const api = createThunkApi(thunkApi);
 
   try {
+    await unregisterExpoPushToken().catch(() => {});
     const response = await api.post(authEndpoints.logout);
     await clearStoredAuthToken();
     dispatchSuccessToast(thunkApi, response, "Logged out successfully.");
