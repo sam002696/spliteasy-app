@@ -5,12 +5,13 @@ import { useTheme } from "../theme";
 export function ProgressBar({ value = 0, max = 1, tone = "positive", height = 8, style }) {
   const theme = useTheme();
   const percent = max > 0 ? Math.min(Math.max(value / max, 0), 1) : 0;
+  const accessibilityNow = Math.round(percent * 100);
   const fillColor = theme.semantic[tone] || theme.colors[tone] || tone;
 
   return (
     <View
       accessibilityRole="progressbar"
-      accessibilityValue={{ min: 0, max, now: value }}
+      accessibilityValue={{ min: 0, max: 100, now: accessibilityNow }}
       style={[
         {
           backgroundColor: theme.rgba.black10,

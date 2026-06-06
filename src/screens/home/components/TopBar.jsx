@@ -8,6 +8,7 @@ import {
   fetchNotifications,
   notificationFilters,
   selectCurrentUser,
+  selectIsAuthenticated,
   selectPendingInvitationsCount,
   selectUnreadNotificationsCount,
   useAppDispatch,
@@ -67,6 +68,7 @@ export function TopBar() {
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const currentUser = useAppSelector(selectCurrentUser);
   const pendingInvitationsCount = useAppSelector(selectPendingInvitationsCount);
   const unreadNotificationsCount = useAppSelector(
@@ -76,9 +78,13 @@ export function TopBar() {
   const greeting = getGreeting();
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
     dispatch(fetchPendingInvitations());
     dispatch(fetchNotifications({ filter: notificationFilters.all }));
-  }, [dispatch]);
+  }, [dispatch, isAuthenticated]);
 
   return (
     <FadeInView delay={0}>

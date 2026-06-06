@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, useTheme } from "../../design-system";
 import {
   fetchHomeDashboard,
+  selectIsAuthenticated,
   selectHomeActiveGroups,
   selectHomeActiveGroupsCount,
   selectHomeRecentActivities,
@@ -71,6 +72,7 @@ export function HomeScreen() {
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const summary = useAppSelector(selectHomeSummary);
   const activeGroupsCount = useAppSelector(selectHomeActiveGroupsCount);
   const activeGroups = useAppSelector(selectHomeActiveGroups);
@@ -88,8 +90,13 @@ export function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      if (!isAuthenticated) {
+        return undefined;
+      }
+
       dispatch(fetchHomeDashboard());
-    }, [dispatch]),
+      return undefined;
+    }, [dispatch, isAuthenticated]),
   );
 
   const openGroup = useCallback(
@@ -103,6 +110,10 @@ export function HomeScreen() {
   );
 
   const refreshHome = useCallback(async () => {
+    if (!isAuthenticated) {
+      return;
+    }
+
     setIsRefreshing(true);
 
     try {
@@ -110,7 +121,7 @@ export function HomeScreen() {
     } finally {
       setIsRefreshing(false);
     }
-  }, [dispatch]);
+  }, [dispatch, isAuthenticated]);
 
   const renderActivity = useCallback(
     ({ item, index }) => (
