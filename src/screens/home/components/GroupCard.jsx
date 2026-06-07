@@ -96,7 +96,7 @@ export function GroupCard({ group, index = 0, onPress }) {
       }}
       style={[animatedStyle, { width: cardWidth }]}
     >
-      <Card variant="black" style={{ minHeight: cardMinHeight }}>
+      <Card variant="black">
         <View style={styles.cardTop}>
           <View style={{ flex: 1, gap: theme.space[2] }}>
             <Text variant="cardTitle" color="white" numberOfLines={1}>
@@ -122,7 +122,7 @@ export function GroupCard({ group, index = 0, onPress }) {
           </Text>
         </View>
 
-        <View style={[styles.cardBottom, { marginTop: "auto" }]}>
+        <View style={[styles.cardBottom]}>
           <View style={{ flex: 1, gap: theme.space[1] }}>
             <Text variant="cardAmount" color={progressTone} numberOfLines={1}>
               {position.amount}

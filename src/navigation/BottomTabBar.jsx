@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -13,6 +13,9 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
   const theme = useTheme();
   const active = useSharedValue(isFocused ? 1 : 0);
   const Icon = item.icon;
+  const itemHeight = Math.round(theme.sizes.minTapTarget);
+  const iconSize = Math.round(theme.space[6]);
+  const ItemContainer = Platform.OS === "android" ? View : Animated.View;
 
   useEffect(() => {
     active.value = withSpring(isFocused ? 1 : 0, {
@@ -21,9 +24,15 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
     });
   }, [active, isFocused]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: 1 + active.value * 0.04 }],
-  }));
+  const animatedStyle = useAnimatedStyle(() => {
+    if (Platform.OS === "android") {
+      return {};
+    }
+
+    return {
+      transform: [{ scale: 1 + active.value * 0.04 }],
+    };
+  });
 
   return (
     <Pressable
@@ -33,19 +42,30 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
       onPress={onPress}
       style={styles.itemPressable}
     >
-      <Animated.View
+      <ItemContainer
         style={[
           styles.item,
           {
-            backgroundColor: isFocused ? theme.semantic.surfaceStrong : theme.colors.transparent,
-            borderRadius: theme.radii.full,
+            borderRadius: itemHeight / 2,
             gap: theme.space[1],
-            minHeight: theme.sizes.minTapTarget,
+            height: itemHeight,
+            minHeight: itemHeight,
             paddingHorizontal: isFocused ? theme.space[2] : 0,
           },
-          animatedStyle,
+          Platform.OS === "android" ? null : animatedStyle,
         ]}
       >
+        {isFocused ? (
+          <View
+            style={[
+              StyleSheet.absoluteFillObject,
+              {
+                backgroundColor: theme.semantic.surfaceStrong,
+                borderRadius: itemHeight / 2,
+              },
+            ]}
+          />
+        ) : null}
         <View
           style={[
             styles.iconWrap,
@@ -53,9 +73,10 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
               backgroundColor: isFocused
                 ? theme.semantic.accent
                 : theme.colors.transparent,
-              borderRadius: theme.radii.full,
-              height: theme.space[6],
-              width: theme.space[6],
+              borderRadius: iconSize / 2,
+              height: iconSize,
+              overflow: "hidden",
+              width: iconSize,
             },
           ]}
         >
@@ -70,7 +91,7 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
             {item.label}
           </Text>
         ) : null}
-      </Animated.View>
+      </ItemContainer>
     </Pressable>
   );
 }
@@ -166,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
-    overflow: "hidden",
+    position: "relative",
   },
   iconWrap: {
     alignItems: "center",

@@ -70,7 +70,14 @@ export function SwipeToDeleteRow({
   };
 
   return (
-    <View style={styles.root}>
+    <View
+      style={[
+        styles.root,
+        {
+          borderRadius: theme.radii.md,
+        },
+      ]}
+    >
       <Pressable
         accessibilityLabel="Delete"
         accessibilityRole="button"
@@ -80,7 +87,8 @@ export function SwipeToDeleteRow({
           styles.action,
           {
             backgroundColor: theme.semantic.danger,
-            borderRadius: theme.radii.md,
+            borderBottomRightRadius: theme.radii.md,
+            borderTopRightRadius: theme.radii.md,
             opacity: pressed ? 0.82 : 1,
             width: ACTION_WIDTH,
           },
@@ -106,6 +114,8 @@ export function SwipeToDeleteRow({
         style={[
           styles.content,
           {
+            backgroundColor: theme.semantic.background,
+            borderRadius: theme.radii.md,
             transform: [{ translateX }],
           },
         ]}
@@ -127,6 +137,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   content: {
+    overflow: "hidden",
     position: "relative",
   },
   root: {

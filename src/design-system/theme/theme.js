@@ -13,6 +13,44 @@ import {
   zIndices,
 } from "./tokens";
 
+function scaleValue(value, scale) {
+  if (typeof value !== "number") {
+    return value;
+  }
+
+  if (value === 0 || value === 999) {
+    return value;
+  }
+
+  return Math.round(value * scale * 2) / 2;
+}
+
+function scaleTokenMap(tokenMap, scale) {
+  return Object.freeze(
+    Object.fromEntries(
+      Object.entries(tokenMap).map(([key, value]) => [
+        key,
+        scaleValue(value, scale),
+      ]),
+    ),
+  );
+}
+
+function scaleTypographyTokens(scale) {
+  return Object.freeze(
+    Object.fromEntries(
+      Object.entries(typography).map(([key, value]) => [
+        key,
+        Object.freeze({
+          ...value,
+          fontSize: scaleValue(value.fontSize, scale),
+          lineHeight: scaleValue(value.lineHeight, scale),
+        }),
+      ]),
+    ),
+  );
+}
+
 const semanticLight = Object.freeze({
   background: colors.offWhite,
   surface: colors.cream,
@@ -48,24 +86,26 @@ const semanticDark = Object.freeze({
   disabled: rgba.white50,
 });
 
-export const createTheme = (mode = "light") => {
+export const createTheme = (mode = "light", densityScale = 1) => {
   const isDark = mode === "dark";
+  const resolvedScale = Math.min(Math.max(densityScale, 0.78), 1);
 
   return Object.freeze({
     mode: isDark ? "dark" : "light",
     colors,
     rgba,
     semantic: isDark ? semanticDark : semanticLight,
-    space,
-    radii,
+    space: scaleTokenMap(space, resolvedScale),
+    radii: scaleTokenMap(radii, resolvedScale),
     borderWidths,
-    typography,
+    typography: scaleTypographyTokens(resolvedScale),
     fontFamilies,
     fontWeights,
     shadows,
-    sizes,
+    sizes: scaleTokenMap(sizes, resolvedScale),
     motion,
     zIndices,
+    densityScale: resolvedScale,
   });
 };
 
