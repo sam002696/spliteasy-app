@@ -30,9 +30,6 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
-.env
 
 # typescript
 *.tsbuildinfo
@@ -44,6 +41,3 @@ yarn-error.*
 
 # Firebase
 spliteasy-cf1bf-firebase-adminsdk-fbsvc-7bf5f198de.json
-
-# google services
-google-services.json

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "spliteasy-app",
-    "slug": "spliteasy-app",
+    "slug": "spliteasy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,9 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "package": "com.spliteasy.app",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -25,6 +27,11 @@
       "expo-router",
       "expo-notifications"
     ],
+    "expo": {
+      "android": {
+        "package": "com.spliteasy.app"
+      }
+    },
     "extra": {
       "eas": {
         "projectId": "685d1da6-7be7-481c-bf93-3084b23c8c7a"
