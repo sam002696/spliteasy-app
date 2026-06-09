@@ -3,7 +3,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, useTheme } from "../../design-system";
+import { useTheme } from "../../design-system";
 import {
   fetchHomeDashboard,
   selectIsAuthenticated,
@@ -19,6 +19,7 @@ import {
   ActivityItem,
   FadeInView,
   HeroCard,
+  HomeEmptyState,
   RecentActivitySection,
   TopBar,
 } from "./components";
@@ -29,31 +30,25 @@ import {
 } from "./utils";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+const noRecentActivityImage = require("../../../assets/remy/no_recent_activity.png");
 
 function EmptyActivity() {
-  const theme = useTheme();
-
   return (
-    <View
-      style={{
-        alignItems: "center",
-        backgroundColor: theme.semantic.surface,
-        borderRadius: theme.radii.lg,
-        gap: theme.space[2],
-        padding: theme.space[6],
-      }}
-    >
-      <Text variant="sectionTitle" color="text">
-        No recent activity
-      </Text>
-      <Text variant="bodySmall" color="textMuted" align="center">
-        New expenses, settlements, and group updates will appear here.
-      </Text>
-    </View>
+    <HomeEmptyState
+      image={noRecentActivityImage}
+      title="No recent activity"
+      body="New expenses, settlements, and group updates will appear here."
+    />
   );
 }
 
-function HomeHeader({ activeGroupsCount, groups, onOpenGroup, summary }) {
+function HomeHeader({
+  activeGroupsCount,
+  groups,
+  onCreateGroup,
+  onOpenGroup,
+  summary,
+}) {
   return (
     <>
       <TopBar />
@@ -61,6 +56,7 @@ function HomeHeader({ activeGroupsCount, groups, onOpenGroup, summary }) {
       <ActiveGroupsSection
         activeCount={activeGroupsCount}
         groups={groups}
+        onCreateGroup={onCreateGroup}
         onOpenGroup={onOpenGroup}
       />
       <RecentActivitySection />
@@ -109,6 +105,10 @@ export function HomeScreen() {
     [router],
   );
 
+  const createGroup = useCallback(() => {
+    router.push("/create-group");
+  }, [router]);
+
   const refreshHome = useCallback(async () => {
     if (!isAuthenticated) {
       return;
@@ -151,6 +151,7 @@ export function HomeScreen() {
           <HomeHeader
             activeGroupsCount={activeGroupsCount}
             groups={mappedGroups}
+            onCreateGroup={createGroup}
             onOpenGroup={openGroup}
             summary={mappedSummary}
           />

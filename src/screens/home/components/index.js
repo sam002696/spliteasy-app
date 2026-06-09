@@ -4,6 +4,7 @@ export * from "./FadeInView";
 export * from "./Greeting";
 export * from "./GroupCard";
 export * from "./HeroCard";
+export * from "./HomeEmptyState";
 export * from "./RecentActivitySection";
 export * from "./SectionHeader";
 export * from "./TopBar";
