@@ -96,11 +96,15 @@ function getActivityAction(type) {
 
 export function mapHomeSummary(summary) {
   const currency = summary?.currency || "BDT";
+  const netPositionAmount = Number(summary?.net_position?.amount || 0);
 
   return {
-    netPosition: formatAmount(summary?.net_position?.amount, currency),
+    netPosition: formatAmount(netPositionAmount, currency),
     netPositionLabel: summary?.net_position?.label || "Split status",
     owedToYou: formatAmount(summary?.owed_to_you, currency),
+    rawNetPosition: netPositionAmount,
+    rawOwedToYou: Number(summary?.owed_to_you || 0),
+    rawYouOwe: Number(summary?.you_owe || 0),
     youOwe: formatAmount(summary?.you_owe, currency),
   };
 }
