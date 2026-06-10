@@ -7,11 +7,7 @@ import { FadeInView } from "./FadeInView";
 const TAKA_SYMBOL = "৳";
 
 function getNetPositionConfig(summary) {
-  const netPosition = Number(summary.rawNetPosition || 0);
-  const owedToYou = Number(summary.rawOwedToYou || 0);
-  const youOwe = Number(summary.rawYouOwe || 0);
-
-  if (youOwe > owedToYou || netPosition < 0) {
+  if (summary.netPositionType === "you_owe") {
     return {
       amountTone: "negative",
       backgroundColor: "#FFD166",
@@ -21,7 +17,7 @@ function getNetPositionConfig(summary) {
     };
   }
 
-  if (owedToYou === 0 && youOwe === 0) {
+  if (summary.netPositionType === "settled") {
     return {
       amountTone: "accentText",
       backgroundColor: "#DFF2FF",

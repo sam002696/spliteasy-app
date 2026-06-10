@@ -100,6 +100,7 @@ export function mapHomeSummary(summary) {
 
   return {
     netPosition: formatAmount(netPositionAmount, currency),
+    netPositionType: summary?.net_position?.type || "settled",
     netPositionLabel: summary?.net_position?.label || "Split status",
     owedToYou: formatAmount(summary?.owed_to_you, currency),
     rawNetPosition: netPositionAmount,
