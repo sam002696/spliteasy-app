@@ -1,12 +1,19 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { CheckCircle, Clock3 } from "lucide-react-native";
-import { Card, Text, useTheme } from "../../../design-system";
+import { CheckCircle, Clock3, Plus } from "lucide-react-native";
+import { Button, Card, Text, useTheme } from "../../../design-system";
 import { FadeInView } from "./FadeInView";
 
 const TAKA_SYMBOL = "৳";
 
 function getNetPositionConfig(summary) {
+  if (summary.netPositionType === "no_activity") {
+    return {
+      backgroundColor: "#FFD166",
+      isNoActivity: true,
+    };
+  }
+
   if (summary.netPositionType === "you_owe") {
     return {
       amountTone: "negative",
@@ -36,7 +43,12 @@ function getNetPositionConfig(summary) {
   };
 }
 
-function AmountText({ value, variant = "sectionTitle", tone = "accentText", large = false }) {
+function AmountText({
+  value,
+  variant = "sectionTitle",
+  tone = "accentText",
+  large = false,
+}) {
   const theme = useTheme();
   const amount = String(value).replace(/BDT|৳/gi, "").trim();
 
@@ -47,7 +59,9 @@ function AmountText({ value, variant = "sectionTitle", tone = "accentText", larg
         color={tone}
         style={{
           fontFamily: theme.fontFamilies.display,
-          lineHeight: large ? theme.typography.heroAmount.lineHeight : undefined,
+          lineHeight: large
+            ? theme.typography.heroAmount.lineHeight
+            : undefined,
         }}
       >
         {TAKA_SYMBOL}
@@ -72,10 +86,104 @@ function HeroStat({ label, value, tone = "accentText" }) {
   );
 }
 
-export function HeroCard({ summary }) {
+function NoActivityState({ onAddExpense }) {
+  const theme = useTheme();
+
+  return (
+    <View
+      style={[
+        styles.noActivity,
+        {
+          gap: theme.space[2],
+          paddingVertical: theme.space[5],
+        },
+      ]}
+    >
+      <Text variant="cardTitle" color="accentText" align="center">
+        No balances yet!
+      </Text>
+      <Text variant="body" color="black60" align="center">
+        Add your first expense to get started
+      </Text>
+      <Button
+        title="Add expense"
+        onPress={onAddExpense}
+        left={
+          <Plus
+            color={theme.colors.white}
+            size={theme.space[5]}
+            strokeWidth={theme.borderWidths.medium}
+          />
+        }
+        style={{
+          marginTop: theme.space[2],
+          backgroundColor: theme.semantic.secondaryAccent,
+          borderColor: theme.semantic.secondaryAccent,
+          paddingHorizontal: theme.space[5],
+        }}
+        textStyle={{ color: theme.colors.white }}
+      />
+    </View>
+  );
+}
+
+function NetPositionState({ config, summary }) {
+  const theme = useTheme();
+  const StatusIcon = config.icon;
+
+  return (
+    <>
+      <View>
+        <Text
+          variant="micro"
+          color="black60"
+          uppercase
+          style={styles.trackedLabel}
+        >
+          Net position
+        </Text>
+        <View style={{ marginTop: theme.space[2] }}>
+          <AmountText
+            value={summary.netPosition}
+            variant="heroAmount"
+            tone={config.amountTone}
+            large
+          />
+        </View>
+      </View>
+      <View
+        style={[
+          styles.statusPill,
+          {
+            backgroundColor: theme.rgba[config.pillBackground],
+            borderRadius: theme.radii.full,
+            gap: theme.space[2],
+            marginTop: theme.space[3],
+            paddingHorizontal: theme.space[3],
+            paddingVertical: theme.space[1],
+          },
+        ]}
+      >
+        <StatusIcon
+          color={theme.semantic[config.pillTone]}
+          size={theme.space[4]}
+          strokeWidth={theme.borderWidths.medium}
+        />
+        <Text variant="micro" color={config.pillTone} numberOfLines={1}>
+          {summary.netPositionLabel}
+        </Text>
+      </View>
+      <View style={[styles.statsRow, { marginTop: theme.space[5] }]}>
+        <HeroStat label="Owed to you" value={summary.owedToYou} />
+        <HeroStat label="You owe" value={summary.youOwe} tone="negative" />
+      </View>
+    </>
+  );
+}
+
+export function HeroCard({ onAddExpense, summary }) {
   const theme = useTheme();
   const netPositionConfig = getNetPositionConfig(summary);
-  const StatusIcon = netPositionConfig.icon;
 
   return (
     <FadeInView delay={theme.motion.normal}>
@@ -86,54 +194,11 @@ export function HeroCard({ summary }) {
           marginBottom: theme.space[6],
         }}
       >
-        <View>
-          <Text
-            variant="micro"
-            color="black60"
-            uppercase
-            style={styles.trackedLabel}
-          >
-            Net position
-          </Text>
-          <View style={{ marginTop: theme.space[2] }}>
-            <AmountText
-              value={summary.netPosition}
-              variant="heroAmount"
-              tone={netPositionConfig.amountTone}
-              large
-            />
-          </View>
-        </View>
-        <View
-          style={[
-            styles.statusPill,
-            {
-              backgroundColor: theme.rgba[netPositionConfig.pillBackground],
-              borderRadius: theme.radii.full,
-              gap: theme.space[2],
-              marginTop: theme.space[3],
-              paddingHorizontal: theme.space[3],
-              paddingVertical: theme.space[1],
-            },
-          ]}
-        >
-          <StatusIcon
-            color={theme.semantic[netPositionConfig.pillTone]}
-            size={theme.space[4]}
-            strokeWidth={theme.borderWidths.medium}
-          />
-          <Text
-            variant="micro"
-            color={netPositionConfig.pillTone}
-            numberOfLines={1}
-          >
-            {summary.netPositionLabel}
-          </Text>
-        </View>
-        <View style={[styles.statsRow, { marginTop: theme.space[5] }]}>
-          <HeroStat label="Owed to you" value={summary.owedToYou} />
-          <HeroStat label="You owe" value={summary.youOwe} tone="negative" />
-        </View>
+        {netPositionConfig.isNoActivity ? (
+          <NoActivityState onAddExpense={onAddExpense} />
+        ) : (
+          <NetPositionState config={netPositionConfig} summary={summary} />
+        )}
       </Card>
     </FadeInView>
   );
@@ -143,6 +208,9 @@ const styles = StyleSheet.create({
   amountRow: {
     alignItems: "baseline",
     flexDirection: "row",
+  },
+  noActivity: {
+    alignItems: "center",
   },
   statusPill: {
     alignItems: "center",

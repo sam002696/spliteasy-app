@@ -103,9 +103,6 @@ export function mapHomeSummary(summary) {
     netPositionType: summary?.net_position?.type || "settled",
     netPositionLabel: summary?.net_position?.label || "Split status",
     owedToYou: formatAmount(summary?.owed_to_you, currency),
-    rawNetPosition: netPositionAmount,
-    rawOwedToYou: Number(summary?.owed_to_you || 0),
-    rawYouOwe: Number(summary?.you_owe || 0),
     youOwe: formatAmount(summary?.you_owe, currency),
   };
 }

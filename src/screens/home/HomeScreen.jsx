@@ -45,6 +45,7 @@ function EmptyActivity() {
 function HomeHeader({
   activeGroupsCount,
   groups,
+  onAddExpense,
   onCreateGroup,
   onOpenGroup,
   summary,
@@ -52,7 +53,7 @@ function HomeHeader({
   return (
     <>
       <TopBar />
-      <HeroCard summary={summary} />
+      <HeroCard summary={summary} onAddExpense={onAddExpense} />
       <ActiveGroupsSection
         activeCount={activeGroupsCount}
         groups={groups}
@@ -109,6 +110,10 @@ export function HomeScreen() {
     router.push("/create-group");
   }, [router]);
 
+  const addExpense = useCallback(() => {
+    router.push("/add-expense");
+  }, [router]);
+
   const refreshHome = useCallback(async () => {
     if (!isAuthenticated) {
       return;
@@ -151,6 +156,7 @@ export function HomeScreen() {
           <HomeHeader
             activeGroupsCount={activeGroupsCount}
             groups={mappedGroups}
+            onAddExpense={addExpense}
             onCreateGroup={createGroup}
             onOpenGroup={openGroup}
             summary={mappedSummary}
