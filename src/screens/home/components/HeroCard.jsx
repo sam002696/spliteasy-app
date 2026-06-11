@@ -217,6 +217,14 @@ function DecorativeOrbs({ palette }) {
   );
 }
 
+function getHeadlineVariant(state) {
+  if (state === "youOwe" || state === "owedToYou") {
+    return "heroAmount";
+  }
+
+  return "sectionTitle";
+}
+
 export function HeroCard({ onAddExpense, onOpenBalances, summary }) {
   const theme = useTheme();
   const state = getHeroState(summary);
@@ -254,7 +262,7 @@ export function HeroCard({ onAddExpense, onOpenBalances, summary }) {
             <HeroBadge copy={copy} palette={palette} />
             <View style={{ gap: theme.space[2] }}>
               <Text
-                variant={state === "settled" ? "screenTitle" : "heroAmount"}
+                variant={getHeadlineVariant(state)}
                 color={palette.title}
                 adjustsFontSizeToFit
                 minimumFontScale={0.76}
@@ -262,7 +270,7 @@ export function HeroCard({ onAddExpense, onOpenBalances, summary }) {
               >
                 {headline}
               </Text>
-              <Text variant="cardTitle" color={palette.body} numberOfLines={2}>
+              <Text variant="body" color={palette.body} numberOfLines={2}>
                 {copy.subtitle}
               </Text>
             </View>
