@@ -326,10 +326,10 @@ const styles = StyleSheet.create({
     width: 104,
   },
   orbTop: {
-    height: 128,
-    right: -28,
-    top: -18,
-    width: 128,
+    height: 95,
+    right: -20,
+    top: -12,
+    width: 95,
   },
   statsRow: {
     flexDirection: "row",

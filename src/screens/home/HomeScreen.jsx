@@ -19,6 +19,7 @@ import {
   ActivityItem,
   FadeInView,
   HeroCard,
+  QuickActionsSection,
   RecentActivitySection,
   TopBar,
 } from "./components";
@@ -35,6 +36,7 @@ function HomeHeader({
   groups,
   hasRecentActivity,
   onAddExpense,
+  onQuickAction,
   onCreateGroup,
   onOpenBalances,
   onOpenGroup,
@@ -48,6 +50,7 @@ function HomeHeader({
         onAddExpense={onAddExpense}
         onOpenBalances={onOpenBalances}
       />
+      <QuickActionsSection onActionPress={onQuickAction} />
       <ActiveGroupsSection
         activeCount={activeGroupsCount}
         groups={groups}
@@ -112,6 +115,32 @@ export function HomeScreen() {
     router.push("/balances");
   }, [router]);
 
+  const inviteMember = useCallback(() => {
+    if (mappedGroups.length === 1) {
+      router.push({
+        pathname: "/groups/[groupId]",
+        params: { groupId: mappedGroups[0].id },
+      });
+      return;
+    }
+
+    router.push("/groups");
+  }, [mappedGroups, router]);
+
+  const handleQuickAction = useCallback(
+    (actionId) => {
+      const handlers = {
+        addExpense,
+        createGroup,
+        inviteMember,
+        settleUp: openBalances,
+      };
+
+      handlers[actionId]?.();
+    },
+    [addExpense, createGroup, inviteMember, openBalances],
+  );
+
   const refreshHome = useCallback(async () => {
     if (!isAuthenticated) {
       return;
@@ -158,6 +187,7 @@ export function HomeScreen() {
             onCreateGroup={createGroup}
             onOpenBalances={openBalances}
             onOpenGroup={openGroup}
+            onQuickAction={handleQuickAction}
             summary={mappedSummary}
           />
         }

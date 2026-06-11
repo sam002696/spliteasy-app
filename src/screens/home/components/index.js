@@ -5,6 +5,7 @@ export * from "./Greeting";
 export * from "./GroupCard";
 export * from "./HeroCard";
 export * from "./HomeEmptyState";
+export * from "./QuickActionsSection";
 export * from "./RecentActivitySection";
 export * from "./SectionHeader";
 export * from "./TopBar";

@@ -138,6 +138,33 @@ const heroCards = Object.freeze({
   }),
 });
 
+const quickActions = Object.freeze({
+  addExpense: Object.freeze({
+    background: colors.peachSoft,
+    icon: colors.orange,
+    title: colors.nearBlack,
+    subtitle: colors.orange,
+  }),
+  createGroup: Object.freeze({
+    background: colors.leafSoft,
+    icon: colors.leafText,
+    title: colors.nearBlack,
+    subtitle: colors.leafText,
+  }),
+  inviteMember: Object.freeze({
+    background: colors.honeySoft,
+    icon: colors.amberText,
+    title: colors.nearBlack,
+    subtitle: colors.amberText,
+  }),
+  settleUp: Object.freeze({
+    background: colors.blueSoft,
+    icon: colors.blueText,
+    title: colors.nearBlack,
+    subtitle: colors.blueText,
+  }),
+});
+
 const semanticDark = Object.freeze({
   ...semanticLight,
   background: colors.nearBlack,
@@ -163,6 +190,7 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     rgba,
     semantic: isDark ? semanticDark : semanticLight,
     heroCards,
+    quickActions,
     space: scaleTokenMap(space, resolvedScale),
     radii: scaleTokenMap(radii, resolvedScale),
     borderWidths,
