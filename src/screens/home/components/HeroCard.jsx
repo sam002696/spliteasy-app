@@ -1,230 +1,332 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { CheckCircle, Clock3, Plus } from "lucide-react-native";
-import { Button, Card, Text, useTheme } from "../../../design-system";
+import { Pressable, StyleSheet, View } from "react-native";
+import {
+  ArrowDown,
+  ArrowUp,
+  BadgeCheck,
+  CircleAlert,
+  Phone,
+  Plus,
+} from "lucide-react-native";
+import { Card, Text, useTheme } from "../../../design-system";
 import { FadeInView } from "./FadeInView";
 
-const TAKA_SYMBOL = "৳";
-
-function getNetPositionConfig(summary) {
+function getHeroState(summary) {
   if (summary.netPositionType === "no_activity") {
-    return {
-      backgroundColor: "#FFD166",
-      isNoActivity: true,
-    };
+    return "noActivity";
   }
 
   if (summary.netPositionType === "you_owe") {
-    return {
-      amountTone: "negative",
-      backgroundColor: "#FFD166",
-      icon: Clock3,
-      pillBackground: "white50",
-      pillTone: "negative",
-    };
+    return "youOwe";
   }
 
   if (summary.netPositionType === "settled") {
+    return "settled";
+  }
+
+  return "owedToYou";
+}
+
+function getHeroCopy(state, summary) {
+  if (state === "noActivity") {
     return {
-      amountTone: "accentText",
-      backgroundColor: "#DFF2FF",
-      icon: CheckCircle,
-      pillBackground: "white60",
-      pillTone: "accentText",
+      action: "Add expense",
+      ActionIcon: Plus,
+      badge: "Getting started",
+      headline: "No balances yet!",
+      Icon: CircleAlert,
+      subtitle: "Add your first expense to get started",
+    };
+  }
+
+  if (state === "youOwe") {
+    return {
+      action: "Settle up",
+      ActionIcon: BadgeCheck,
+      badge: "You owe",
+      headline: summary.netPosition,
+      Icon: ArrowUp,
+      subtitle: summary.netPositionLabel,
+    };
+  }
+
+  if (state === "settled") {
+    return {
+      action: "Add new expense",
+      ActionIcon: Plus,
+      badge: "All clear",
+      headline: "You're all settled!",
+      Icon: BadgeCheck,
+      subtitle: "No pending balances with anyone",
     };
   }
 
   return {
-    amountTone: "accentText",
-    backgroundColor: "#18D9A8",
-    icon: CheckCircle,
-    pillBackground: "white60",
-    pillTone: "accentText",
+    action: "Remind friends",
+    ActionIcon: Phone,
+    badge: "Owed to you",
+    headline: summary.netPosition,
+    Icon: ArrowDown,
+    subtitle: summary.netPositionLabel,
   };
 }
 
-function AmountText({
-  value,
-  variant = "sectionTitle",
-  tone = "accentText",
-  large = false,
-}) {
-  const theme = useTheme();
-  const amount = String(value).replace(/BDT|৳/gi, "").trim();
+function amountWithSign(value, state) {
+  const amount = String(value || "");
 
-  return (
-    <View style={[styles.amountRow, { gap: large ? 0 : theme.space[1] }]}>
-      <Text
-        variant={variant}
-        color={tone}
-        style={{
-          fontFamily: theme.fontFamilies.display,
-          lineHeight: large
-            ? theme.typography.heroAmount.lineHeight
-            : undefined,
-        }}
-      >
-        {TAKA_SYMBOL}
-      </Text>
-      <Text variant={variant} color={tone}>
-        {amount}
-      </Text>
-    </View>
-  );
+  if (state === "youOwe" && !amount.startsWith("-")) {
+    return `-${amount}`;
+  }
+
+  if (state === "owedToYou" && !amount.startsWith("+")) {
+    return `+${amount}`;
+  }
+
+  return amount;
 }
 
-function HeroStat({ label, value, tone = "accentText" }) {
+function HeroBadge({ copy, palette }) {
   const theme = useTheme();
-
-  return (
-    <View style={[styles.stat, { gap: theme.space[1] }]}>
-      <AmountText value={value} tone={tone} />
-      <Text variant="micro" color="black60">
-        {label}
-      </Text>
-    </View>
-  );
-}
-
-function NoActivityState({ onAddExpense }) {
-  const theme = useTheme();
+  const Icon = copy.Icon;
 
   return (
     <View
       style={[
-        styles.noActivity,
+        styles.badge,
         {
+          backgroundColor: palette.badgeBackground,
+          borderRadius: theme.radii.full,
           gap: theme.space[2],
-          paddingVertical: theme.space[5],
+          paddingHorizontal: theme.space[3],
+          paddingVertical: theme.space[2],
         },
       ]}
     >
-      <Text variant="cardTitle" color="accentText" align="center">
-        No balances yet!
-      </Text>
-      <Text variant="body" color="black60" align="center">
-        Add your first expense to get started
-      </Text>
-      <Button
-        title="Add expense"
-        onPress={onAddExpense}
-        left={
-          <Plus
-            color={theme.colors.white}
-            size={theme.space[5]}
-            strokeWidth={theme.borderWidths.medium}
-          />
-        }
-        style={{
-          marginTop: theme.space[2],
-          backgroundColor: theme.semantic.secondaryAccent,
-          borderColor: theme.semantic.secondaryAccent,
-          paddingHorizontal: theme.space[5],
-        }}
-        textStyle={{ color: theme.colors.white }}
+      <Icon
+        color={palette.badgeText}
+        size={theme.space[4]}
+        strokeWidth={theme.borderWidths.medium}
       />
+      <Text
+        variant="micro"
+        color={palette.badgeText}
+        numberOfLines={1}
+        uppercase
+        style={styles.badgeText}
+      >
+        {copy.badge}
+      </Text>
     </View>
   );
 }
 
-function NetPositionState({ config, summary }) {
+function HeroStat({ label, value, tone, palette }) {
   const theme = useTheme();
-  const StatusIcon = config.icon;
+  const amountColor = palette[tone] || palette.amount;
 
   return (
-    <>
-      <View>
-        <Text
-          variant="micro"
-          color="black60"
-          uppercase
-          style={styles.trackedLabel}
-        >
-          Net position
-        </Text>
-        <View style={{ marginTop: theme.space[2] }}>
-          <AmountText
-            value={summary.netPosition}
-            variant="heroAmount"
-            tone={config.amountTone}
-            large
-          />
-        </View>
-      </View>
-      <View
-        style={[
-          styles.statusPill,
-          {
-            backgroundColor: theme.rgba[config.pillBackground],
-            borderRadius: theme.radii.full,
-            gap: theme.space[2],
-            marginTop: theme.space[3],
-            paddingHorizontal: theme.space[3],
-            paddingVertical: theme.space[1],
-          },
-        ]}
+    <View
+      style={[
+        styles.stat,
+        {
+          backgroundColor: palette.statBackground,
+          borderColor: palette.statBorder,
+          borderRadius: theme.radii.lg,
+          borderWidth: theme.borderWidths.thin,
+          gap: theme.space[2],
+          paddingHorizontal: theme.space[4],
+          paddingVertical: theme.space[4],
+        },
+      ]}
+    >
+      <Text variant="micro" color={palette.statLabel} uppercase>
+        {label}
+      </Text>
+      <Text
+        adjustsFontSizeToFit
+        minimumFontScale={0.72}
+        numberOfLines={1}
+        variant="sectionTitle"
+        color={amountColor}
       >
-        <StatusIcon
-          color={theme.semantic[config.pillTone]}
-          size={theme.space[4]}
-          strokeWidth={theme.borderWidths.medium}
-        />
-        <Text variant="micro" color={config.pillTone} numberOfLines={1}>
-          {summary.netPositionLabel}
-        </Text>
-      </View>
-      <View style={[styles.statsRow, { marginTop: theme.space[5] }]}>
-        <HeroStat label="Owed to you" value={summary.owedToYou} />
-        <HeroStat label="You owe" value={summary.youOwe} tone="negative" />
-      </View>
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+function HeroAction({ copy, onPress, palette }) {
+  const theme = useTheme();
+  const Icon = copy.ActionIcon;
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.action,
+        {
+          backgroundColor: palette.actionBackground,
+          borderRadius: theme.radii.full,
+          gap: theme.space[3],
+          marginTop: theme.space[5],
+          minHeight: theme.sizes.minTapTarget + theme.space[4],
+          opacity: pressed ? 0.82 : 1,
+          paddingHorizontal: theme.space[5],
+        },
+      ]}
+    >
+      <Icon
+        color={palette.actionText}
+        size={theme.space[5]}
+        strokeWidth={theme.borderWidths.medium}
+      />
+      <Text
+        adjustsFontSizeToFit
+        minimumFontScale={0.82}
+        variant="cardTitle"
+        color={palette.actionText}
+        numberOfLines={1}
+      >
+        {copy.action}
+      </Text>
+    </Pressable>
+  );
+}
+
+function DecorativeOrbs({ palette }) {
+  return (
+    <>
+      <View
+        pointerEvents="none"
+        style={[
+          styles.orb,
+          styles.orbTop,
+          { backgroundColor: palette.orbPrimary },
+        ]}
+      />
+      <View
+        pointerEvents="none"
+        style={[
+          styles.orb,
+          styles.orbBottom,
+          { backgroundColor: palette.orbSecondary },
+        ]}
+      />
     </>
   );
 }
 
-export function HeroCard({ onAddExpense, summary }) {
+export function HeroCard({ onAddExpense, onOpenBalances, summary }) {
   const theme = useTheme();
-  const netPositionConfig = getNetPositionConfig(summary);
+  const state = getHeroState(summary);
+  const palette = theme.heroCards[state];
+  const copy = getHeroCopy(state, summary);
+  const isBalanceAction = state === "youOwe" || state === "owedToYou";
+  const primaryAction = isBalanceAction ? onOpenBalances : onAddExpense;
+  const headline =
+    state === "youOwe" || state === "owedToYou"
+      ? amountWithSign(copy.headline, state)
+      : copy.headline;
 
   return (
     <FadeInView delay={theme.motion.normal}>
       <Card
         variant="limeHero"
+        padded={false}
         style={{
-          backgroundColor: netPositionConfig.backgroundColor,
+          backgroundColor: palette.background,
           marginBottom: theme.space[6],
         }}
       >
-        {netPositionConfig.isNoActivity ? (
-          <NoActivityState onAddExpense={onAddExpense} />
-        ) : (
-          <NetPositionState config={netPositionConfig} summary={summary} />
-        )}
+        <DecorativeOrbs palette={palette} />
+        <View
+          style={[
+            styles.content,
+            {
+              gap: theme.space[4],
+              padding: theme.space[5],
+              paddingTop: theme.space[6],
+            },
+          ]}
+        >
+          <View style={{ gap: theme.space[3] }}>
+            <HeroBadge copy={copy} palette={palette} />
+            <View style={{ gap: theme.space[2] }}>
+              <Text
+                variant={state === "settled" ? "screenTitle" : "heroAmount"}
+                color={palette.title}
+                adjustsFontSizeToFit
+                minimumFontScale={0.76}
+                numberOfLines={2}
+              >
+                {headline}
+              </Text>
+              <Text variant="cardTitle" color={palette.body} numberOfLines={2}>
+                {copy.subtitle}
+              </Text>
+            </View>
+          </View>
+          <View style={[styles.statsRow, { gap: theme.space[3] }]}>
+            <HeroStat
+              label="You owe"
+              palette={palette}
+              tone="negativeAmount"
+              value={summary.youOwe}
+            />
+            <HeroStat
+              label="Owed to you"
+              palette={palette}
+              tone="positiveAmount"
+              value={summary.owedToYou}
+            />
+          </View>
+          <HeroAction copy={copy} onPress={primaryAction} palette={palette} />
+        </View>
       </Card>
     </FadeInView>
   );
 }
 
 const styles = StyleSheet.create({
-  amountRow: {
-    alignItems: "baseline",
-    flexDirection: "row",
-  },
-  noActivity: {
+  action: {
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
   },
-  statusPill: {
+  badge: {
     alignItems: "center",
     alignSelf: "flex-start",
     flexDirection: "row",
     maxWidth: "100%",
+  },
+  badgeText: {
+    letterSpacing: 1.8,
+  },
+  content: {
+    position: "relative",
+    zIndex: 1,
+  },
+  orb: {
+    borderRadius: 999,
+    position: "absolute",
+  },
+  orbBottom: {
+    bottom: -42,
+    height: 104,
+    left: 48,
+    width: 104,
+  },
+  orbTop: {
+    height: 128,
+    right: -28,
+    top: -18,
+    width: 128,
   },
   statsRow: {
     flexDirection: "row",
   },
   stat: {
     flex: 1,
-  },
-  trackedLabel: {
-    letterSpacing: 4,
   },
 });

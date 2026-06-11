@@ -47,13 +47,18 @@ function HomeHeader({
   groups,
   onAddExpense,
   onCreateGroup,
+  onOpenBalances,
   onOpenGroup,
   summary,
 }) {
   return (
     <>
       <TopBar />
-      <HeroCard summary={summary} onAddExpense={onAddExpense} />
+      <HeroCard
+        summary={summary}
+        onAddExpense={onAddExpense}
+        onOpenBalances={onOpenBalances}
+      />
       <ActiveGroupsSection
         activeCount={activeGroupsCount}
         groups={groups}
@@ -114,6 +119,10 @@ export function HomeScreen() {
     router.push("/add-expense");
   }, [router]);
 
+  const openBalances = useCallback(() => {
+    router.push("/balances");
+  }, [router]);
+
   const refreshHome = useCallback(async () => {
     if (!isAuthenticated) {
       return;
@@ -158,6 +167,7 @@ export function HomeScreen() {
             groups={mappedGroups}
             onAddExpense={addExpense}
             onCreateGroup={createGroup}
+            onOpenBalances={openBalances}
             onOpenGroup={openGroup}
             summary={mappedSummary}
           />
