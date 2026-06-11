@@ -8,6 +8,7 @@ import {
 } from "lucide-react-native";
 import { Text, useTheme } from "../../../design-system";
 import { FadeInView } from "./FadeInView";
+import { SectionHeader } from "./SectionHeader";
 
 const quickActions = [
   {
@@ -92,13 +93,7 @@ export function QuickActionsSection({ onActionPress }) {
   return (
     <FadeInView delay={theme.motion.normal + theme.motion.fast}>
       <View style={{ marginBottom: theme.space[6] }}>
-        <Text
-          variant="screenTitle"
-          color="text"
-          style={{ marginBottom: theme.space[4] }}
-        >
-          Quick actions
-        </Text>
+        <SectionHeader title="Quick actions" />
         <View style={[styles.grid, { gap: theme.space[3] }]}>
           {quickActions.map((action) => (
             <QuickActionCard

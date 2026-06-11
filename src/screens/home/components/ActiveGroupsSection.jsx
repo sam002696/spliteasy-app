@@ -1,13 +1,57 @@
 import React, { useCallback } from "react";
 import { Plus } from "lucide-react-native";
 import { FlatList, View } from "react-native";
-import { Button, useTheme } from "../../../design-system";
+import { Button, Card, Text, useTheme } from "../../../design-system";
 import { FadeInView } from "./FadeInView";
 import { GroupCard } from "./GroupCard";
-import { HomeEmptyState } from "./HomeEmptyState";
 import { SectionHeader } from "./SectionHeader";
 
-const noGroupsImage = require("../../../../assets/remy/no_groups.png");
+function EmptyGroupsCard({ onCreateGroup }) {
+  const theme = useTheme();
+
+  return (
+    <Card
+      variant="plain"
+      style={{
+        borderRadius: theme.radii.xl,
+        paddingHorizontal: theme.space[5],
+        paddingVertical: theme.space[6],
+      }}
+    >
+      <View style={{ gap: theme.space[5] }}>
+        <View style={{ gap: theme.space[3] }}>
+          <Text variant="cardTitle" color="text">
+            Looking for a crew?
+          </Text>
+          <Text variant="body" color="textMuted">
+            Create a trip, roommate or dinner group and split expenses together.
+          </Text>
+        </View>
+        <Button
+          title="Create group"
+          size="md"
+          onPress={onCreateGroup}
+          left={
+            <Plus
+              color={theme.colors.white}
+              size={theme.space[4]}
+              strokeWidth={theme.borderWidths.medium}
+            />
+          }
+          style={{
+            alignSelf: "flex-start",
+            backgroundColor: theme.semantic.secondaryAccent,
+            borderColor: theme.semantic.secondaryAccent,
+            paddingHorizontal: theme.space[5],
+          }}
+          textStyle={{
+            color: theme.colors.white,
+          }}
+        />
+      </View>
+    </Card>
+  );
+}
 
 export function ActiveGroupsSection({
   activeCount,
@@ -29,7 +73,7 @@ export function ActiveGroupsSection({
   return (
     <FadeInView delay={theme.motion.spring}>
       <View style={{ marginBottom: theme.space[6] }}>
-        <SectionHeader title="Active groups" action={`${count} live`} />
+        <SectionHeader title="Active groups" action={hasGroups ? `${count} live` : null} />
         {hasGroups ? (
           <FlatList
             data={groups}
@@ -43,33 +87,7 @@ export function ActiveGroupsSection({
             }}
           />
         ) : (
-          <HomeEmptyState
-            image={noGroupsImage}
-            action={
-              <Button
-                title="Add group"
-                size="sm"
-                onPress={onCreateGroup}
-                left={
-                  <Plus
-                    color={theme.colors.white}
-                    size={theme.space[4]}
-                    strokeWidth={theme.borderWidths.medium}
-                  />
-                }
-                style={{
-                  backgroundColor: theme.semantic.secondaryAccent,
-                  borderColor: theme.semantic.secondaryAccent,
-                  paddingHorizontal: theme.space[5],
-                }}
-                textStyle={{
-                  color: theme.colors.white,
-                }}
-              />
-            }
-            title="No groups yet"
-            body="Create a group to start tracking shared expenses together."
-          />
+          <EmptyGroupsCard onCreateGroup={onCreateGroup} />
         )}
       </View>
     </FadeInView>
