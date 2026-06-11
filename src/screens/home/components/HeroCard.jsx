@@ -169,7 +169,7 @@ function HeroAction({ copy, onPress, palette }) {
           backgroundColor: palette.actionBackground,
           borderRadius: theme.radii.full,
           gap: theme.space[3],
-          marginTop: theme.space[5],
+          marginTop: theme.space[1],
           minHeight: theme.sizes.minTapTarget + theme.space[4],
           opacity: pressed ? 0.82 : 1,
           paddingHorizontal: theme.space[5],
