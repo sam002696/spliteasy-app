@@ -19,7 +19,6 @@ import {
   ActivityItem,
   FadeInView,
   HeroCard,
-  HomeEmptyState,
   RecentActivitySection,
   TopBar,
 } from "./components";
@@ -30,21 +29,11 @@ import {
 } from "./utils";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-const noRecentActivityImage = require("../../../assets/remy/no_recent_activity.png");
-
-function EmptyActivity() {
-  return (
-    <HomeEmptyState
-      image={noRecentActivityImage}
-      title="No recent activity"
-      body="New expenses, settlements, and group updates will appear here."
-    />
-  );
-}
 
 function HomeHeader({
   activeGroupsCount,
   groups,
+  hasRecentActivity,
   onAddExpense,
   onCreateGroup,
   onOpenBalances,
@@ -65,7 +54,7 @@ function HomeHeader({
         onCreateGroup={onCreateGroup}
         onOpenGroup={onOpenGroup}
       />
-      <RecentActivitySection />
+      {hasRecentActivity ? <RecentActivitySection /> : null}
     </>
   );
 }
@@ -160,11 +149,11 @@ export function HomeScreen() {
         data={mappedActivities}
         keyExtractor={(item) => item.id}
         renderItem={renderActivity}
-        ListEmptyComponent={<EmptyActivity />}
         ListHeaderComponent={
           <HomeHeader
             activeGroupsCount={activeGroupsCount}
             groups={mappedGroups}
+            hasRecentActivity={mappedActivities.length > 0}
             onAddExpense={addExpense}
             onCreateGroup={createGroup}
             onOpenBalances={openBalances}
