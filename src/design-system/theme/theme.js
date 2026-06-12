@@ -171,7 +171,7 @@ const homeActivity = Object.freeze({
 });
 
 const bottomNav = Object.freeze({
-  background: colors.nearBlack,
+  background: colors.oxblood,
   border: rgba.white10,
   activeBackground: rgba.white10,
   activeIconBackground: rgba.white16,

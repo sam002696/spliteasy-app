@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
 import { AppState, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "../../design-system";
 import {
   logout,
@@ -47,6 +47,7 @@ function getPushStatusLabel({
 
 export function ProfileScreen() {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector(selectAuth);
@@ -167,7 +168,10 @@ export function ProfileScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           padding: theme.space[4],
-          paddingBottom: theme.space[8],
+          paddingBottom:
+            Math.max(insets.bottom, theme.space[3]) +
+            theme.sizes.minTapTarget +
+            theme.space[8],
         }}
       >
         <ProfileHeader />
