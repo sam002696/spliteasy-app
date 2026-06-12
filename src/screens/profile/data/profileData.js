@@ -2,10 +2,10 @@ import {
   Bell,
   CircleHelp,
   CircleDollarSign,
-  History,
+  Clock3,
+  DollarSign,
   LockKeyhole,
   LogOut,
-  PencilLine,
 } from "lucide-react-native";
 
 export const profileUser = {
@@ -14,15 +14,6 @@ export const profileUser = {
   initials: "SR",
   plan: "Split summary",
 };
-
-export const profileActions = [
-  {
-    id: "edit-profile",
-    label: "Edit profile",
-    value: "Name, email, avatar",
-    icon: PencilLine,
-  },
-];
 
 export const settingsRows = [
   {
@@ -47,13 +38,13 @@ export const settingsRows = [
     id: "settlement-history",
     label: "Settlement history",
     value: "Manual records",
-    icon: History,
+    icon: Clock3,
   },
   {
     id: "manual-settlements",
     label: "Manual settlements",
     value: "External tracking",
-    icon: CircleDollarSign,
+    icon: DollarSign,
   },
   {
     id: "support",

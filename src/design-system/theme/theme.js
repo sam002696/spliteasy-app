@@ -88,7 +88,7 @@ const heroCards = Object.freeze({
     orbSecondary: colors.butter,
   }),
   youOwe: Object.freeze({
-    background: colors.ink,
+    background: colors.oxblood,
     title: colors.ember,
     body: rgba.white50,
     amount: colors.ember,
@@ -165,6 +165,49 @@ const quickActions = Object.freeze({
   }),
 });
 
+const profile = Object.freeze({
+  identityBackground: colors.cream,
+  avatarBackground: colors.ink,
+  avatarText: colors.orange,
+  actionBackground: colors.orange,
+  actionText: colors.white,
+  orbPrimary: colors.peachSoft,
+  orbSecondary: colors.leafSoft,
+  rowBackground: colors.white,
+  rowSeparator: rgba.black06,
+  chevron: rgba.black20,
+  iconTiles: Object.freeze({
+    notifications: Object.freeze({
+      background: colors.peachSoft,
+      icon: colors.orange,
+    }),
+    "default-currency": Object.freeze({
+      background: colors.leafSoft,
+      icon: colors.leafText,
+    }),
+    privacy: Object.freeze({
+      background: colors.blueSoft,
+      icon: colors.blueText,
+    }),
+    "settlement-history": Object.freeze({
+      background: colors.lavenderSoft,
+      icon: colors.purpleText,
+    }),
+    "manual-settlements": Object.freeze({
+      background: colors.honeySoft,
+      icon: colors.amberText,
+    }),
+    support: Object.freeze({
+      background: colors.greenSoft,
+      icon: colors.greenText,
+    }),
+    "sign-out": Object.freeze({
+      background: colors.redSoft,
+      icon: colors.red,
+    }),
+  }),
+});
+
 const semanticDark = Object.freeze({
   ...semanticLight,
   background: colors.nearBlack,
@@ -190,6 +233,7 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     rgba,
     semantic: isDark ? semanticDark : semanticLight,
     heroCards,
+    profile,
     quickActions,
     space: scaleTokenMap(space, resolvedScale),
     radii: scaleTokenMap(radii, resolvedScale),

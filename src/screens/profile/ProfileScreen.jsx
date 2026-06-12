@@ -10,19 +10,22 @@ import {
   useAppSelector,
 } from "../../store";
 import {
-  // ProfileFooter,
   ProfileHeader,
   ProfileIdentityCard,
   SettingsSection,
 } from "./components";
-import { accountRows, profileActions, settingsRows } from "./data/profileData";
+import { accountRows, settingsRows } from "./data/profileData";
 import {
   disableExpoPushNotifications,
   enableExpoPushNotifications,
   getExpoPushNotificationStatus,
 } from "../../services/push/expoNotifications";
 
-function getPushStatusLabel({ isLoading, permissionStatus, preferenceEnabled }) {
+function getPushStatusLabel({
+  isLoading,
+  permissionStatus,
+  preferenceEnabled,
+}) {
   if (isLoading) {
     return "Updating...";
   }
@@ -82,28 +85,27 @@ export function ProfileScreen() {
     };
   }, [refreshPushStatus]);
 
-  const handlePushToggle = useCallback(
-    async (nextValue) => {
-      setIsPushUpdating(true);
+  const handlePushToggle = useCallback(async (nextValue) => {
+    setIsPushUpdating(true);
 
-      try {
-        const status = nextValue
-          ? await enableExpoPushNotifications()
-          : await disableExpoPushNotifications();
+    try {
+      const status = nextValue
+        ? await enableExpoPushNotifications()
+        : await disableExpoPushNotifications();
 
-        setPushStatus((currentStatus) => ({
-          ...currentStatus,
-          ...status,
-          preferenceEnabled: nextValue,
-          pushEnabled:
-            nextValue && (status?.permissionStatus || currentStatus.permissionStatus) === "granted",
-        }));
-      } finally {
-        setIsPushUpdating(false);
-      }
-    },
-    [],
-  );
+      setPushStatus((currentStatus) => ({
+        ...currentStatus,
+        ...status,
+        preferenceEnabled: nextValue,
+        pushEnabled:
+          nextValue &&
+          (status?.permissionStatus || currentStatus.permissionStatus) ===
+            "granted",
+      }));
+    } finally {
+      setIsPushUpdating(false);
+    }
+  }, []);
 
   const profileSettingsRows = useMemo(
     () =>
@@ -170,11 +172,6 @@ export function ProfileScreen() {
       >
         <ProfileHeader />
         <ProfileIdentityCard />
-        {/* <SettingsSection
-          title="Profile"
-          rows={profileActions}
-          delay={theme.motion.normal}
-        /> */}
         <SettingsSection
           title="Settings"
           rows={profileSettingsRows}
@@ -188,7 +185,6 @@ export function ProfileScreen() {
           disabledRowId={loading.logout ? "sign-out" : undefined}
           onRowPress={handleAccountRowPress}
         />
-        {/* <ProfileFooter /> */}
       </ScrollView>
     </SafeAreaView>
   );

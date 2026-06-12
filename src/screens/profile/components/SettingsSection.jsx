@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { Text, useTheme } from "../../../design-system";
+import { Card, Text, useTheme } from "../../../design-system";
 import { AnimatedSection } from "./AnimatedSection";
 import { SettingsRow } from "./SettingsRow";
 
@@ -19,16 +19,23 @@ export function SettingsSection({
         <Text variant="sectionTitle" color="text">
           {title}
         </Text>
-        <View style={{ gap: theme.space[2] }}>
+        <Card
+          padded={false}
+          style={{
+            backgroundColor: theme.profile.rowBackground,
+            borderRadius: theme.radii.xl,
+          }}
+        >
           {rows.map((row) => (
             <SettingsRow
               disabled={disabledRowId === row.id}
+              isLast={row.id === rows[rows.length - 1]?.id}
               key={row.id}
               onPress={() => onRowPress?.(row)}
               row={row}
             />
           ))}
-        </View>
+        </Card>
       </View>
     </AnimatedSection>
   );

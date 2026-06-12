@@ -1,6 +1,5 @@
 import React from "react";
-import { Settings } from "lucide-react-native";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Text, useTheme } from "../../../design-system";
 import { AnimatedSection } from "./AnimatedSection";
 
@@ -18,27 +17,6 @@ export function ProfileHeader() {
             Profile
           </Text>
         </View>
-        <Pressable
-          accessibilityLabel="Profile settings"
-          accessibilityRole="button"
-          hitSlop={theme.space[2]}
-          style={({ pressed }) => [
-            styles.action,
-            {
-              backgroundColor: theme.semantic.surface,
-              borderRadius: theme.radii.full,
-              height: theme.sizes.iconButton,
-              opacity: pressed ? 0.78 : 1,
-              width: theme.sizes.iconButton,
-            },
-          ]}
-        >
-          <Settings
-            color={theme.semantic.text}
-            size={theme.space[5]}
-            strokeWidth={theme.borderWidths.medium}
-          />
-        </Pressable>
       </View>
     </AnimatedSection>
   );
