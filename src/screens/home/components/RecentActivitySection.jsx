@@ -9,7 +9,7 @@ export function RecentActivitySection() {
 
   return (
     <FadeInView delay={theme.motion.screen}>
-      <View style={{ paddingBottom: theme.space[2] }}>
+      <View style={{ paddingBottom: theme.space[3] }}>
         <SectionHeader title="Recent activity" action="View all" />
       </View>
     </FadeInView>

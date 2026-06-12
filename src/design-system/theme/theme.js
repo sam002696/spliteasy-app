@@ -165,6 +165,11 @@ const quickActions = Object.freeze({
   }),
 });
 
+const homeActivity = Object.freeze({
+  cardBackground: colors.white,
+  amountBackground: colors.lightGray,
+});
+
 const profile = Object.freeze({
   identityBackground: colors.cream,
   avatarBackground: colors.ink,
@@ -233,6 +238,7 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     rgba,
     semantic: isDark ? semanticDark : semanticLight,
     heroCards,
+    homeActivity,
     profile,
     quickActions,
     space: scaleTokenMap(space, resolvedScale),

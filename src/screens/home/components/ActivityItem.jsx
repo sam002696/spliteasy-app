@@ -2,7 +2,10 @@ import React, { memo } from "react";
 import { StyleSheet, View } from "react-native";
 import { Avatar, Text, useTheme } from "../../../design-system";
 
-export const ActivityItem = memo(function ActivityItem({ activity }) {
+export const ActivityItem = memo(function ActivityItem({
+  activity,
+  isLast = false,
+}) {
   const theme = useTheme();
   const hasAmount = activity.amount !== null && activity.amount !== undefined;
   const amount = hasAmount
@@ -15,22 +18,24 @@ export const ActivityItem = memo(function ActivityItem({ activity }) {
       style={[
         styles.root,
         {
-          borderBottomColor: theme.semantic.border,
+          backgroundColor: theme.homeActivity.cardBackground,
+          borderRadius: theme.radii.lg,
           gap: theme.space[3],
-          paddingVertical: theme.space[3],
+          marginBottom: isLast ? 0 : theme.space[3],
+          padding: theme.space[4],
         },
       ]}
     >
-      <Avatar name={activity.user} size="md" />
+      <Avatar name={activity.user} size="md" textColor={theme.colors.white} />
       <View style={[styles.content, { gap: theme.space[1] }]}>
         {headline ? (
-          <Text variant="bodySmall" color="text" numberOfLines={1}>
+          <Text variant="field" color="text" numberOfLines={1}>
             {headline}
           </Text>
         ) : (
-          <Text variant="bodySmall" color="text" numberOfLines={1}>
+          <Text variant="field" color="text" numberOfLines={1}>
             <Text
-              variant="bodySmall"
+              variant="field"
               color="text"
               style={{ fontWeight: theme.fontWeights.semibold }}
             >
@@ -44,15 +49,20 @@ export const ActivityItem = memo(function ActivityItem({ activity }) {
         </Text>
       </View>
       {hasAmount ? (
-        <View style={styles.amount}>
+        <View
+          style={[
+            styles.amount,
+            {
+              backgroundColor: theme.homeActivity.amountBackground,
+              borderRadius: theme.radii.full,
+              paddingHorizontal: theme.space[3],
+              paddingVertical: theme.space[1],
+            },
+          ]}
+        >
           <Text variant="field" color={activity.tone}>
             {amount}
           </Text>
-          {activity.label ? (
-            <Text variant="micro" color="textMuted">
-              {activity.label}
-            </Text>
-          ) : null}
         </View>
       ) : null}
     </View>
@@ -65,7 +75,6 @@ const styles = StyleSheet.create({
   },
   root: {
     alignItems: "center",
-    borderBottomWidth: 0.5,
     flexDirection: "row",
   },
   content: {

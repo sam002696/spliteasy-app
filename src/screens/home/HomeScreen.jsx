@@ -158,10 +158,13 @@ export function HomeScreen() {
   const renderActivity = useCallback(
     ({ item, index }) => (
       <FadeInView delay={theme.motion.screen + index * (theme.motion.fast / 2)}>
-        <ActivityItem activity={item} />
+        <ActivityItem
+          activity={item}
+          isLast={index === mappedActivities.length - 1}
+        />
       </FadeInView>
     ),
-    [theme.motion.fast, theme.motion.screen],
+    [mappedActivities.length, theme.motion.fast, theme.motion.screen],
   );
 
   return (
