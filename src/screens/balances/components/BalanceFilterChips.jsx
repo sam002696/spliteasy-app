@@ -31,7 +31,7 @@ export function BalanceFilterChips({ filters, value, onChange }) {
                 },
               ]}
             >
-              <Text variant="bodySmall" color={selected ? "accent" : "text"}>
+              <Text variant="bodySmall" color={selected ? theme.colors.white : "text"}>
                 {filter.label}
               </Text>
             </Pressable>

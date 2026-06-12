@@ -39,7 +39,7 @@ function TopBarActionButton({ count = 0, icon: Icon, label, onPress }) {
       ]}
     >
       <Icon
-        color={theme.semantic.accent}
+        color={theme.colors.white}
         size={theme.space[5]}
         strokeWidth={theme.borderWidths.medium}
       />
@@ -92,7 +92,12 @@ export function TopBar() {
         <View style={[styles.identity, { gap: theme.space[3] }]}>
           <Avatar
             name={displayName}
-            textColor="accent"
+            textColor={theme.colors.white}
+            textStyle={{
+              fontFamily: theme.fontFamilies.bodyBold,
+              fontSize: theme.typography.field.fontSize,
+              lineHeight: theme.typography.field.lineHeight,
+            }}
             style={{
               backgroundColor: theme.semantic.surfaceStrong,
             }}

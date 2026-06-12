@@ -19,7 +19,14 @@ function initialsFor(name = "") {
     .toUpperCase();
 }
 
-export function Avatar({ name, source, size = "md", style, textColor = "accent" }) {
+export function Avatar({
+  name,
+  source,
+  size = "md",
+  style,
+  textColor = "accent",
+  textStyle,
+}) {
   const theme = useTheme();
   const dimension = theme.sizes[sizes[size]] || theme.sizes.avatarMd;
   const initials = initialsFor(name);
@@ -43,7 +50,7 @@ export function Avatar({ name, source, size = "md", style, textColor = "accent" 
       {source ? (
         <Image source={source} style={{ height: dimension, width: dimension }} />
       ) : (
-        <Text variant="micro" color={textColor}>
+        <Text variant="micro" color={textColor} style={textStyle}>
           {initials}
         </Text>
       )}
