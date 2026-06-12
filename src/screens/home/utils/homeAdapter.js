@@ -82,6 +82,21 @@ function getLatestExpenseLabel(group) {
   return latestExpense.description || "Recent expense";
 }
 
+function getLatestExpenseWithAmount(group) {
+  const latestExpense = group.latest_expense;
+
+  if (!latestExpense) {
+    return "No expenses yet";
+  }
+
+  const amount = formatAmount(
+    latestExpense.amount,
+    latestExpense.currency || group.base_currency,
+  );
+
+  return `${latestExpense.description || "Recent expense"} · ${amount}`;
+}
+
 function getActivityAction(type) {
   if (type === "settlement_created") {
     return "settled";
@@ -115,12 +130,17 @@ export function mapHomeGroup(group) {
     name: group.name,
     memberCount: group.members_count || 0,
     latestExpense: getLatestExpenseLabel(group),
+    latestExpenseDetail: getLatestExpenseWithAmount(group),
+    updatedAt: formatRelativeDate(group.latest_expense?.created_at || group.updated_at),
     balance: formatAmount(position.amount, group.base_currency),
     balanceTone: getPositionTone(position.type),
     category: group.category,
     categoryTone: categoryToneByName[group.category] || "lime",
     members: getMembers(group),
     settlementProgress: Number(group.summary?.settled_percentage || 0) / 100,
+    activityCount: `${group.expenses_count || 0} ${
+      group.expenses_count === 1 ? "expense" : "expenses"
+    }`,
   };
 }
 

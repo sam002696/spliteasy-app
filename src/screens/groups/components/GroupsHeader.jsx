@@ -17,7 +17,9 @@ function HeaderIconButton({ icon: Icon, label, tone = "neutral", onPress }) {
       style={({ pressed }) => [
         styles.iconButton,
         {
-          backgroundColor: isDark ? theme.semantic.surfaceStrong : theme.semantic.surface,
+          backgroundColor: isDark
+            ? theme.semantic.surfaceStrong
+            : theme.semantic.surface,
           borderRadius: theme.radii.full,
           height: theme.sizes.iconButton,
           opacity: pressed ? 0.78 : 1,
@@ -40,10 +42,7 @@ export function GroupsHeader({ onCreateGroup }) {
   return (
     <AnimatedSection>
       <View style={[styles.root, { marginBottom: theme.space[5] }]}>
-        <View style={{ flex: 1, gap: theme.space[1] }}>
-          <Text variant="label" color="textMuted" uppercase>
-            SplitEasy
-          </Text>
+        <View>
           <Text variant="screenTitle" color="text">
             Groups
           </Text>
@@ -51,7 +50,12 @@ export function GroupsHeader({ onCreateGroup }) {
         <View style={[styles.actions, { gap: theme.space[2] }]}>
           <HeaderIconButton icon={Search} label="Search groups" />
           <HeaderIconButton icon={SlidersHorizontal} label="Filter groups" />
-          <HeaderIconButton icon={Plus} label="Create group" tone="dark" onPress={onCreateGroup} />
+          <HeaderIconButton
+            icon={Plus}
+            label="Create group"
+            tone="dark"
+            onPress={onCreateGroup}
+          />
         </View>
       </View>
     </AnimatedSection>

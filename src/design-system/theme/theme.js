@@ -170,13 +170,40 @@ const homeActivity = Object.freeze({
   amountBackground: colors.lightGray,
 });
 
+const groupsScreen = Object.freeze({
+  tabsBackground: colors.white,
+  tabActiveBackground: colors.orange,
+  tabActiveText: colors.white,
+  tabInactiveText: colors.taupe,
+  cardBackground: colors.white,
+  cardDivider: rgba.black08,
+  metaText: colors.midGray,
+  iconTileDangerBackground: colors.redSoft,
+  chevronBackground: colors.white,
+  chevronBorder: rgba.black08,
+  memberColors: Object.freeze([
+    Object.freeze({
+      background: colors.yellow,
+      text: colors.nearBlack,
+    }),
+    Object.freeze({
+      background: colors.lavenderSoft,
+      text: colors.nearBlack,
+    }),
+    Object.freeze({
+      background: colors.blueSoft,
+      text: colors.nearBlack,
+    }),
+  ]),
+});
+
 const bottomNav = Object.freeze({
   background: colors.oxblood,
   border: rgba.white10,
   activeBackground: rgba.white10,
   activeIconBackground: rgba.white16,
   activeText: colors.white,
-  inactiveIcon: rgba.white50,
+  inactiveIcon: colors.cream,
 });
 
 const profile = Object.freeze({
@@ -249,6 +276,7 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     heroCards,
     bottomNav,
     homeActivity,
+    groupsScreen,
     profile,
     quickActions,
     space: scaleTokenMap(space, resolvedScale),

@@ -38,11 +38,22 @@ function BalanceIcon({ tone }) {
   }
 
   return (
-    <Icon
-      color={color}
-      size={theme.space[5]}
-      strokeWidth={theme.borderWidths.medium}
-    />
+    <View
+      style={{
+        alignItems: "center",
+        backgroundColor: theme.groupsScreen.iconTileDangerBackground,
+        borderRadius: theme.radii.md,
+        height: theme.sizes.iconButton,
+        justifyContent: "center",
+        width: theme.sizes.iconButton,
+      }}
+    >
+      <Icon
+        color={color}
+        size={theme.space[5]}
+        strokeWidth={theme.borderWidths.medium}
+      />
+    </View>
   );
 }
 
@@ -68,11 +79,11 @@ function MetaItem({ icon: Icon, children }) {
   return (
     <View style={[styles.metaItem, { gap: theme.space[1] }]}>
       <Icon
-        color={theme.rgba.white50}
+        color={theme.groupsScreen.metaText}
         size={theme.space[4]}
         strokeWidth={theme.borderWidths.medium}
       />
-      <Text variant="label" color="white50" numberOfLines={1}>
+      <Text variant="body" color={theme.groupsScreen.metaText} numberOfLines={1}>
         {children}
       </Text>
     </View>
@@ -81,6 +92,7 @@ function MetaItem({ icon: Icon, children }) {
 
 export function GroupListCard({ group, index, onPress }) {
   const theme = useTheme();
+  const palette = theme.groupsScreen;
   const pressed = useSharedValue(0);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(theme.space[4]);
@@ -127,10 +139,16 @@ export function GroupListCard({ group, index, onPress }) {
       }}
       style={animatedStyle}
     >
-      <Card variant="black">
+      <Card
+        variant="plain"
+        style={{
+          backgroundColor: palette.cardBackground,
+          borderRadius: theme.radii.xl,
+        }}
+      >
         <View style={styles.topRow}>
           <View style={{ flex: 1, gap: theme.space[1] }}>
-            <Text variant="sectionTitle" color="white" numberOfLines={1}>
+            <Text variant="sectionTitle" color="text" numberOfLines={1}>
               {group.name}
             </Text>
             <View style={[styles.metaRow, { gap: theme.space[3] }]}>
@@ -141,14 +159,19 @@ export function GroupListCard({ group, index, onPress }) {
           <Badge label={group.category} tone={group.categoryTone} />
         </View>
 
-        <View style={{ marginTop: theme.space[5], gap: theme.space[2] }}>
-          <Text variant="label" color="white50">
+        <Divider
+          color={palette.cardDivider}
+          style={{ marginVertical: theme.space[5] }}
+        />
+
+        <View style={{ gap: theme.space[2] }}>
+          <Text variant="field" color={palette.metaText} uppercase>
             Latest expense
           </Text>
           <View style={styles.latestRow}>
             <Text
-              variant="body"
-              color="white"
+              variant="cardTitle"
+              color="text"
               numberOfLines={1}
               style={styles.latestText}
             >
@@ -156,20 +179,18 @@ export function GroupListCard({ group, index, onPress }) {
             </Text>
             <View style={[styles.time, { gap: theme.space[1] }]}>
               <Clock3
-                color={theme.rgba.white50}
+                color={palette.metaText}
                 size={theme.space[4]}
                 strokeWidth={theme.borderWidths.medium}
               />
-              <Text variant="label" color="white50" numberOfLines={1}>
+              <Text variant="body" color={palette.metaText} numberOfLines={1}>
                 {group.updatedAt}
               </Text>
             </View>
           </View>
         </View>
 
-        <Divider color="white10" style={{ marginVertical: theme.space[4] }} />
-
-        <View style={styles.balanceRow}>
+        <View style={[styles.balanceRow, { marginTop: theme.space[5] }]}>
           <View style={{ flex: 1, gap: theme.space[2] }}>
             <View style={[styles.balanceTextRow, { gap: theme.space[2] }]}>
               <BalanceIcon tone={group.balanceTone} />
@@ -181,25 +202,48 @@ export function GroupListCard({ group, index, onPress }) {
                 >
                   {position.amount}
                 </Text>
-                <Text variant="label" color="white50" numberOfLines={1}>
+                <Text variant="body" color={palette.metaText} numberOfLines={1}>
                   {position.label}
                 </Text>
               </View>
             </View>
-            <ProgressBar
-              value={group.settlementProgress}
-              max={1}
-              tone={balanceTone}
-              height={theme.space[2]}
-            />
           </View>
-          <MemberStack members={group.members} count={group.memberCount} />
-          <ChevronRight
-            color={theme.rgba.white50}
-            size={theme.space[5]}
-            strokeWidth={theme.borderWidths.medium}
-          />
+          <View style={[styles.trailing, { gap: theme.space[2] }]}>
+            <MemberStack
+              members={group.members}
+              count={group.memberCount}
+              palettes={palette.memberColors}
+            />
+            <View
+              style={{
+                alignItems: "center",
+                backgroundColor: palette.chevronBackground,
+                borderColor: palette.chevronBorder,
+                borderRadius: theme.radii.full,
+                borderWidth: theme.borderWidths.hairline,
+                height: theme.sizes.iconButton,
+                justifyContent: "center",
+                width: theme.sizes.iconButton,
+              }}
+            >
+              <ChevronRight
+                color={palette.metaText}
+                size={theme.space[5]}
+                strokeWidth={theme.borderWidths.medium}
+              />
+            </View>
+          </View>
         </View>
+        <ProgressBar
+          value={group.settlementProgress}
+          max={1}
+          tone={balanceTone}
+          height={theme.space[2]}
+          style={{
+            backgroundColor: theme.semantic.inactive,
+            marginTop: theme.space[5],
+          }}
+        />
       </Card>
     </AnimatedPressable>
   );
@@ -241,5 +285,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  trailing: {
+    alignItems: "center",
+    flexDirection: "row",
   },
 });

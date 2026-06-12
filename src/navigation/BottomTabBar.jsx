@@ -14,8 +14,8 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
   const palette = theme.bottomNav;
   const active = useSharedValue(isFocused ? 1 : 0);
   const Icon = item.icon;
-  const itemHeight = Math.round(theme.sizes.minTapTarget);
-  const iconSize = Math.round(theme.space[6]);
+  const itemHeight = Math.round(theme.sizes.minTapTarget + theme.space[2]);
+  const iconSize = Math.round(theme.space[8]);
   const ItemContainer = Platform.OS === "android" ? View : Animated.View;
 
   useEffect(() => {
@@ -83,8 +83,8 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
         >
           <Icon
             color={isFocused ? palette.activeText : palette.inactiveIcon}
-            size={theme.space[5] - 2}
-            strokeWidth={theme.borderWidths.medium}
+            size={theme.space[6]}
+            strokeWidth={theme.borderWidths.medium + 0.2}
           />
         </View>
         {isFocused ? (
