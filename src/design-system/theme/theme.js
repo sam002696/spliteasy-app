@@ -170,6 +170,15 @@ const homeActivity = Object.freeze({
   amountBackground: colors.lightGray,
 });
 
+const bottomNav = Object.freeze({
+  background: colors.nearBlack,
+  border: rgba.white10,
+  activeBackground: rgba.white10,
+  activeIconBackground: rgba.white16,
+  activeText: colors.white,
+  inactiveIcon: rgba.white50,
+});
+
 const profile = Object.freeze({
   identityBackground: colors.cream,
   avatarBackground: colors.ink,
@@ -238,6 +247,7 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     rgba,
     semantic: isDark ? semanticDark : semanticLight,
     heroCards,
+    bottomNav,
     homeActivity,
     profile,
     quickActions,

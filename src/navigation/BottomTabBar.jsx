@@ -11,6 +11,7 @@ import { tabItems } from "./tabItems";
 
 function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
   const theme = useTheme();
+  const palette = theme.bottomNav;
   const active = useSharedValue(isFocused ? 1 : 0);
   const Icon = item.icon;
   const itemHeight = Math.round(theme.sizes.minTapTarget);
@@ -60,7 +61,7 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
             style={[
               StyleSheet.absoluteFillObject,
               {
-                backgroundColor: theme.semantic.surfaceStrong,
+                backgroundColor: palette.activeBackground,
                 borderRadius: itemHeight / 2,
               },
             ]}
@@ -71,7 +72,7 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
             styles.iconWrap,
             {
               backgroundColor: isFocused
-                ? theme.semantic.accent
+                ? palette.activeIconBackground
                 : theme.colors.transparent,
               borderRadius: iconSize / 2,
               height: iconSize,
@@ -81,13 +82,13 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
           ]}
         >
           <Icon
-            color={isFocused ? theme.semantic.accentText : theme.semantic.textMuted}
+            color={isFocused ? palette.activeText : palette.inactiveIcon}
             size={theme.space[5] - 2}
             strokeWidth={theme.borderWidths.medium}
           />
         </View>
         {isFocused ? (
-          <Text variant="micro" color="accent" numberOfLines={1}>
+          <Text variant="micro" color={palette.activeText} numberOfLines={1}>
             {item.label}
           </Text>
         ) : null}
@@ -98,6 +99,7 @@ function BottomTabItem({ item, isFocused, onPress, onLongPress }) {
 
 export function BottomTabBar({ state, descriptors, navigation }) {
   const theme = useTheme();
+  const palette = theme.bottomNav;
   const insets = useSafeAreaInsets();
 
   return (
@@ -105,11 +107,16 @@ export function BottomTabBar({ state, descriptors, navigation }) {
       style={[
         styles.container,
         {
-          backgroundColor: theme.semantic.background,
+          backgroundColor: theme.colors.transparent,
+          borderTopColor: theme.colors.transparent,
           borderTopWidth: 0,
+          bottom: 0,
+          left: 0,
           paddingBottom: Math.max(insets.bottom, theme.space[3]),
           paddingHorizontal: theme.space[4],
           paddingTop: theme.space[3],
+          position: "absolute",
+          right: 0,
         },
       ]}
     >
@@ -117,12 +124,11 @@ export function BottomTabBar({ state, descriptors, navigation }) {
         style={[
           styles.nav,
           {
-            backgroundColor: theme.colors.white,
-            borderColor: theme.semantic.border,
+            backgroundColor: palette.background,
+            borderWidth: 0,
             borderRadius: theme.radii.full,
-            borderWidth: theme.borderWidths.hairline,
-            padding: theme.space[1],
-            ...theme.shadows.soft,
+            padding: theme.space[2],
+            ...theme.shadows.none,
           },
         ]}
       >
@@ -173,8 +179,7 @@ export function BottomTabBar({ state, descriptors, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   nav: {
     alignItems: "center",
     flexDirection: "row",
