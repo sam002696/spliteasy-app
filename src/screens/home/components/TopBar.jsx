@@ -19,6 +19,7 @@ import { FadeInView } from "./FadeInView";
 
 function TopBarActionButton({ count = 0, icon: Icon, label, onPress }) {
   const theme = useTheme();
+  const palette = theme.homeTopBar;
   const showBadge = count > 0;
 
   return (
@@ -30,7 +31,7 @@ function TopBarActionButton({ count = 0, icon: Icon, label, onPress }) {
       style={({ pressed }) => [
         styles.actionButton,
         {
-          backgroundColor: theme.semantic.surfaceStrong,
+          backgroundColor: palette.actionBackground,
           borderRadius: theme.radii.full,
           height: theme.sizes.avatarMd,
           opacity: pressed ? 0.78 : 1,
@@ -39,7 +40,7 @@ function TopBarActionButton({ count = 0, icon: Icon, label, onPress }) {
       ]}
     >
       <Icon
-        color={theme.colors.white}
+        color={palette.actionIcon}
         size={theme.space[5]}
         strokeWidth={theme.borderWidths.medium}
       />
@@ -66,6 +67,7 @@ function TopBarActionButton({ count = 0, icon: Icon, label, onPress }) {
 
 export function TopBar() {
   const theme = useTheme();
+  const palette = theme.homeTopBar;
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -92,14 +94,14 @@ export function TopBar() {
         <View style={[styles.identity, { gap: theme.space[3] }]}>
           <Avatar
             name={displayName}
-            textColor={theme.colors.white}
+            textColor={palette.avatarText}
             textStyle={{
               fontFamily: theme.fontFamilies.bodyBold,
               fontSize: theme.typography.field.fontSize,
               lineHeight: theme.typography.field.lineHeight,
             }}
             style={{
-              backgroundColor: theme.semantic.surfaceStrong,
+              backgroundColor: palette.avatarBackground,
             }}
           />
           <View>

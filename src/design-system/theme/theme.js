@@ -89,18 +89,18 @@ const heroCards = Object.freeze({
   }),
   youOwe: Object.freeze({
     background: colors.oxblood,
-    title: colors.ember,
+    title: colors.coral,
     body: rgba.white50,
-    amount: colors.ember,
+    amount: colors.coral,
     statBackground: rgba.white10,
     statBorder: rgba.white16,
     statLabel: rgba.white30,
     badgeBackground: colors.auburn,
-    badgeText: colors.ember,
+    badgeText: colors.coral,
     actionBackground: colors.ember,
     actionText: colors.white,
     positiveAmount: colors.acid,
-    negativeAmount: colors.ember,
+    negativeAmount: colors.coral,
     orbPrimary: colors.auburn,
     orbSecondary: rgba.black40,
   }),
@@ -168,6 +168,15 @@ const quickActions = Object.freeze({
 const homeActivity = Object.freeze({
   cardBackground: colors.white,
   amountBackground: colors.lightGray,
+  avatarBackground: colors.orange,
+  avatarText: colors.white,
+});
+
+const homeTopBar = Object.freeze({
+  avatarBackground: colors.orange,
+  avatarText: colors.white,
+  actionBackground: colors.white,
+  actionIcon: colors.orange,
 });
 
 const groupsScreen = Object.freeze({
@@ -278,6 +287,34 @@ const addExpenseScreen = Object.freeze({
   scanIcon: colors.orange,
 });
 
+const notificationsScreen = Object.freeze({
+  cardBackground: colors.white,
+  unreadBackground: colors.peachSoft,
+  headerButtonBackground: colors.white,
+  headerButtonIcon: colors.nearBlack,
+  avatarBackground: colors.orange,
+  avatarText: colors.white,
+  unreadDot: colors.orange,
+  readIcon: colors.midGray,
+  metaText: colors.midGray,
+  actionBackground: colors.orange,
+  actionText: colors.white,
+});
+
+const groupRequestsScreen = Object.freeze({
+  cardBackground: colors.white,
+  headerButtonBackground: colors.white,
+  headerButtonIcon: colors.nearBlack,
+  avatarBackground: colors.orange,
+  avatarText: colors.white,
+  categoryBackground: colors.peachSoft,
+  categoryText: colors.orange,
+  metaText: colors.midGray,
+  actionBackground: colors.orange,
+  actionText: colors.white,
+  rejectText: colors.orange,
+});
+
 const bottomNav = Object.freeze({
   background: colors.oxblood,
   border: rgba.white10,
@@ -288,9 +325,9 @@ const bottomNav = Object.freeze({
 });
 
 const profile = Object.freeze({
-  identityBackground: colors.cream,
-  avatarBackground: colors.ink,
-  avatarText: colors.orange,
+  identityBackground: colors.white,
+  avatarBackground: colors.orange,
+  avatarText: colors.white,
   actionBackground: colors.orange,
   actionText: colors.white,
   orbPrimary: colors.peachSoft,
@@ -357,11 +394,14 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     heroCards,
     bottomNav,
     homeActivity,
+    homeTopBar,
     groupsScreen,
     balancesScreen,
     createGroupScreen,
     groupDetailScreen,
     addExpenseScreen,
+    notificationsScreen,
+    groupRequestsScreen,
     profile,
     quickActions,
     space: scaleTokenMap(space, resolvedScale),

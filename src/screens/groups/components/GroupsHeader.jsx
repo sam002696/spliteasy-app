@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, Search, SlidersHorizontal } from "lucide-react-native";
+import { Plus } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "../../../design-system";
 import { AnimatedSection } from "./AnimatedSection";
@@ -50,8 +50,8 @@ export function GroupsHeader({ onCreateGroup }) {
           </Text>
         </View>
         <View style={[styles.actions, { gap: theme.space[2] }]}>
-          <HeaderIconButton icon={Search} label="Search groups" />
-          <HeaderIconButton icon={SlidersHorizontal} label="Filter groups" />
+          {/* <HeaderIconButton icon={Search} label="Search groups" />
+          <HeaderIconButton icon={SlidersHorizontal} label="Filter groups" /> */}
           <HeaderIconButton
             icon={Plus}
             label="Create group"

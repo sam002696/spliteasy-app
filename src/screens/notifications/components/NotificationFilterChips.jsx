@@ -4,9 +4,21 @@ import { Text, useTheme } from "../../../design-system";
 
 export function NotificationFilterChips({ filters, onChange, value }) {
   const theme = useTheme();
+  const palette = theme.groupsScreen;
 
   return (
-    <View style={[styles.root, { gap: theme.space[2], marginBottom: theme.space[5] }]}>
+    <View
+      style={[
+        styles.root,
+        {
+          backgroundColor: palette.tabsBackground,
+          borderRadius: theme.radii.full,
+          gap: theme.space[1],
+          marginBottom: theme.space[5],
+          padding: theme.space[1],
+        },
+      ]}
+    >
       {filters.map((filter) => {
         const selected = filter.value === value;
 
@@ -20,20 +32,19 @@ export function NotificationFilterChips({ filters, onChange, value }) {
               styles.chip,
               {
                 backgroundColor: selected
-                  ? theme.semantic.surfaceStrong
-                  : theme.semantic.surface,
-                borderColor: selected
-                  ? theme.semantic.surfaceStrong
-                  : theme.semantic.border,
+                  ? palette.tabActiveBackground
+                  : theme.colors.transparent,
                 borderRadius: theme.radii.full,
-                borderWidth: theme.borderWidths.hairline,
                 minHeight: theme.sizes.minTapTarget,
                 opacity: pressed ? 0.78 : 1,
                 paddingHorizontal: theme.space[4],
               },
             ]}
           >
-            <Text variant="bodySmall" color={selected ? "accent" : "text"}>
+            <Text
+              variant="field"
+              color={selected ? palette.tabActiveText : palette.tabInactiveText}
+            >
               {filter.label}
             </Text>
           </Pressable>

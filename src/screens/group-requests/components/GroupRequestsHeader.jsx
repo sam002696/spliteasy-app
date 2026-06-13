@@ -5,6 +5,7 @@ import { Text, useTheme } from "../../../design-system";
 
 export function GroupRequestsHeader({ onBack }) {
   const theme = useTheme();
+  const palette = theme.groupRequestsScreen;
 
   return (
     <View style={[styles.root, { marginBottom: theme.space[5] }]}>
@@ -16,7 +17,7 @@ export function GroupRequestsHeader({ onBack }) {
         style={({ pressed }) => [
           styles.backButton,
           {
-            backgroundColor: theme.semantic.surface,
+            backgroundColor: palette.headerButtonBackground,
             borderRadius: theme.radii.full,
             height: theme.sizes.iconButton,
             opacity: pressed ? 0.78 : 1,
@@ -25,7 +26,7 @@ export function GroupRequestsHeader({ onBack }) {
         ]}
       >
         <ArrowLeft
-          color={theme.semantic.text}
+          color={palette.headerButtonIcon}
           size={theme.space[5]}
           strokeWidth={theme.borderWidths.medium}
         />

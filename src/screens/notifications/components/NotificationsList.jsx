@@ -1,10 +1,16 @@
 import React, { useCallback } from "react";
-import { ActivityIndicator, FlatList, RefreshControl, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  View,
+} from "react-native";
 import { Text, useTheme } from "../../../design-system";
 import { NotificationRow } from "./NotificationRow";
 
 function EmptyNotifications({ isLoading }) {
   const theme = useTheme();
+  const palette = theme.notificationsScreen;
 
   if (isLoading) {
     return (
@@ -18,8 +24,8 @@ function EmptyNotifications({ isLoading }) {
     <View
       style={{
         alignItems: "center",
-        backgroundColor: theme.semantic.surface,
-        borderRadius: theme.radii.lg,
+        backgroundColor: palette.cardBackground,
+        borderRadius: theme.radii.xl,
         gap: theme.space[2],
         padding: theme.space[6],
       }}

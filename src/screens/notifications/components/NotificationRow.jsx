@@ -5,6 +5,7 @@ import { Avatar, Text, useTheme } from "../../../design-system";
 
 export function NotificationRow({ notification, onPress, reading = false }) {
   const theme = useTheme();
+  const palette = theme.notificationsScreen;
   const unread = !notification.isRead;
 
   return (
@@ -15,24 +16,31 @@ export function NotificationRow({ notification, onPress, reading = false }) {
       style={({ pressed }) => [
         styles.root,
         {
-          backgroundColor: unread ? theme.semantic.surfaceStrong : theme.semantic.surface,
-          borderRadius: theme.radii.lg,
+          backgroundColor: unread
+            ? palette.unreadBackground
+            : palette.cardBackground,
+          borderRadius: theme.radii.xl,
           gap: theme.space[3],
           opacity: reading ? 0.58 : pressed ? 0.82 : 1,
           padding: theme.space[4],
         },
       ]}
     >
-      <Avatar name={notification.actorName} />
+      <Avatar
+        name={notification.actorName}
+        textColor={palette.avatarText}
+        style={{ backgroundColor: palette.avatarBackground }}
+        textStyle={theme.typography.field}
+      />
       <View style={{ flex: 1, gap: theme.space[1] }}>
-        <Text variant="bodySmall" color={unread ? "white" : "text"} numberOfLines={2}>
+        <Text variant="field" color="text" numberOfLines={2}>
           {notification.title}
         </Text>
-        <Text variant="label" color={unread ? "white50" : "textMuted"} numberOfLines={1}>
+        <Text variant="label" color={palette.metaText} numberOfLines={1}>
           {notification.subtitle || notification.createdAt}
         </Text>
         {notification.subtitle ? (
-          <Text variant="micro" color={unread ? "white50" : "textMuted"}>
+          <Text variant="micro" color={palette.metaText}>
             {notification.createdAt}
           </Text>
         ) : null}
@@ -40,13 +48,13 @@ export function NotificationRow({ notification, onPress, reading = false }) {
       <View style={styles.status}>
         {unread ? (
           <Circle
-            color={theme.semantic.accent}
-            fill={theme.semantic.accent}
+            color={palette.unreadDot}
+            fill={palette.unreadDot}
             size={theme.space[3]}
           />
         ) : (
           <Check
-            color={theme.semantic.textMuted}
+            color={palette.readIcon}
             size={theme.space[5]}
             strokeWidth={theme.borderWidths.medium}
           />

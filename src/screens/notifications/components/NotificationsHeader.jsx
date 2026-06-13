@@ -5,6 +5,7 @@ import { Text, useTheme } from "../../../design-system";
 
 function HeaderButton({ icon: Icon, label, onPress, disabled = false }) {
   const theme = useTheme();
+  const palette = theme.notificationsScreen;
 
   return (
     <Pressable
@@ -16,7 +17,7 @@ function HeaderButton({ icon: Icon, label, onPress, disabled = false }) {
       style={({ pressed }) => [
         styles.button,
         {
-          backgroundColor: theme.semantic.surface,
+          backgroundColor: palette.headerButtonBackground,
           borderRadius: theme.radii.full,
           height: theme.sizes.iconButton,
           opacity: disabled ? 0.45 : pressed ? 0.78 : 1,
@@ -25,7 +26,7 @@ function HeaderButton({ icon: Icon, label, onPress, disabled = false }) {
       ]}
     >
       <Icon
-        color={theme.semantic.text}
+        color={palette.headerButtonIcon}
         size={theme.space[5]}
         strokeWidth={theme.borderWidths.medium}
       />

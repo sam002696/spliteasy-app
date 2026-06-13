@@ -28,8 +28,8 @@ function EmptyBalances({ isLoading }) {
     <View
       style={{
         alignItems: "center",
-        backgroundColor: theme.semantic.surface,
-        borderRadius: theme.radii.lg,
+        backgroundColor: theme.balancesScreen.cardBackground,
+        borderRadius: theme.radii.xl,
         gap: theme.space[2],
         padding: theme.space[6],
       }}

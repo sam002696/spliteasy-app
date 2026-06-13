@@ -26,7 +26,13 @@ export const ActivityItem = memo(function ActivityItem({
         },
       ]}
     >
-      <Avatar name={activity.user} size="md" textColor={theme.colors.white} />
+      <Avatar
+        name={activity.user}
+        size="md"
+        textColor={theme.homeActivity.avatarText}
+        style={{ backgroundColor: theme.homeActivity.avatarBackground }}
+        textStyle={theme.typography.field}
+      />
       <View style={[styles.content, { gap: theme.space[1] }]}>
         {headline ? (
           <Text variant="field" color="text" numberOfLines={1}>
