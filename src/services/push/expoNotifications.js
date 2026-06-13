@@ -97,6 +97,20 @@ export function extractNotificationPayload(notificationLike) {
   return null;
 }
 
+export function clearLastExpoNotificationResponse() {
+  try {
+    if (typeof Notifications.clearLastNotificationResponse === "function") {
+      Notifications.clearLastNotificationResponse();
+      return;
+    }
+
+    Notifications.clearLastNotificationResponseAsync?.().catch?.(() => {});
+  } catch {
+    // Some native runtimes may not expose this API. The listener cleanup below
+    // still keeps notification handling safe in those builds.
+  }
+}
+
 export async function registerForExpoPushNotifications({
   shouldRequestPermission = true,
 } = {}) {

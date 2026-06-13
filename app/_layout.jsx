@@ -1,12 +1,17 @@
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
+import { LogBox } from "react-native";
 import { Provider } from "react-redux";
 import { ThemeProvider, useTheme } from "../src/design-system";
 import { ToastViewport } from "../src/components/toast";
 import { AuthGate } from "../src/navigation";
 import { NotificationRuntime } from "../src/services/notifications";
 import { store } from "../src/store";
+
+if (__DEV__) {
+  LogBox.ignoreLogs(["Looks like you have configured linking in multiple places"]);
+}
 
 function RootNavigator() {
   const theme = useTheme();

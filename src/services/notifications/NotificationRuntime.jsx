@@ -1,5 +1,5 @@
-import { useRouter } from "expo-router";
-import { useCallback, useEffect } from "react";
+import { usePathname, useRouter } from "expo-router";
+import { useCallback, useEffect, useRef } from "react";
 import { AppState } from "react-native";
 import {
   balanceFilters,
@@ -15,6 +15,7 @@ import {
   useAppSelector,
 } from "../../store";
 import {
+  clearLastExpoNotificationResponse,
   extractNotificationPayload,
   subscribeToExpoNotificationEvents,
   syncExpoPushToken,
@@ -49,19 +50,37 @@ function logPushSyncError(error) {
   }
 }
 
+function getNotificationResponseKey(response, notification) {
+  return String(
+    response?.notification?.request?.identifier ||
+      notification?.id ||
+      notification?.uuid ||
+      "",
+  );
+}
+
+const RESPONSE_DEDUPE_WINDOW_MS = 3000;
+
 export function NotificationRuntime() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const pathname = usePathname();
   const currentUser = useAppSelector(selectCurrentUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const lastHandledResponseRef = useRef({ handledAt: 0, key: null });
+  const pathnameRef = useRef(pathname);
   const userId = currentUser?.id;
+
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
 
   const handleNotification = useCallback(
     (payload) => {
       const notification = normalizeIncomingNotification(payload);
 
       if (!notification?.id) {
-        return;
+        return null;
       }
 
       dispatch(receiveNotification(notification));
@@ -75,6 +94,8 @@ export function NotificationRuntime() {
         dispatch(fetchGroups(groupFilters.all));
         dispatch(fetchBalances(balanceFilters.open));
       }
+
+      return notification;
     },
     [dispatch],
   );
@@ -95,15 +116,39 @@ export function NotificationRuntime() {
 
     syncExpoPushToken({ shouldRequestPermission: true }).catch(logPushSyncError);
 
-    return subscribeToExpoNotificationEvents({
+    const unsubscribe = subscribeToExpoNotificationEvents({
       onNotification: (notification) => {
         handleNotification(extractNotificationPayload(notification));
       },
       onNotificationResponse: (response) => {
-        handleNotification(extractNotificationPayload(response));
-        router.push("/notifications");
+        const notification = handleNotification(
+          extractNotificationPayload(response),
+        );
+        const responseKey = getNotificationResponseKey(response, notification);
+        const now = Date.now();
+        const lastResponse = lastHandledResponseRef.current;
+        const alreadyHandledRecently =
+          lastResponse.key === responseKey &&
+          now - lastResponse.handledAt < RESPONSE_DEDUPE_WINDOW_MS;
+
+        if (!responseKey || alreadyHandledRecently) {
+          clearLastExpoNotificationResponse();
+          return;
+        }
+
+        lastHandledResponseRef.current = { handledAt: now, key: responseKey };
+        clearLastExpoNotificationResponse();
+
+        if (pathnameRef.current !== "/notifications") {
+          router.push("/notifications");
+        }
       },
     });
+
+    return () => {
+      unsubscribe();
+      lastHandledResponseRef.current = { handledAt: 0, key: null };
+    };
   }, [handleNotification, isAuthenticated, router]);
 
   useEffect(() => {
