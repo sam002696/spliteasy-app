@@ -1,33 +1,65 @@
 import React from "react";
 import { StyleSheet, TextInput, View } from "react-native";
+import { ReceiptText } from "lucide-react-native";
 import { Card, Text, useTheme } from "../../../design-system";
 
 export function AmountCard({ amount, onAmountChange }) {
   const theme = useTheme();
-  const amountHeight = theme.typography.heroAmount.lineHeight + theme.space[4];
+  const palette = theme.addExpenseScreen;
+  const amountHeight = theme.typography.cardAmount.lineHeight + theme.space[4];
 
   return (
-    <Card variant="limeHero" style={{ marginBottom: theme.space[4] }}>
-      <Text variant="micro" color="black60" uppercase>
-        Amount
-      </Text>
+    <Card
+      variant="plain"
+      style={{
+        backgroundColor: palette.cardBackground,
+        borderRadius: theme.radii.xl,
+        marginBottom: theme.space[5],
+      }}
+    >
+      <View style={[styles.header, { gap: theme.space[3] }]}>
+        <View
+          style={{
+            alignItems: "center",
+            backgroundColor: palette.amountIconBackground,
+            borderRadius: theme.radii.md,
+            height: theme.sizes.iconButton,
+            justifyContent: "center",
+            width: theme.sizes.iconButton,
+          }}
+        >
+          <ReceiptText
+            color={palette.amountIcon}
+            size={theme.space[5]}
+            strokeWidth={theme.borderWidths.medium}
+          />
+        </View>
+        <View style={{ flex: 1, gap: theme.space[1] }}>
+          <Text variant="field" color="textMuted" uppercase>
+            Amount
+          </Text>
+          <Text variant="bodySmall" color="textMuted">
+            Enter the total expense amount
+          </Text>
+        </View>
+      </View>
       <View
         style={[
           styles.amountRow,
           {
             gap: theme.space[2],
             height: amountHeight,
+            marginTop: theme.space[4],
           },
         ]}
       >
         <Text
-          variant="heroAmount"
-          color="accentText"
+          variant="cardAmount"
+          color={palette.amountText}
           style={{
             fontFamily: theme.fontFamilies.bodyFallback,
             includeFontPadding: false,
-            lineHeight: theme.typography.heroAmount.lineHeight,
-            transform: [{ translateY: theme.space[2] }],
+            lineHeight: theme.typography.cardAmount.lineHeight,
           }}
         >
           ৳
@@ -37,11 +69,11 @@ export function AmountCard({ amount, onAmountChange }) {
           onChangeText={onAmountChange}
           keyboardType="decimal-pad"
           placeholder="0"
-          placeholderTextColor={theme.rgba.black40}
+          placeholderTextColor={theme.semantic.textMuted}
           style={[
-            theme.typography.heroAmount,
+            theme.typography.cardAmount,
             {
-              color: theme.semantic.accentText,
+              color: palette.amountText,
               flex: 1,
               height: amountHeight,
               includeFontPadding: false,
@@ -57,6 +89,10 @@ export function AmountCard({ amount, onAmountChange }) {
 
 const styles = StyleSheet.create({
   amountRow: {
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  header: {
     alignItems: "center",
     flexDirection: "row",
   },

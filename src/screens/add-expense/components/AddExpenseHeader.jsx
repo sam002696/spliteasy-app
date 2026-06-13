@@ -5,9 +5,15 @@ import { Text, useTheme } from "../../../design-system";
 
 export function AddExpenseHeader({ onClose }) {
   const theme = useTheme();
+  const palette = theme.addExpenseScreen;
 
   return (
-    <View style={[styles.root, { marginBottom: theme.space[5] , marginTop: theme.space[3]}]}>
+    <View
+      style={[
+        styles.root,
+        { marginBottom: theme.space[6], marginTop: theme.space[4] },
+      ]}
+    >
       <View style={{ flex: 1, gap: theme.space[1] }}>
         <Text variant="label" color="textMuted" uppercase>
           New expense
@@ -24,7 +30,7 @@ export function AddExpenseHeader({ onClose }) {
         style={({ pressed }) => [
           styles.close,
           {
-            backgroundColor: theme.semantic.surface,
+            backgroundColor: palette.closeBackground,
             borderRadius: theme.radii.full,
             height: theme.sizes.iconButton,
             opacity: pressed ? 0.78 : 1,
@@ -33,7 +39,7 @@ export function AddExpenseHeader({ onClose }) {
         ]}
       >
         <X
-          color={theme.semantic.text}
+          color={palette.closeIcon}
           size={theme.space[5]}
           strokeWidth={theme.borderWidths.medium}
         />

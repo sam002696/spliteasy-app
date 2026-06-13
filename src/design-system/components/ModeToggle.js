@@ -5,6 +5,7 @@ import { Text } from "./Text";
 
 export function ModeToggle({ options, value, onChange, style }) {
   const theme = useTheme();
+  const palette = theme.groupsScreen;
 
   const renderIcon = (icon, selected) => {
     if (!icon) {
@@ -13,7 +14,10 @@ export function ModeToggle({ options, value, onChange, style }) {
 
     if (typeof icon === "string") {
       return (
-        <Text variant="bodySmall" color={selected ? "accent" : "text"}>
+        <Text
+          variant="bodySmall"
+          color={selected ? palette.tabActiveText : palette.tabInactiveText}
+        >
           {icon}
         </Text>
       );
@@ -24,7 +28,7 @@ export function ModeToggle({ options, value, onChange, style }) {
     }
 
     return createElement(icon, {
-      color: selected ? theme.semantic.accent : theme.semantic.text,
+      color: selected ? palette.tabActiveText : palette.tabInactiveText,
       size: theme.space[4],
       strokeWidth: theme.borderWidths.medium,
     });
@@ -44,8 +48,12 @@ export function ModeToggle({ options, value, onChange, style }) {
             style={({ pressed }) => [
               styles.pill,
               {
-                backgroundColor: selected ? theme.semantic.surfaceStrong : theme.semantic.surface,
-                borderColor: selected ? theme.semantic.surfaceStrong : theme.semantic.border,
+                backgroundColor: selected
+                  ? palette.tabActiveBackground
+                  : palette.tabsBackground,
+                borderColor: selected
+                  ? palette.tabActiveBackground
+                  : theme.colors.transparent,
                 borderRadius: theme.radii.full,
                 minHeight: 36,
                 opacity: pressed ? 0.8 : 1,
@@ -55,7 +63,10 @@ export function ModeToggle({ options, value, onChange, style }) {
             ]}
           >
             {renderIcon(option.icon, selected)}
-            <Text variant="bodySmall" color={selected ? "accent" : "text"}>
+            <Text
+              variant="field"
+              color={selected ? palette.tabActiveText : palette.tabInactiveText}
+            >
               {option.label}
             </Text>
           </Pressable>

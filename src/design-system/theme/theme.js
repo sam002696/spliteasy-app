@@ -255,6 +255,29 @@ const groupDetailScreen = Object.freeze({
   settledText: colors.greenText,
 });
 
+const addExpenseScreen = Object.freeze({
+  cardBackground: colors.white,
+  closeBackground: colors.white,
+  closeIcon: colors.nearBlack,
+  fieldBackground: colors.white,
+  fieldBorder: rgba.black10,
+  selectedBackground: colors.orange,
+  selectedText: colors.white,
+  optionBackground: colors.white,
+  optionText: colors.nearBlack,
+  amountIconBackground: colors.peachSoft,
+  amountIcon: colors.orange,
+  amountText: colors.nearBlack,
+  currencyIconBackground: colors.leafSoft,
+  currencyBadgeBackground: colors.leafSoft,
+  currencyBadgeBorder: colors.leafText,
+  currencyBadgeText: colors.leafText,
+  actionBackground: colors.orange,
+  actionText: colors.white,
+  scanIconBackground: colors.peachSoft,
+  scanIcon: colors.orange,
+});
+
 const bottomNav = Object.freeze({
   background: colors.oxblood,
   border: rgba.white10,
@@ -338,6 +361,7 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     balancesScreen,
     createGroupScreen,
     groupDetailScreen,
+    addExpenseScreen,
     profile,
     quickActions,
     space: scaleTokenMap(space, resolvedScale),

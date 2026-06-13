@@ -5,9 +5,15 @@ import { Text, useTheme } from "../../../design-system";
 
 export function ChoiceGrid({ options, value, onChange }) {
   const theme = useTheme();
+  const palette = theme.addExpenseScreen;
 
   return (
-    <View style={[styles.root, { gap: theme.space[2] }]}>
+    <View
+      style={[
+        styles.root,
+        { columnGap: theme.space[2], rowGap: theme.space[3] },
+      ]}
+    >
       {options.map((option) => {
         const selected = option.value === value;
 
@@ -20,10 +26,15 @@ export function ChoiceGrid({ options, value, onChange }) {
             style={({ pressed }) => [
               styles.choice,
               {
-                backgroundColor: selected ? theme.semantic.surfaceStrong : theme.semantic.surface,
-                borderColor: selected ? theme.semantic.surfaceStrong : theme.semantic.border,
+                backgroundColor: selected
+                  ? palette.selectedBackground
+                  : palette.optionBackground,
+                borderColor: selected
+                  ? palette.selectedBackground
+                  : theme.colors.transparent,
                 borderRadius: theme.radii.full,
                 borderWidth: theme.borderWidths.hairline,
+                gap: theme.space[2],
                 minHeight: theme.sizes.minTapTarget,
                 opacity: pressed ? 0.78 : 1,
                 paddingHorizontal: theme.space[4],
@@ -32,12 +43,15 @@ export function ChoiceGrid({ options, value, onChange }) {
           >
             {selected ? (
               <Check
-                color={theme.semantic.accent}
+                color={palette.selectedText}
                 size={theme.space[4]}
                 strokeWidth={theme.borderWidths.medium}
               />
             ) : null}
-            <Text variant="bodySmall" color={selected ? "accent" : "text"}>
+            <Text
+              variant="field"
+              color={selected ? palette.selectedText : palette.optionText}
+            >
               {option.label}
             </Text>
           </Pressable>
