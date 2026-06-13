@@ -197,6 +197,20 @@ const groupsScreen = Object.freeze({
   ]),
 });
 
+const balancesScreen = Object.freeze({
+  cardBackground: colors.white,
+  cardDivider: rgba.black08,
+  metaText: colors.midGray,
+  debtBadgeBackground: colors.redSoft,
+  debtBadgeText: colors.red,
+  creditBadgeBackground: colors.greenSoft,
+  creditBadgeText: colors.greenText,
+  expenseIconBackground: colors.peachSoft,
+  expenseIcon: colors.orange,
+  actionBackground: colors.orange,
+  actionText: colors.white,
+});
+
 const bottomNav = Object.freeze({
   background: colors.oxblood,
   border: rgba.white10,
@@ -277,6 +291,7 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     bottomNav,
     homeActivity,
     groupsScreen,
+    balancesScreen,
     profile,
     quickActions,
     space: scaleTokenMap(space, resolvedScale),

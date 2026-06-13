@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Bell, CircleCheck, TrendingDown, TrendingUp } from "lucide-react-native";
+import {
+  ArrowDown,
+  ArrowUp,
+  Bell,
+  CircleCheck,
+  FileText,
+} from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -8,20 +14,75 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { Avatar, Button, Card, ProgressBar, Text, useTheme } from "../../../design-system";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Divider,
+  ProgressBar,
+  Text,
+  useTheme,
+} from "../../../design-system";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-function DirectionIcon({ tone }) {
+function StatusBadge({ isDebt }) {
   const theme = useTheme();
-  const Icon = tone === "negative" ? TrendingDown : TrendingUp;
+  const palette = theme.balancesScreen;
+  const Icon = isDebt ? ArrowUp : ArrowDown;
+  const backgroundColor = isDebt
+    ? palette.debtBadgeBackground
+    : palette.creditBadgeBackground;
+  const color = isDebt ? palette.debtBadgeText : palette.creditBadgeText;
+  const label = isDebt ? "You owe" : "Owed to you";
 
   return (
-    <Icon
-      color={tone === "negative" ? theme.semantic.negative : theme.semantic.positive}
-      size={theme.space[5]}
-      strokeWidth={theme.borderWidths.medium}
-    />
+    <View
+      style={[
+        styles.statusBadge,
+        {
+          backgroundColor,
+          borderRadius: theme.radii.full,
+          gap: theme.space[1],
+          paddingHorizontal: theme.space[2],
+          paddingVertical: theme.space[1],
+        },
+      ]}
+    >
+      <Icon
+        color={color}
+        size={theme.space[3]}
+        strokeWidth={theme.borderWidths.medium}
+      />
+      <Text variant="micro" color={color} numberOfLines={1}>
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+function ExpenseIconTile() {
+  const theme = useTheme();
+  const palette = theme.balancesScreen;
+
+  return (
+    <View
+      style={{
+        alignItems: "center",
+        backgroundColor: palette.expenseIconBackground,
+        borderRadius: theme.radii.md,
+        height: theme.sizes.iconButton,
+        justifyContent: "center",
+        width: theme.sizes.iconButton,
+      }}
+    >
+      <FileText
+        color={palette.expenseIcon}
+        size={theme.space[5]}
+        strokeWidth={theme.borderWidths.medium}
+      />
+    </View>
   );
 }
 
@@ -32,16 +93,24 @@ export function OpenBalanceCard({
   onActionPress,
 }) {
   const theme = useTheme();
+  const palette = theme.balancesScreen;
   const pressed = useSharedValue(0);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(theme.space[3]);
   const isDebt = balance.tone === "negative";
   const ActionIcon = isDebt ? CircleCheck : Bell;
+  const progressPercent = Math.round(balance.progress * 100);
 
   useEffect(() => {
     const delay = theme.motion.fast + index * (theme.motion.fast / 2);
-    opacity.value = withDelay(delay, withTiming(1, { duration: theme.motion.spring }));
-    translateY.value = withDelay(delay, withTiming(0, { duration: theme.motion.spring }));
+    opacity.value = withDelay(
+      delay,
+      withTiming(1, { duration: theme.motion.spring }),
+    );
+    translateY.value = withDelay(
+      delay,
+      withTiming(0, { duration: theme.motion.spring }),
+    );
   }, [index, opacity, theme.motion.fast, theme.motion.spring, translateY]);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -68,50 +137,99 @@ export function OpenBalanceCard({
       }}
       style={animatedStyle}
     >
-      <Card variant="black">
+      <Card
+        variant="plain"
+        style={{
+          backgroundColor: palette.cardBackground,
+          borderRadius: theme.radii.xl,
+        }}
+      >
         <View style={[styles.header, { gap: theme.space[3] }]}>
-          <Avatar name={balance.person} />
+          <Avatar
+            name={balance.person}
+            size="md"
+            textColor="accentText"
+            style={{ backgroundColor: theme.semantic.accent }}
+            textStyle={theme.typography.field}
+          />
           <View style={{ flex: 1, gap: theme.space[1] }}>
-            <Text variant="cardTitle" color="white" numberOfLines={1}>
+            <Text variant="cardTitle" color="text" numberOfLines={1}>
               {balance.person}
             </Text>
-            <Text variant="label" color="white50" numberOfLines={1}>
-              {balance.group} · {balance.note}
-            </Text>
+            <View style={[styles.groupRow, { gap: theme.space[2] }]}>
+              <Text
+                variant="body"
+                color={palette.metaText}
+                numberOfLines={1}
+                style={styles.groupName}
+              >
+                {balance.group}
+              </Text>
+              <Badge label={balance.category} tone={balance.categoryTone} />
+            </View>
           </View>
-          <View style={[styles.amount, { gap: theme.space[1] }]}>
-            <DirectionIcon tone={balance.tone} />
-            <Text variant="cardAmount" color={balance.tone}>
+          <View style={[styles.amount, { gap: theme.space[2] }]}>
+            <Text variant="sectionTitle" color={balance.tone} numberOfLines={1}>
               {balance.amount}
             </Text>
+            <StatusBadge isDebt={isDebt} />
           </View>
         </View>
 
-        <View style={{ gap: theme.space[3], marginTop: theme.space[4] }}>
-          <View style={styles.detailRow}>
-            <Text variant="label" color="white50">
-              {balance.lastActivity}
+        <Divider
+          color={palette.cardDivider}
+          style={{ marginVertical: theme.space[5] }}
+        />
+
+        <View style={[styles.expenseRow, { gap: theme.space[3] }]}>
+          <ExpenseIconTile />
+          <View style={{ flex: 1, gap: theme.space[1] }}>
+            <Text variant="field" color={palette.metaText} uppercase>
+              Latest expense
             </Text>
-            <Text variant="micro" color="white50">
-              {Math.round(balance.progress * 100)}% settled
+            <Text variant="cardTitle" color="text" numberOfLines={1}>
+              {balance.lastActivityDetail}
             </Text>
           </View>
-          <ProgressBar value={balance.progress} max={1} tone={balance.tone} height={theme.space[2]} />
-          <Button
-            title={balance.action}
-            variant={isDebt ? "danger" : "primary"}
-            size="sm"
-            fullWidth
-            loading={actionLoading}
-            onPress={() => onActionPress?.(balance)}
-            left={
-              <ActionIcon
-                color={isDebt ? theme.colors.white : theme.semantic.accentText}
-                size={theme.space[4]}
-                strokeWidth={theme.borderWidths.medium}
-              />
-            }
+          <Text
+            variant="field"
+            color={isDebt ? "danger" : "positive"}
+            numberOfLines={1}
+          >
+            {progressPercent}% settled
+          </Text>
+        </View>
+
+        <View style={{ marginTop: theme.space[3] }}>
+          <ProgressBar
+            value={balance.progress}
+            max={1}
+            tone={balance.tone}
+            height={theme.space[2]}
+            style={{ backgroundColor: theme.semantic.inactive }}
           />
+          <View style={{ marginTop: theme.space[5] }}>
+            <Button
+              title={balance.action}
+              variant="danger"
+              size="md"
+              fullWidth
+              loading={actionLoading}
+              onPress={() => onActionPress?.(balance)}
+              style={{
+                backgroundColor: palette.actionBackground,
+                borderColor: palette.actionBackground,
+              }}
+              textStyle={{ color: palette.actionText }}
+              left={
+                <ActionIcon
+                  color={palette.actionText}
+                  size={theme.space[5]}
+                  strokeWidth={theme.borderWidths.medium}
+                />
+              }
+            />
+          </View>
         </View>
       </Card>
     </AnimatedPressable>
@@ -122,12 +240,22 @@ const styles = StyleSheet.create({
   amount: {
     alignItems: "flex-end",
   },
-  detailRow: {
+  expenseRow: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
+  },
+  groupName: {
+    flexShrink: 1,
+  },
+  groupRow: {
+    alignItems: "center",
+    flexDirection: "row",
   },
   header: {
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  statusBadge: {
     alignItems: "center",
     flexDirection: "row",
   },

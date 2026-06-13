@@ -11,9 +11,6 @@ export function BalancesHeader() {
     <AnimatedSection>
       <View style={[styles.root, { marginBottom: theme.space[5] }]}>
         <View style={{ flex: 1, gap: theme.space[1] }}>
-          <Text variant="label" color="textMuted" uppercase>
-            Across all groups
-          </Text>
           <Text variant="screenTitle" color="text">
             Balances
           </Text>

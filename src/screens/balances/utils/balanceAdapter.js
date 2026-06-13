@@ -31,6 +31,15 @@ function getActionLabel(action, tone) {
   return "View details";
 }
 
+const categoryToneByName = {
+  Roommates: "lime",
+  Family: "lime",
+  Friends: "orange",
+  Movie: "orange",
+  Team: "lime",
+  Travel: "orange",
+};
+
 export function mapApiBalanceToListItem(balance) {
   const tone = getBalanceTone(balance.type);
   const latestExpense = balance.latest_expense;
@@ -41,6 +50,8 @@ export function mapApiBalanceToListItem(balance) {
     userId: balance.user?.id,
     person: balance.user?.name || balance.user?.email || "Member",
     group: balance.group?.name || "Group",
+    category: balance.group?.category || "Group",
+    categoryTone: categoryToneByName[balance.group?.category] || "lime",
     note: balance.label || "",
     amount: formatAmount(
       balance.amount,
@@ -53,6 +64,11 @@ export function mapApiBalanceToListItem(balance) {
       tone === "positive" && Boolean(balance.group?.id && balance.user?.id),
     canSettle:
       tone === "negative" && Boolean(balance.group?.id && balance.user?.id),
-    lastActivity: latestExpense?.description || "No recent expense",
+    lastActivityDetail: latestExpense
+      ? `${latestExpense.description || "Recent expense"} · ${formatAmount(
+          latestExpense.amount,
+          latestExpense.currency || balance.group?.base_currency,
+        )}`
+      : "No recent expense",
   };
 }
