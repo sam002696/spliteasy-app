@@ -1,15 +1,27 @@
 import React from "react";
 import { Mail, ShieldCheck } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
-import { Avatar, Badge, Card, Text, useTheme } from "../../../design-system";
+import { Avatar, Card, Text, useTheme } from "../../../design-system";
 
 export function MemberRow({ member }) {
   const theme = useTheme();
+  const palette = theme.groupDetailScreen;
 
   return (
-    <Card variant="plain" style={{ borderWidth: theme.borderWidths.hairline, borderColor: theme.semantic.border }}>
+    <Card
+      variant="plain"
+      style={{
+        backgroundColor: palette.cardBackground,
+        borderRadius: theme.radii.xl,
+      }}
+    >
       <View style={[styles.row, { gap: theme.space[3] }]}>
-        <Avatar name={member.name} />
+        <Avatar
+          name={member.name}
+          textColor={palette.avatarText}
+          style={{ backgroundColor: palette.avatarBackground }}
+          textStyle={theme.typography.field}
+        />
         <View style={{ flex: 1, gap: theme.space[1] }}>
           <Text variant="cardTitle" color="text" numberOfLines={1}>
             {member.name}
@@ -26,7 +38,28 @@ export function MemberRow({ member }) {
           </View>
         </View>
         <View style={{ alignItems: "flex-end", gap: theme.space[2] }}>
-          <Badge label={member.status} tone={member.status === "You" ? "lime" : "neutral"} />
+          <View
+            style={{
+              backgroundColor:
+                member.status === "You"
+                  ? palette.categoryBackground
+                  : theme.semantic.background,
+              borderRadius: theme.radii.full,
+              paddingHorizontal: theme.space[3],
+              paddingVertical: theme.space[1],
+            }}
+          >
+            <Text
+              variant="micro"
+              color={
+                member.status === "You"
+                  ? palette.categoryText
+                  : palette.metaText
+              }
+            >
+              {member.status}
+            </Text>
+          </View>
           <View style={[styles.meta, { gap: theme.space[1] }]}>
             <ShieldCheck
               color={theme.semantic[member.tone]}

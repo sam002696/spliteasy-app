@@ -1,5 +1,10 @@
 import React from "react";
-import { CalendarDays, CircleCheck, ReceiptText, UserRound } from "lucide-react-native";
+import {
+  CalendarDays,
+  CircleCheck,
+  ReceiptText,
+  UserRound,
+} from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { Card, Text, useTheme } from "../../../design-system";
 
@@ -22,15 +27,22 @@ function Meta({ icon: Icon, children }) {
 
 export function ExpenseRow({ expense }) {
   const theme = useTheme();
+  const palette = theme.groupDetailScreen;
   const isSettled = expense.status === "Settled";
 
   return (
-    <Card variant="plain" style={{ borderWidth: theme.borderWidths.hairline, borderColor: theme.semantic.border }}>
+    <Card
+      variant="plain"
+      style={{
+        backgroundColor: palette.cardBackground,
+        borderRadius: theme.radii.xl,
+      }}
+    >
       <View style={styles.root}>
         <View
           style={{
             alignItems: "center",
-            backgroundColor: theme.semantic.surfaceStrong,
+            backgroundColor: palette.iconTileBackground,
             borderRadius: theme.radii.full,
             height: theme.sizes.iconButton,
             justifyContent: "center",
@@ -38,14 +50,19 @@ export function ExpenseRow({ expense }) {
           }}
         >
           <ReceiptText
-            color={theme.semantic.accent}
+            color={palette.iconTileText}
             size={theme.space[5]}
             strokeWidth={theme.borderWidths.medium}
           />
         </View>
         <View style={[styles.content, { gap: theme.space[2] }]}>
           <View style={styles.titleRow}>
-            <Text variant="cardTitle" color="text" numberOfLines={1} style={{ flex: 1 }}>
+            <Text
+              variant="cardTitle"
+              color="text"
+              numberOfLines={1}
+              style={{ flex: 1 }}
+            >
               {expense.title}
             </Text>
             <Text variant="field" color="text">
@@ -60,15 +77,31 @@ export function ExpenseRow({ expense }) {
             <Text variant="label" color="textMuted">
               Your share {expense.yourShare}
             </Text>
-            <View style={[styles.status, { gap: theme.space[1] }]}>
+            <View
+              style={[
+                styles.status,
+                {
+                  backgroundColor: isSettled
+                    ? palette.settledBackground
+                    : palette.statusBackground,
+                  borderRadius: theme.radii.full,
+                  gap: theme.space[1],
+                  paddingHorizontal: theme.space[2],
+                  paddingVertical: theme.space[1],
+                },
+              ]}
+            >
               {isSettled ? (
                 <CircleCheck
-                  color={theme.semantic.positive}
+                  color={palette.settledText}
                   size={theme.space[4]}
                   strokeWidth={theme.borderWidths.medium}
                 />
               ) : null}
-              <Text variant="micro" color={isSettled ? "positive" : "danger"}>
+              <Text
+                variant="micro"
+                color={isSettled ? palette.settledText : palette.statusText}
+              >
                 {expense.status}
               </Text>
             </View>

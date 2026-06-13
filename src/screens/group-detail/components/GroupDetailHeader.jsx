@@ -1,10 +1,11 @@
 import React from "react";
 import { ChevronLeft, MoreHorizontal } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
-import { Badge, Text, useTheme } from "../../../design-system";
+import { Text, useTheme } from "../../../design-system";
 
 function HeaderButton({ disabled = false, icon: Icon, label, onPress }) {
   const theme = useTheme();
+  const palette = theme.groupDetailScreen;
 
   return (
     <Pressable
@@ -16,7 +17,7 @@ function HeaderButton({ disabled = false, icon: Icon, label, onPress }) {
       style={({ pressed }) => [
         styles.headerButton,
         {
-          backgroundColor: theme.semantic.surface,
+          backgroundColor: palette.headerButtonBackground,
           borderRadius: theme.radii.full,
           height: theme.sizes.iconButton,
           opacity: disabled ? 0.45 : pressed ? 0.78 : 1,
@@ -25,7 +26,7 @@ function HeaderButton({ disabled = false, icon: Icon, label, onPress }) {
       ]}
     >
       <Icon
-        color={theme.semantic.text}
+        color={palette.headerButtonIcon}
         size={theme.space[5]}
         strokeWidth={theme.borderWidths.medium}
       />
@@ -33,8 +34,14 @@ function HeaderButton({ disabled = false, icon: Icon, label, onPress }) {
   );
 }
 
-export function GroupDetailHeader({ group, onBack, onOpenOptions, optionsDisabled = false }) {
+export function GroupDetailHeader({
+  group,
+  onBack,
+  onOpenOptions,
+  optionsDisabled = false,
+}) {
   const theme = useTheme();
+  const palette = theme.groupDetailScreen;
 
   return (
     <View style={[styles.root, { marginBottom: theme.space[5] }]}>
@@ -49,7 +56,18 @@ export function GroupDetailHeader({ group, onBack, onOpenOptions, optionsDisable
           {group.name}
         </Text>
         <View style={[styles.meta, { gap: theme.space[2] }]}>
-          <Badge label={group.category} tone={group.categoryTone} />
+          <View
+            style={{
+              backgroundColor: palette.categoryBackground,
+              borderRadius: theme.radii.full,
+              paddingHorizontal: theme.space[3],
+              paddingVertical: theme.space[1],
+            }}
+          >
+            <Text variant="micro" color={palette.categoryText}>
+              {group.category}
+            </Text>
+          </View>
           <Text variant="label" color="textMuted">
             {group.memberCount} members
           </Text>

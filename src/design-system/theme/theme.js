@@ -235,6 +235,26 @@ const createGroupScreen = Object.freeze({
   footerButtonText: colors.white,
 });
 
+const groupDetailScreen = Object.freeze({
+  cardBackground: colors.white,
+  cardDivider: rgba.black08,
+  headerButtonBackground: colors.white,
+  headerButtonIcon: colors.nearBlack,
+  metaText: colors.midGray,
+  categoryBackground: colors.peachSoft,
+  categoryText: colors.orange,
+  avatarBackground: colors.orange,
+  avatarText: colors.white,
+  iconTileBackground: colors.peachSoft,
+  iconTileText: colors.orange,
+  actionBackground: colors.orange,
+  actionText: colors.white,
+  statusBackground: colors.peachSoft,
+  statusText: colors.orange,
+  settledBackground: colors.greenSoft,
+  settledText: colors.greenText,
+});
+
 const bottomNav = Object.freeze({
   background: colors.oxblood,
   border: rgba.white10,
@@ -317,6 +337,7 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     groupsScreen,
     balancesScreen,
     createGroupScreen,
+    groupDetailScreen,
     profile,
     quickActions,
     space: scaleTokenMap(space, resolvedScale),

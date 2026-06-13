@@ -7,42 +7,42 @@ const TAKA_SYMBOL = "৳";
 function PositionAmount({ value, tone }) {
   const theme = useTheme();
   const amount = String(value).replace(/BDT|৳/gi, "").trim();
-  const lineHeight = theme.typography.heroAmount.lineHeight + theme.space[2];
 
   return (
-    <View style={[styles.amountRow, { gap: theme.space[2], marginTop: theme.space[1] }]}>
-      <Text
-        variant="heroAmount"
-        color={tone}
-        style={{
-          fontFamily: theme.fontFamilies.bodyFallback,
-          lineHeight,
-        }}
-      >
+    <View
+      style={[
+        styles.amountRow,
+        { gap: theme.space[1], marginTop: theme.space[1] },
+      ]}
+    >
+      <Text variant="cardAmount" color={tone}>
         {TAKA_SYMBOL}
-      </Text>
-      <Text
-        variant="heroAmount"
-        color={tone}
-        style={{
-          lineHeight,
-        }}
-      >
         {amount}
       </Text>
     </View>
   );
 }
 
-function SummaryStat({ label, value, tone = "accentText" }) {
+function SummaryStat({ label, value }) {
   const theme = useTheme();
+  const palette = theme.groupDetailScreen;
 
   return (
-    <View style={[styles.stat, { gap: theme.space[1] }]}>
-      <Text variant="sectionTitle" color={tone} numberOfLines={1}>
+    <View
+      style={[
+        styles.stat,
+        {
+          backgroundColor: theme.semantic.background,
+          borderRadius: theme.radii.lg,
+          gap: theme.space[1],
+          padding: theme.space[3],
+        },
+      ]}
+    >
+      <Text variant="cardTitle" color="text" numberOfLines={1}>
         {value}
       </Text>
-      <Text variant="micro" color="black60">
+      <Text variant="micro" color={palette.metaText} uppercase>
         {label}
       </Text>
     </View>
@@ -51,25 +51,36 @@ function SummaryStat({ label, value, tone = "accentText" }) {
 
 export function GroupSummaryCard({ summary }) {
   const theme = useTheme();
+  const palette = theme.groupDetailScreen;
   const balanceTone =
-    summary.yourPositionTone === "negative" ? "danger" : "accentText";
+    summary.yourPositionTone === "negative" ? "danger" : "positive";
 
   return (
-    <Card variant="limeHero" style={{ marginBottom: theme.space[5] }}>
-      <Text variant="micro" color="black60" uppercase>
+    <Card
+      variant="plain"
+      style={{
+        backgroundColor: palette.cardBackground,
+        borderRadius: theme.radii.xl,
+        marginBottom: theme.space[5],
+      }}
+    >
+      <Text variant="field" color={palette.metaText} uppercase>
         Your position
       </Text>
       <PositionAmount value={summary.yourPositionAmount} tone={balanceTone} />
       <Text
         variant="label"
-        color="black60"
+        color={palette.metaText}
         style={{ marginTop: theme.space[1] }}
       >
         {summary.yourPositionLabel}
       </Text>
-      <View style={[styles.row, { marginTop: theme.space[5] }]}>
+      <Divider
+        color={palette.cardDivider}
+        style={{ marginVertical: theme.space[5] }}
+      />
+      <View style={[styles.row, { gap: theme.space[3] }]}>
         <SummaryStat label="Total group spend" value={summary.totalSpend} />
-        <Divider vertical color="black20" style={{ alignSelf: "stretch" }} />
         <SummaryStat label="Unsettled" value={summary.unsettled} />
       </View>
     </Card>

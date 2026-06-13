@@ -4,14 +4,16 @@ import { Text, useTheme } from "../../../design-system";
 
 export function GroupTabSwitcher({ tabs, value, onChange }) {
   const theme = useTheme();
+  const palette = theme.groupsScreen;
 
   return (
     <View
       style={[
         styles.root,
         {
-          backgroundColor: theme.semantic.surface,
+          backgroundColor: palette.tabsBackground,
           borderRadius: theme.radii.full,
+          gap: theme.space[1],
           marginBottom: theme.space[5],
           padding: theme.space[1],
         },
@@ -29,14 +31,19 @@ export function GroupTabSwitcher({ tabs, value, onChange }) {
             style={({ pressed }) => [
               styles.tab,
               {
-                backgroundColor: selected ? theme.semantic.surfaceStrong : theme.colors.transparent,
+                backgroundColor: selected
+                  ? palette.tabActiveBackground
+                  : theme.colors.transparent,
                 borderRadius: theme.radii.full,
                 minHeight: theme.sizes.minTapTarget,
                 opacity: pressed ? 0.78 : 1,
               },
             ]}
           >
-            <Text variant="bodySmall" color={selected ? "accent" : "textMuted"}>
+            <Text
+              variant="field"
+              color={selected ? palette.tabActiveText : palette.tabInactiveText}
+            >
               {tab.label}
             </Text>
           </Pressable>

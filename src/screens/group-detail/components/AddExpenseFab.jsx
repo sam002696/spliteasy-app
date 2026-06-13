@@ -37,9 +37,8 @@ export function AddExpenseFab({ onPress }) {
       }}
       style={[
         styles.fab,
-        theme.shadows.raised,
         {
-          backgroundColor: theme.semantic.accent,
+          backgroundColor: theme.groupDetailScreen.actionBackground,
           borderRadius: theme.radii.full,
           bottom: theme.space[4],
           height: theme.sizes.fab,
@@ -51,7 +50,7 @@ export function AddExpenseFab({ onPress }) {
       ]}
     >
       <Plus
-        color={theme.semantic.accentText}
+        color={theme.groupDetailScreen.actionText}
         size={theme.space[6]}
         strokeWidth={theme.borderWidths.medium}
       />

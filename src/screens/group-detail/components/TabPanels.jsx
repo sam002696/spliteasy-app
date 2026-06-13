@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MailPlus, UserPlus } from "lucide-react-native";
+import { MailPlus, Plus } from "lucide-react-native";
 import { View } from "react-native";
 import { SwipeToDeleteRow } from "../../../components";
 import { Button, Text, TextField, useTheme } from "../../../design-system";
@@ -9,12 +9,20 @@ import { ExpenseRow } from "./ExpenseRow";
 import { MemberRow } from "./MemberRow";
 
 function SectionTitle({ title, count }) {
+  const theme = useTheme();
+
   return (
-    <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between" }}>
+    <View
+      style={{
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}
+    >
       <Text variant="sectionTitle" color="text">
         {title}
       </Text>
-      <Text variant="micro" color="textMuted">
+      <Text variant="field" color={theme.semantic.secondaryAccent}>
         {count}
       </Text>
     </View>
@@ -28,8 +36,8 @@ function EmptyPanel({ children }) {
     <View
       style={{
         alignItems: "center",
-        backgroundColor: theme.semantic.surface,
-        borderRadius: theme.radii.lg,
+        backgroundColor: theme.groupDetailScreen.cardBackground,
+        borderRadius: theme.radii.xl,
         padding: theme.space[5],
       }}
     >
@@ -50,7 +58,9 @@ export function ExpensesPanel({
   return (
     <View style={{ gap: theme.space[3] }}>
       <SectionTitle title="Expenses" count={`${expenses.length} items`} />
-      {!expenses.length ? <EmptyPanel>No expenses have been added yet.</EmptyPanel> : null}
+      {!expenses.length ? (
+        <EmptyPanel>No expenses have been added yet.</EmptyPanel>
+      ) : null}
       {expenses.map((expense) => (
         <SwipeToDeleteRow
           deleting={Boolean(deletingExpenseIds[expense.id])}
@@ -70,7 +80,9 @@ export function BalancesPanel({ balances, onBalanceAction, settlingIds = {} }) {
   return (
     <View style={{ gap: theme.space[3] }}>
       <SectionTitle title="Balances" count={`${balances.length} open`} />
-      {!balances.length ? <EmptyPanel>No open balances right now.</EmptyPanel> : null}
+      {!balances.length ? (
+        <EmptyPanel>No open balances right now.</EmptyPanel>
+      ) : null}
       {balances.map((balance) => (
         <BalanceCard
           actionLoading={Boolean(settlingIds[balance.id])}
@@ -91,6 +103,7 @@ export function MembersPanel({
   removingMemberIds = {},
 }) {
   const theme = useTheme();
+  const palette = theme.groupDetailScreen;
   const [email, setEmail] = useState("");
   const canInvite = isValidEmail(email) && !inviting;
 
@@ -110,10 +123,9 @@ export function MembersPanel({
     <View style={{ gap: theme.space[3] }}>
       <SectionTitle title="Members" count={`${members.length} people`} />
       <TextField
-        label="Invite by email"
         value={email}
         onChangeText={setEmail}
-        placeholder="prangan@example.com"
+        placeholder="Enter email address"
         autoCapitalize="none"
         autoCorrect={false}
         keyboardType="email-address"
@@ -124,16 +136,25 @@ export function MembersPanel({
             strokeWidth={theme.borderWidths.medium}
           />
         }
+        style={{
+          backgroundColor: palette.cardBackground,
+          borderColor: theme.semantic.border,
+        }}
       />
       <Button
         title="Invite member"
-        variant="dark"
+        variant="danger"
         fullWidth
         disabled={!canInvite}
         loading={inviting}
+        style={{
+          backgroundColor: palette.actionBackground,
+          borderColor: palette.actionBackground,
+        }}
+        textStyle={{ color: palette.actionText }}
         left={
-          <UserPlus
-            color={theme.semantic.accent}
+          <Plus
+            color={palette.actionText}
             size={theme.space[4]}
             strokeWidth={theme.borderWidths.medium}
           />
