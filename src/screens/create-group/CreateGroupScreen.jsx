@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { DollarSign, MailPlus, Tag, Users } from "lucide-react-native";
+import { Check, CircleAlert, Mail, Plus, Users } from "lucide-react-native";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -37,14 +37,41 @@ export function CreateGroupScreen() {
   const { loading } = useAppSelector(selectGroupsState);
   const [groupName, setGroupName] = useState("");
   const [category, setCategory] = useState(categoryOptions[0].value);
-  const [currency, setCurrency] = useState(currencyOptions[0].value);
+  const [customCategory, setCustomCategory] = useState("");
+  const [currency] = useState(currencyOptions[0].value);
   const [inviteEmail, setInviteEmail] = useState("");
   const [memberEmails, setMemberEmails] = useState([]);
+  const palette = theme.createGroupScreen;
   const canAddEmail = isValidEmail(inviteEmail);
   const canCreate = groupName.trim().length > 1 && !loading.create;
+  const selectedCategory = customCategory.trim() || category;
+  const selectedCurrency =
+    currencyOptions.find((option) => option.value === currency) ||
+    currencyOptions[0];
+
+  const currencyNames = {
+    BDT: "Bangladeshi Taka",
+    EUR: "Euro",
+    USD: "US Dollar",
+  };
 
   const closeModal = () => {
     router.back();
+  };
+
+  const selectCategory = (value) => {
+    setCustomCategory("");
+    setCategory(value);
+  };
+
+  const updateCustomCategory = (value) => {
+    setCustomCategory(value);
+
+    if (value.trim()) {
+      setCategory(value.trim());
+    } else {
+      setCategory(categoryOptions[0].value);
+    }
   };
 
   const addInviteEmail = (email) => {
@@ -88,7 +115,7 @@ export function CreateGroupScreen() {
     const result = await dispatch(
       createGroup(
         buildCreateGroupPayload({
-          category,
+          category: selectedCategory,
           currency,
           memberEmails,
           name: groupName,
@@ -127,21 +154,32 @@ export function CreateGroupScreen() {
         >
           <ModalHeader onClose={closeModal} />
 
-          <Card variant="limeHero" style={{ marginBottom: theme.space[6] }}>
-            <View style={{ gap: theme.space[2] }}>
-              <Users
-                color={theme.semantic.accentText}
-                size={theme.space[6]}
-                strokeWidth={theme.borderWidths.medium}
-              />
+          <Card
+            variant="plain"
+            style={{
+              backgroundColor: palette.cardBackground,
+              borderRadius: theme.radii.xl,
+              marginBottom: theme.space[6],
+            }}
+          >
+            <View style={{ gap: theme.space[3] }}>
+              <Text variant="field" color="textMuted" uppercase>
+                Group name
+              </Text>
               <TextField
-                label="Group name"
                 value={groupName}
                 onChangeText={setGroupName}
                 placeholder="Dhanmondi Flat"
+                left={
+                  <Users
+                    color={theme.semantic.textMuted}
+                    size={theme.space[5]}
+                    strokeWidth={theme.borderWidths.medium}
+                  />
+                }
                 style={{
-                  backgroundColor: theme.rgba.black06,
-                  borderColor: theme.rgba.black10,
+                  backgroundColor: palette.fieldBackground,
+                  borderColor: palette.fieldBorder,
                 }}
               />
             </View>
@@ -152,23 +190,27 @@ export function CreateGroupScreen() {
             subtitle="Used for group tags and quick scanning."
           >
             <View style={{ gap: theme.space[3] }}>
-              <View
-                style={{
-                  alignItems: "center",
-                  flexDirection: "row",
-                  gap: theme.space[2],
-                }}
-              >
-                <Tag
-                  color={theme.semantic.textMuted}
-                  size={theme.space[5]}
-                  strokeWidth={theme.borderWidths.medium}
-                />
-              </View>
               <SelectChips
                 options={categoryOptions}
-                value={category}
-                onChange={setCategory}
+                value={customCategory.trim() ? customCategory.trim() : category}
+                onChange={selectCategory}
+              />
+              <TextField
+                value={customCategory}
+                onChangeText={updateCustomCategory}
+                placeholder="Or type a custom category..."
+                left={
+                  <Plus
+                    color={theme.semantic.textMuted}
+                    size={theme.space[5]}
+                    strokeWidth={theme.borderWidths.medium}
+                  />
+                }
+                style={{
+                  backgroundColor: theme.colors.transparent,
+                  borderColor: palette.dashedBorder,
+                  borderStyle: "dashed",
+                }}
               />
             </View>
           </FormSection>
@@ -182,20 +224,73 @@ export function CreateGroupScreen() {
                 style={{
                   alignItems: "center",
                   flexDirection: "row",
-                  gap: theme.space[2],
+                  backgroundColor: palette.cardBackground,
+                  borderRadius: theme.radii.lg,
+                  gap: theme.space[3],
+                  padding: theme.space[4],
                 }}
               >
-                <DollarSign
+                <View
+                  style={{
+                    alignItems: "center",
+                    backgroundColor: palette.currencyIconBackground,
+                    borderRadius: theme.radii.md,
+                    height: theme.sizes.iconButton,
+                    justifyContent: "center",
+                    width: theme.sizes.iconButton,
+                  }}
+                >
+                  <Text variant="cardTitle" color="text">
+                    ৳
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text variant="cardTitle" color="text">
+                    {selectedCurrency.label}
+                  </Text>
+                  <Text variant="bodySmall" color="textMuted">
+                    {currencyNames[currency] || selectedCurrency.label}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    backgroundColor: palette.currencyBadgeBackground,
+                    borderColor: palette.currencyBadgeBorder,
+                    borderRadius: theme.radii.full,
+                    borderWidth: theme.borderWidths.hairline,
+                    flexDirection: "row",
+                    gap: theme.space[1],
+                    minHeight: theme.sizes.minTapTarget - theme.space[2],
+                    paddingHorizontal: theme.space[3],
+                  }}
+                >
+                  <Check
+                    color={palette.currencyBadgeText}
+                    size={theme.space[4]}
+                    strokeWidth={theme.borderWidths.medium}
+                  />
+                  <Text variant="field" color={palette.currencyBadgeText}>
+                    From settings
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  alignItems: "center",
+                  flexDirection: "row",
+                  gap: theme.space[1],
+                }}
+              >
+                <CircleAlert
                   color={theme.semantic.textMuted}
-                  size={theme.space[5]}
+                  size={theme.space[4]}
                   strokeWidth={theme.borderWidths.medium}
                 />
+                <Text variant="bodySmall" color="textMuted">
+                  Change your default currency in Profile - Settings.
+                </Text>
               </View>
-              <SelectChips
-                options={currencyOptions}
-                value={currency}
-                onChange={setCurrency}
-              />
             </View>
           </FormSection>
 
@@ -207,20 +302,23 @@ export function CreateGroupScreen() {
               <View style={{ flexDirection: "row", gap: theme.space[2] }}>
                 <View style={{ flex: 1 }}>
                   <TextField
-                    label="Email"
                     value={inviteEmail}
                     onChangeText={setInviteEmail}
-                    placeholder="nadia@example.com"
+                    placeholder="Enter email address"
                     autoCapitalize="none"
                     keyboardType="email-address"
                     onFocus={scrollInviteFieldIntoView}
                     left={
-                      <MailPlus
+                      <Mail
                         color={theme.semantic.textMuted}
                         size={theme.space[5]}
                         strokeWidth={theme.borderWidths.medium}
                       />
                     }
+                    style={{
+                      backgroundColor: palette.fieldBackground,
+                      borderColor: palette.fieldBorder,
+                    }}
                   />
                 </View>
                 <Pressable
@@ -230,17 +328,19 @@ export function CreateGroupScreen() {
                   style={({ pressed }) => ({
                     alignItems: "center",
                     alignSelf: "flex-end",
-                    backgroundColor: theme.semantic.surfaceStrong,
-                    borderRadius: theme.radii.full,
-                    height: theme.sizes.minTapTarget + theme.space[2],
+                    backgroundColor: palette.footerButtonBackground,
+                    borderRadius: theme.radii.lg,
+                    height: theme.sizes.minTapTarget + theme.space[3],
                     justifyContent: "center",
                     opacity: !canAddEmail ? 0.45 : pressed ? 0.78 : 1,
-                    paddingHorizontal: theme.space[4],
+                    width: theme.sizes.minTapTarget + theme.space[3],
                   })}
                 >
-                  <Text variant="field" color="accent">
-                    Add
-                  </Text>
+                  <Plus
+                    color={palette.footerButtonText}
+                    size={theme.space[6]}
+                    strokeWidth={theme.borderWidths.medium}
+                  />
                 </Pressable>
               </View>
 

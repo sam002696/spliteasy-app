@@ -6,7 +6,7 @@ import { AnimatedSection } from "./AnimatedSection";
 
 function HeaderIconButton({ icon: Icon, label, tone = "neutral", onPress }) {
   const theme = useTheme();
-  const isDark = tone === "dark";
+  const isCreate = tone === "create";
 
   return (
     <Pressable
@@ -17,8 +17,8 @@ function HeaderIconButton({ icon: Icon, label, tone = "neutral", onPress }) {
       style={({ pressed }) => [
         styles.iconButton,
         {
-          backgroundColor: isDark
-            ? theme.semantic.surfaceStrong
+          backgroundColor: isCreate
+            ? theme.groupsScreen.tabActiveBackground
             : theme.semantic.surface,
           borderRadius: theme.radii.full,
           height: theme.sizes.iconButton,
@@ -28,7 +28,9 @@ function HeaderIconButton({ icon: Icon, label, tone = "neutral", onPress }) {
       ]}
     >
       <Icon
-        color={isDark ? theme.semantic.accent : theme.semantic.text}
+        color={
+          isCreate ? theme.groupsScreen.tabActiveText : theme.semantic.text
+        }
         size={theme.space[5]}
         strokeWidth={theme.borderWidths.medium}
       />
@@ -53,7 +55,7 @@ export function GroupsHeader({ onCreateGroup }) {
           <HeaderIconButton
             icon={Plus}
             label="Create group"
-            tone="dark"
+            tone="create"
             onPress={onCreateGroup}
           />
         </View>

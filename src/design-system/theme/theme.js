@@ -211,6 +211,30 @@ const balancesScreen = Object.freeze({
   actionText: colors.white,
 });
 
+const createGroupScreen = Object.freeze({
+  cardBackground: colors.white,
+  closeBackground: colors.white,
+  closeIcon: colors.nearBlack,
+  fieldBackground: colors.white,
+  fieldBorder: rgba.black10,
+  dashedBorder: rgba.black20,
+  selectedChipBackground: colors.orange,
+  selectedChipText: colors.white,
+  chipBackground: colors.white,
+  chipText: colors.nearBlack,
+  currencyIconBackground: colors.leafSoft,
+  currencyBadgeBackground: colors.leafSoft,
+  currencyBadgeBorder: colors.leafText,
+  currencyBadgeText: colors.leafText,
+  inviteAvatarBackground: colors.yellow,
+  inviteAvatarText: colors.nearBlack,
+  removeBackground: colors.redSoft,
+  removeIcon: colors.red,
+  pendingDot: colors.yellow,
+  footerButtonBackground: colors.orange,
+  footerButtonText: colors.white,
+});
+
 const bottomNav = Object.freeze({
   background: colors.oxblood,
   border: rgba.white10,
@@ -292,6 +316,7 @@ export const createTheme = (mode = "light", densityScale = 1) => {
     homeActivity,
     groupsScreen,
     balancesScreen,
+    createGroupScreen,
     profile,
     quickActions,
     space: scaleTokenMap(space, resolvedScale),

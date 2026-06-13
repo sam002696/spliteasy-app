@@ -16,7 +16,9 @@ export function MemberInviteRow({ member, onPress, selected = false }) {
         styles.root,
         {
           backgroundColor: theme.semantic.surface,
-          borderColor: selected ? theme.semantic.accent : theme.colors.transparent,
+          borderColor: selected
+            ? theme.semantic.accent
+            : theme.colors.transparent,
           borderWidth: theme.borderWidths.hairline,
           borderRadius: theme.radii.md,
           gap: theme.space[3],
@@ -56,6 +58,7 @@ export function MemberInviteRow({ member, onPress, selected = false }) {
 
 export function SelectedInviteRow({ email, onRemove }) {
   const theme = useTheme();
+  const palette = theme.createGroupScreen;
 
   return (
     <Pressable
@@ -65,27 +68,43 @@ export function SelectedInviteRow({ email, onRemove }) {
       style={({ pressed }) => [
         styles.root,
         {
-          backgroundColor: theme.semantic.surface,
-          borderRadius: theme.radii.md,
+          backgroundColor: palette.cardBackground,
+          borderRadius: theme.radii.lg,
           gap: theme.space[3],
           opacity: pressed ? 0.78 : 1,
           padding: theme.space[3],
         },
       ]}
     >
-      <Avatar name={email} size="md" />
+      <Avatar
+        name={email}
+        size="md"
+        textColor={palette.inviteAvatarText}
+        style={{ backgroundColor: palette.inviteAvatarBackground }}
+        textStyle={theme.typography.field}
+      />
       <View style={{ flex: 1, gap: theme.space[1] }}>
-        <Text variant="bodySmall" color="text" numberOfLines={1}>
+        <Text variant="field" color="text" numberOfLines={1}>
           {email}
         </Text>
-        <Text variant="label" color="textMuted" numberOfLines={1}>
-          Pending invite
-        </Text>
+        <View style={[styles.pendingRow, { gap: theme.space[1] }]}>
+          <View
+            style={{
+              backgroundColor: palette.pendingDot,
+              borderRadius: theme.radii.full,
+              height: theme.space[2],
+              width: theme.space[2],
+            }}
+          />
+          <Text variant="label" color="textMuted" numberOfLines={1}>
+            Pending invite
+          </Text>
+        </View>
       </View>
       <View
         style={{
           alignItems: "center",
-          backgroundColor: theme.semantic.surfaceStrong,
+          backgroundColor: palette.removeBackground,
           borderRadius: theme.radii.full,
           height: theme.sizes.minTapTarget,
           justifyContent: "center",
@@ -93,7 +112,7 @@ export function SelectedInviteRow({ email, onRemove }) {
         }}
       >
         <X
-          color={theme.semantic.accent}
+          color={palette.removeIcon}
           size={theme.space[5]}
           strokeWidth={theme.borderWidths.medium}
         />
@@ -103,6 +122,10 @@ export function SelectedInviteRow({ email, onRemove }) {
 }
 
 const styles = StyleSheet.create({
+  pendingRow: {
+    alignItems: "center",
+    flexDirection: "row",
+  },
   root: {
     alignItems: "center",
     flexDirection: "row",
