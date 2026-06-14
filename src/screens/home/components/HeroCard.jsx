@@ -7,6 +7,7 @@ import {
   CircleAlert,
   Phone,
   Plus,
+  Bell,
 } from "lucide-react-native";
 import { Card, Text, useTheme } from "../../../design-system";
 import { FadeInView } from "./FadeInView";
@@ -62,8 +63,8 @@ function getHeroCopy(state, summary) {
   }
 
   return {
-    action: "Remind friends",
-    ActionIcon: Phone,
+    action: "Remind",
+    ActionIcon: Bell,
     badge: "Owed to you",
     headline: summary.netPosition,
     Icon: ArrowDown,

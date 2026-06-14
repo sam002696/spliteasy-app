@@ -44,6 +44,10 @@ function BalanceIcon({ tone }) {
   const Icon = tone === "negative" ? TrendingDown : TrendingUp;
   const color =
     tone === "negative" ? theme.semantic.negative : theme.semantic.positive;
+  const backGroundColor =
+    tone === "negative"
+      ? theme.groupsScreen.iconTileDangerBackground
+      : theme.groupsScreen.iconTileGreenBackground;
 
   if (tone === "settled") {
     return null;
@@ -53,7 +57,7 @@ function BalanceIcon({ tone }) {
     <View
       style={{
         alignItems: "center",
-        backgroundColor: theme.groupsScreen.iconTileDangerBackground,
+        backgroundColor: backGroundColor,
         borderRadius: theme.radii.md,
         height: theme.sizes.iconButton,
         justifyContent: "center",
@@ -79,7 +83,11 @@ function MetaItem({ icon: Icon, children }) {
         size={theme.space[4]}
         strokeWidth={theme.borderWidths.medium}
       />
-      <Text variant="body" color={theme.groupsScreen.metaText} numberOfLines={1}>
+      <Text
+        variant="body"
+        color={theme.groupsScreen.metaText}
+        numberOfLines={1}
+      >
         {children}
       </Text>
     </View>
@@ -102,8 +110,14 @@ export function GroupCard({ group, index = 0, onPress }) {
 
   useEffect(() => {
     const delay = theme.motion.fast + index * (theme.motion.fast / 3);
-    opacity.value = withDelay(delay, withTiming(1, { duration: theme.motion.spring }));
-    translateY.value = withDelay(delay, withTiming(0, { duration: theme.motion.spring }));
+    opacity.value = withDelay(
+      delay,
+      withTiming(1, { duration: theme.motion.spring }),
+    );
+    translateY.value = withDelay(
+      delay,
+      withTiming(0, { duration: theme.motion.spring }),
+    );
   }, [index, opacity, theme.motion.fast, theme.motion.spring, translateY]);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -191,7 +205,11 @@ export function GroupCard({ group, index = 0, onPress }) {
             <View style={[styles.balanceTextRow, { gap: theme.space[2] }]}>
               <BalanceIcon tone={group.balanceTone} />
               <View style={styles.positionText}>
-                <Text variant="cardAmount" color={progressTone} numberOfLines={1}>
+                <Text
+                  variant="cardAmount"
+                  color={progressTone}
+                  numberOfLines={1}
+                >
                   {position.amount}
                 </Text>
                 <Text variant="body" color={palette.metaText} numberOfLines={1}>
