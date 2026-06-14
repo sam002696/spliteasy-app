@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  ArrowDown,
-  ArrowUp,
-  Bell,
-  CircleCheck,
-  FileText,
-} from "lucide-react-native";
+import { ArrowDown, ArrowUp, FileText } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -24,6 +18,7 @@ import {
   Text,
   useTheme,
 } from "../../../design-system";
+import { getBalanceActionPresentation } from "../../../utils";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -98,7 +93,11 @@ export function OpenBalanceCard({
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(theme.space[3]);
   const isDebt = balance.tone === "negative";
-  const ActionIcon = isDebt ? CircleCheck : Bell;
+  const actionPresentation = getBalanceActionPresentation(
+    balance.tone,
+    palette,
+  );
+  const ActionIcon = actionPresentation.Icon;
   const progressPercent = Math.round(balance.progress * 100);
 
   useEffect(() => {
@@ -148,8 +147,8 @@ export function OpenBalanceCard({
           <Avatar
             name={balance.person}
             size="md"
-            textColor="accentText"
-            style={{ backgroundColor: theme.semantic.accent }}
+            textColor={theme.colors.white}
+            style={{ backgroundColor: palette.avatarBackground }}
             textStyle={theme.typography.field}
           />
           <View style={{ flex: 1, gap: theme.space[1] }}>
@@ -217,13 +216,13 @@ export function OpenBalanceCard({
               loading={actionLoading}
               onPress={() => onActionPress?.(balance)}
               style={{
-                backgroundColor: palette.actionBackground,
-                borderColor: palette.actionBackground,
+                backgroundColor: actionPresentation.backgroundColor,
+                borderColor: actionPresentation.backgroundColor,
               }}
-              textStyle={{ color: palette.actionText }}
+              textStyle={{ color: actionPresentation.color }}
               left={
                 <ActionIcon
-                  color={palette.actionText}
+                  color={actionPresentation.color}
                   size={theme.space[5]}
                   strokeWidth={theme.borderWidths.medium}
                 />

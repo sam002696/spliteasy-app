@@ -113,7 +113,7 @@ export function mapGroupBalances(balancesData) {
     const amount = Number(balance.amount || 0);
 
     return {
-      id: String(balance.user?.id || balance.label),
+      id: `${balance.user?.id || balance.label}:${balance.type || "balance"}`,
       groupId: balancesData?.group_id,
       userId: balance.user?.id,
       person: balance.user?.name || "Unknown",

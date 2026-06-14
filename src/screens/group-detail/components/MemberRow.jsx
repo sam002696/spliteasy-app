@@ -60,7 +60,7 @@ export function MemberRow({ member }) {
               {member.status}
             </Text>
           </View>
-          <View style={[styles.meta, { gap: theme.space[1] }]}>
+          {/* <View style={[styles.meta, { gap: theme.space[1] }]}>
             <ShieldCheck
               color={theme.semantic[member.tone]}
               size={theme.space[4]}
@@ -69,7 +69,7 @@ export function MemberRow({ member }) {
             <Text variant="micro" color={member.tone}>
               {member.balance}
             </Text>
-          </View>
+          </View> */}
         </View>
       </View>
     </Card>

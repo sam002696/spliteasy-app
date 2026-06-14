@@ -7,6 +7,7 @@ import {
 
 export const balanceFilters = {
   open: "open",
+  owedToYou: "owed_to_you",
   youOwe: "you_owe",
   settled: "settled",
 };

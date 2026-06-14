@@ -32,6 +32,10 @@ function BalanceIcon({ tone }) {
   const Icon = tone === "negative" ? TrendingDown : TrendingUp;
   const color =
     tone === "negative" ? theme.semantic.negative : theme.semantic.positive;
+  const backGroundColor =
+    tone === "negative"
+      ? theme.groupsScreen.iconTileDangerBackground
+      : theme.groupsScreen.iconTileGreenBackground;
 
   if (tone === "settled") {
     return null;
@@ -41,7 +45,7 @@ function BalanceIcon({ tone }) {
     <View
       style={{
         alignItems: "center",
-        backgroundColor: theme.groupsScreen.iconTileDangerBackground,
+        backgroundColor: backGroundColor,
         borderRadius: theme.radii.md,
         height: theme.sizes.iconButton,
         justifyContent: "center",
@@ -83,7 +87,11 @@ function MetaItem({ icon: Icon, children }) {
         size={theme.space[4]}
         strokeWidth={theme.borderWidths.medium}
       />
-      <Text variant="body" color={theme.groupsScreen.metaText} numberOfLines={1}>
+      <Text
+        variant="body"
+        color={theme.groupsScreen.metaText}
+        numberOfLines={1}
+      >
         {children}
       </Text>
     </View>

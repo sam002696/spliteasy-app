@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowDown, ArrowUp, Bell, CircleCheck } from "lucide-react-native";
+import { ArrowDown, ArrowUp } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import {
   Avatar,
@@ -10,6 +10,7 @@ import {
   Text,
   useTheme,
 } from "../../../design-system";
+import { getBalanceActionPresentation } from "../../../utils";
 
 function StatusBadge({ isDebt }) {
   const theme = useTheme();
@@ -49,7 +50,8 @@ export function BalanceCard({ actionLoading = false, balance, onActionPress }) {
   const theme = useTheme();
   const palette = theme.groupDetailScreen;
   const isDebt = balance.tone === "negative";
-  const Icon = isDebt ? CircleCheck : Bell;
+  const actionPresentation = getBalanceActionPresentation(balance.tone, palette);
+  const ActionIcon = actionPresentation.Icon;
   const progressPercent = Math.round(balance.progress * 100);
 
   return (
@@ -114,13 +116,13 @@ export function BalanceCard({ actionLoading = false, balance, onActionPress }) {
           loading={actionLoading}
           onPress={() => onActionPress?.(balance)}
           style={{
-            backgroundColor: palette.actionBackground,
-            borderColor: palette.actionBackground,
+            backgroundColor: actionPresentation.backgroundColor,
+            borderColor: actionPresentation.backgroundColor,
           }}
-          textStyle={{ color: palette.actionText }}
+          textStyle={{ color: actionPresentation.color }}
           left={
-            <Icon
-              color={palette.actionText}
+            <ActionIcon
+              color={actionPresentation.color}
               size={theme.space[4]}
               strokeWidth={theme.borderWidths.medium}
             />
