@@ -9,10 +9,7 @@ export function ProfileHeader() {
   return (
     <AnimatedSection>
       <View style={[styles.root, { marginBottom: theme.space[5] }]}>
-        <View style={{ flex: 1, gap: theme.space[1] }}>
-          <Text variant="label" color="textMuted" uppercase>
-            Account
-          </Text>
+        <View>
           <Text variant="screenTitle" color="text">
             Profile
           </Text>
