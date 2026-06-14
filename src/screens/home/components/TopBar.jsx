@@ -21,6 +21,9 @@ function TopBarActionButton({ count = 0, icon: Icon, label, onPress }) {
   const theme = useTheme();
   const palette = theme.homeTopBar;
   const showBadge = count > 0;
+  const badgeLabel = count > 9 ? "9+" : String(count);
+  const isCompactBadge = badgeLabel.length === 1;
+  const badgeSize = theme.space[6];
 
   return (
     <Pressable
@@ -52,12 +55,14 @@ function TopBarActionButton({ count = 0, icon: Icon, label, onPress }) {
               backgroundColor: theme.semantic.danger,
               borderColor: theme.semantic.background,
               borderRadius: theme.radii.full,
-              minWidth: theme.space[5],
+              height: badgeSize,
+              minWidth: badgeSize,
+              paddingHorizontal: isCompactBadge ? 0 : theme.space[1],
             },
           ]}
         >
-          <Text variant="micro" color="white">
-            {count > 9 ? "9+" : count}
+          <Text variant="micro" color="white" style={styles.badgeText}>
+            {badgeLabel}
           </Text>
         </View>
       ) : null}
@@ -146,11 +151,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 2,
     justifyContent: "center",
-    minHeight: 20,
-    paddingHorizontal: 4,
     position: "absolute",
     right: -4,
     top: -4,
+  },
+  badgeText: {
+    textAlign: "center",
   },
   root: {
     alignItems: "center",
