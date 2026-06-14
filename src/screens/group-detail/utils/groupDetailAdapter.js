@@ -106,11 +106,9 @@ export function mapGroupExpenses(expenses = []) {
 
 export function mapGroupBalances(balancesData) {
   const balances = balancesData?.balances || [];
-  const totalSpend = Number(balancesData?.total_group_spend || 0);
 
   return balances.map((balance) => {
     const tone = getPositionTone(balance.type);
-    const amount = Number(balance.amount || 0);
 
     return {
       id: `${balance.user?.id || balance.label}:${balance.type || "balance"}`,
@@ -120,7 +118,7 @@ export function mapGroupBalances(balancesData) {
       note: balance.label,
       amount: formatAmount(balance.amount, balancesData?.base_currency),
       tone,
-      progress: totalSpend > 0 ? Math.min(amount / totalSpend, 1) : 0,
+      progress: Number(balance.settled_percentage || 0) / 100,
       action: tone === "negative" ? "Mark settled" : "Remind",
       canRemind:
         tone === "positive" &&
