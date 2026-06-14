@@ -1,12 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Check, CircleAlert, Mail, Plus, Users } from "lucide-react-native";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Text, TextField, useTheme } from "../../design-system";
@@ -31,7 +25,6 @@ import { buildCreateGroupPayload } from "./utils";
 
 export function CreateGroupScreen() {
   const theme = useTheme();
-  const scrollViewRef = useRef(null);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector(selectGroupsState);
@@ -97,16 +90,6 @@ export function CreateGroupScreen() {
     );
   };
 
-  const scrollInviteFieldIntoView = () => {
-    requestAnimationFrame(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    });
-
-    setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, theme.motion.save);
-  };
-
   const createNewGroup = async () => {
     if (!canCreate) {
       return;
@@ -137,21 +120,14 @@ export function CreateGroupScreen() {
         flex: 1,
       }}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          padding: theme.space[4],
+          paddingBottom: theme.space[8] * 3,
+        }}
       >
-        <ScrollView
-          ref={scrollViewRef}
-          automaticallyAdjustKeyboardInsets
-          keyboardDismissMode="interactive"
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            padding: theme.space[4],
-            paddingBottom: theme.space[8] * 3,
-          }}
-        >
           <ModalHeader onClose={closeModal} />
 
           <Card
@@ -184,6 +160,65 @@ export function CreateGroupScreen() {
               />
             </View>
           </Card>
+
+          <FormSection
+            title="Invite members"
+            subtitle="Add people now, or invite them later."
+          >
+            <View style={{ gap: theme.space[3] }}>
+              <View style={{ flexDirection: "row", gap: theme.space[2] }}>
+                <View style={{ flex: 1 }}>
+                  <TextField
+                    value={inviteEmail}
+                    onChangeText={setInviteEmail}
+                    placeholder="Enter email address"
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    left={
+                      <Mail
+                        color={theme.semantic.textMuted}
+                        size={theme.space[5]}
+                        strokeWidth={theme.borderWidths.medium}
+                      />
+                    }
+                    style={{
+                      backgroundColor: palette.fieldBackground,
+                      borderColor: palette.fieldBorder,
+                    }}
+                  />
+                </View>
+                <Pressable
+                  accessibilityRole="button"
+                  disabled={!canAddEmail}
+                  onPress={() => addInviteEmail(inviteEmail)}
+                  style={({ pressed }) => ({
+                    alignItems: "center",
+                    alignSelf: "flex-end",
+                    backgroundColor: palette.footerButtonBackground,
+                    borderRadius: theme.radii.lg,
+                    height: theme.sizes.minTapTarget + theme.space[3],
+                    justifyContent: "center",
+                    opacity: !canAddEmail ? 0.45 : pressed ? 0.78 : 1,
+                    width: theme.sizes.minTapTarget + theme.space[3],
+                  })}
+                >
+                  <Plus
+                    color={palette.footerButtonText}
+                    size={theme.space[6]}
+                    strokeWidth={theme.borderWidths.medium}
+                  />
+                </Pressable>
+              </View>
+
+              {memberEmails.map((email) => (
+                <SelectedInviteRow
+                  key={email}
+                  email={email}
+                  onRemove={() => removeInviteEmail(email)}
+                />
+              ))}
+            </View>
+          </FormSection>
 
           <FormSection
             title="Category"
@@ -294,74 +329,13 @@ export function CreateGroupScreen() {
             </View>
           </FormSection>
 
-          <FormSection
-            title="Invite members"
-            subtitle="Add people now, or invite them later."
-          >
-            <View style={{ gap: theme.space[3] }}>
-              <View style={{ flexDirection: "row", gap: theme.space[2] }}>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    value={inviteEmail}
-                    onChangeText={setInviteEmail}
-                    placeholder="Enter email address"
-                    autoCapitalize="none"
-                    keyboardType="email-address"
-                    onFocus={scrollInviteFieldIntoView}
-                    left={
-                      <Mail
-                        color={theme.semantic.textMuted}
-                        size={theme.space[5]}
-                        strokeWidth={theme.borderWidths.medium}
-                      />
-                    }
-                    style={{
-                      backgroundColor: palette.fieldBackground,
-                      borderColor: palette.fieldBorder,
-                    }}
-                  />
-                </View>
-                <Pressable
-                  accessibilityRole="button"
-                  disabled={!canAddEmail}
-                  onPress={() => addInviteEmail(inviteEmail)}
-                  style={({ pressed }) => ({
-                    alignItems: "center",
-                    alignSelf: "flex-end",
-                    backgroundColor: palette.footerButtonBackground,
-                    borderRadius: theme.radii.lg,
-                    height: theme.sizes.minTapTarget + theme.space[3],
-                    justifyContent: "center",
-                    opacity: !canAddEmail ? 0.45 : pressed ? 0.78 : 1,
-                    width: theme.sizes.minTapTarget + theme.space[3],
-                  })}
-                >
-                  <Plus
-                    color={palette.footerButtonText}
-                    size={theme.space[6]}
-                    strokeWidth={theme.borderWidths.medium}
-                  />
-                </Pressable>
-              </View>
-
-              {memberEmails.map((email) => (
-                <SelectedInviteRow
-                  key={email}
-                  email={email}
-                  onRemove={() => removeInviteEmail(email)}
-                />
-              ))}
-            </View>
-          </FormSection>
-
           <CreateGroupFooter
             canCreate={canCreate}
             loading={loading.create}
             onCancel={closeModal}
             onCreate={createNewGroup}
           />
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 }

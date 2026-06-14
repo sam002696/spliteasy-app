@@ -69,53 +69,66 @@ export function SwipeToDeleteRow({
     animateTo(0);
   };
 
+  const actionTranslateX = translateX.interpolate({
+    inputRange: [-ACTION_WIDTH, 0],
+    outputRange: [0, ACTION_WIDTH],
+  });
+
   return (
     <View
       style={[
         styles.root,
         {
-          borderRadius: theme.radii.md,
+          borderRadius: theme.radii.xl,
         },
       ]}
     >
-      <Pressable
-        accessibilityLabel="Delete"
-        accessibilityRole="button"
-        disabled={disabled || deleting}
-        onPress={deleteRow}
-        style={({ pressed }) => [
-          styles.action,
+      <Animated.View
+        style={[
+          styles.actionPanel,
           {
-            backgroundColor: theme.semantic.danger,
-            borderBottomRightRadius: theme.radii.md,
-            borderTopRightRadius: theme.radii.md,
-            opacity: pressed ? 0.82 : 1,
+            borderBottomRightRadius: theme.radii.xl,
+            borderTopRightRadius: theme.radii.xl,
+            transform: [{ translateX: actionTranslateX }],
             width: ACTION_WIDTH,
           },
         ]}
       >
-        {deleting ? (
-          <ActivityIndicator color={theme.colors.white} />
-        ) : (
-          <>
-            <Trash2
-              color={theme.colors.white}
-              size={theme.space[5]}
-              strokeWidth={theme.borderWidths.medium}
-            />
-            <Text variant="micro" color="white">
-              Delete
-            </Text>
-          </>
-        )}
-      </Pressable>
+        <Pressable
+          accessibilityLabel="Delete"
+          accessibilityRole="button"
+          disabled={disabled || deleting}
+          onPress={deleteRow}
+          style={({ pressed }) => [
+            styles.action,
+            {
+              backgroundColor: theme.semantic.danger,
+              opacity: pressed ? 0.82 : 1,
+            },
+          ]}
+        >
+          {deleting ? (
+            <ActivityIndicator color={theme.colors.white} />
+          ) : (
+            <>
+              <Trash2
+                color={theme.colors.white}
+                size={theme.space[5]}
+                strokeWidth={theme.borderWidths.medium}
+              />
+              <Text variant="micro" color="white">
+                Delete
+              </Text>
+            </>
+          )}
+        </Pressable>
+      </Animated.View>
       <Animated.View
         {...panResponder.panHandlers}
         style={[
           styles.content,
           {
-            backgroundColor: theme.semantic.background,
-            borderRadius: theme.radii.md,
+            backgroundColor: theme.semantic.card,
             transform: [{ translateX }],
           },
         ]}
@@ -129,15 +142,22 @@ export function SwipeToDeleteRow({
 const styles = StyleSheet.create({
   action: {
     alignItems: "center",
+    flex: 1,
     bottom: 0,
     gap: 4,
     justifyContent: "center",
+    left: 0,
+    right: 0,
+    top: 0,
+  },
+  actionPanel: {
+    bottom: 0,
+    overflow: "hidden",
     position: "absolute",
     right: 0,
     top: 0,
   },
   content: {
-    overflow: "hidden",
     position: "relative",
   },
   root: {
