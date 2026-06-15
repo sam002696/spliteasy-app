@@ -4,3 +4,4 @@ export * from "./AmountCard";
 export * from "./ChoiceGrid";
 export * from "./FormSection";
 export * from "./ScanPlaceholder";
+export * from "./SplitEditor";

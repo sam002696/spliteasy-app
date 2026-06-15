@@ -16,15 +16,23 @@ export function buildCreateExpensePayload({
   expenseDate,
   paidByUserId,
   participantUserIds,
+  splits,
   splitMethod,
 }) {
-  return {
+  const payload = {
     description: description.trim(),
     amount: parseAmount(amount),
     currency,
     expense_date: expenseDate,
     paid_by_user_id: Number(paidByUserId),
     split_method: splitMethod,
-    participant_user_ids: participantUserIds.map(Number),
   };
+
+  if (splitMethod === "equal") {
+    payload.participant_user_ids = participantUserIds.map(Number);
+  } else {
+    payload.splits = splits;
+  }
+
+  return payload;
 }

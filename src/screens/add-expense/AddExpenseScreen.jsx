@@ -5,7 +5,6 @@ import {
   CircleAlert,
   FileText,
   UserRound,
-  Users,
 } from "lucide-react-native";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { useRouter } from "expo-router";
@@ -35,13 +34,21 @@ import {
   ChoiceGrid,
   FormSection,
   ScanPlaceholder,
+  SplitEditor,
 } from "./components";
 import {
   currencyOptions,
   entryModes,
   splitMethods,
 } from "./data/addExpenseOptions";
-import { buildCreateExpensePayload, getTodayInputValue } from "./utils";
+import {
+  buildCreateExpensePayload,
+  buildDefaultSplitValues,
+  buildSplitRows,
+  getTodayInputValue,
+  isSplitValid,
+  parseSplitNumber,
+} from "./utils";
 
 function FieldIcon({ icon: Icon, translateY = 1 }) {
   const theme = useTheme();
@@ -88,6 +95,7 @@ export function AddExpenseScreen({ groupId }) {
   const [expenseDate, setExpenseDate] = useState(getTodayInputValue());
   const [payerId, setPayerId] = useState(null);
   const [splitMethod, setSplitMethod] = useState("equal");
+  const [splitValues, setSplitValues] = useState({});
   const selectedCurrency =
     currencyOptions.find((option) => option.value === currency) ||
     currencyOptions[0];
@@ -108,14 +116,24 @@ export function AddExpenseScreen({ groupId }) {
     () => members.map((member) => member.id),
     [members],
   );
-  const amountValue = Number(String(amount).replace(/,/g, "").trim());
+  const memberIdsKey = useMemo(
+    () => members.map((member) => member.id).join(":"),
+    [members],
+  );
+  const amountValue = parseSplitNumber(amount);
   const hasValidAmount = Number.isFinite(amountValue) && amountValue > 0;
   const hasValidDate = /^\d{4}-\d{2}-\d{2}$/.test(expenseDate.trim());
+  const splitIsValid = isSplitValid({
+    amountValue,
+    members,
+    splitMethod,
+    splitValues,
+  });
   const canSave =
     hasValidAmount &&
     description.trim().length > 1 &&
     hasValidDate &&
-    splitMethod === "equal" &&
+    splitIsValid &&
     Boolean(payerId) &&
     participantUserIds.length > 0;
 
@@ -139,8 +157,26 @@ export function AddExpenseScreen({ groupId }) {
     setPayerId(currentMember?.id || members[0].id);
   }, [currentUser?.id, members, payerId]);
 
+  useEffect(() => {
+    setSplitValues(buildDefaultSplitValues(splitMethod, members, amountValue));
+    // Split defaults only need to reset when the people or method changes.
+    // Amount edits should not overwrite custom values the user is typing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [memberIdsKey, splitMethod]);
+
   const closeModal = () => {
     router.back();
+  };
+
+  const changeSplitMethod = (method) => {
+    setSplitMethod(method);
+  };
+
+  const changeSplitValue = (memberId, value) => {
+    setSplitValues((currentValues) => ({
+      ...currentValues,
+      [String(memberId)]: value,
+    }));
   };
 
   const saveExpense = async () => {
@@ -155,6 +191,7 @@ export function AddExpenseScreen({ groupId }) {
       expenseDate,
       paidByUserId: payerId,
       participantUserIds,
+      splits: buildSplitRows(splitMethod, members, splitValues),
       splitMethod,
     });
 
@@ -335,24 +372,22 @@ export function AddExpenseScreen({ groupId }) {
                 <ChoiceGrid
                   options={splitMethods}
                   value={splitMethod}
-                  onChange={setSplitMethod}
+                  onChange={changeSplitMethod}
                 />
               </FormSection>
 
-              <FormSection title="Split preview">
-                <TextField
-                  value={`${participantUserIds.length} people · ${splitMethod}`}
-                  editable={false}
-                  left={<FieldIcon icon={Users} translateY={2} />}
-                  helperText={
-                    splitMethod === "equal"
-                      ? "This expense will be split equally across all group members."
-                      : "Only equal split is supported by the backend right now."
-                  }
-                  style={{
-                    backgroundColor: palette.fieldBackground,
-                    borderColor: palette.fieldBorder,
-                  }}
+              <FormSection
+                title={
+                  splitMethod === "equal" ? "Split preview" : "Split details"
+                }
+              >
+                <SplitEditor
+                  amountValue={hasValidAmount ? amountValue : 0}
+                  currency={currency}
+                  members={members}
+                  onChangeValue={changeSplitValue}
+                  splitMethod={splitMethod}
+                  values={splitValues}
                 />
               </FormSection>
             </View>
