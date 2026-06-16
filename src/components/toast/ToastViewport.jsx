@@ -1,20 +1,23 @@
 import React from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { hideToast, selectToasts, useAppDispatch, useAppSelector } from "../../store";
+import {
+  hideToast,
+  selectToasts,
+  useAppDispatch,
+  useAppSelector,
+} from "../../store";
 import { useTheme } from "../../design-system";
 import { ToastItem } from "./ToastItem";
 
 const MAX_VISIBLE_TOASTS = 3;
 
-export function ToastViewport() {
+function ToastStack({ placement, toasts, onClose }) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-  const dispatch = useAppDispatch();
-  const toasts = useAppSelector(selectToasts);
-  const visibleToasts = toasts.slice(-MAX_VISIBLE_TOASTS);
+  const isTop = placement === "top";
 
-  if (!visibleToasts.length) {
+  if (!toasts.length) {
     return null;
   }
 
@@ -22,23 +25,50 @@ export function ToastViewport() {
     <View
       pointerEvents="box-none"
       style={{
-        bottom: Math.max(insets.bottom, theme.space[4]),
+        bottom: isTop ? undefined : Math.max(insets.bottom, theme.space[4]),
         left: 0,
         paddingHorizontal: theme.space[5],
         position: "absolute",
         right: 0,
+        top: isTop ? Math.max(insets.top, theme.space[4]) : undefined,
         zIndex: theme.zIndices.modal,
       }}
     >
       <View pointerEvents="box-none" style={{ gap: theme.space[1] }}>
-        {visibleToasts.map((toast) => (
-          <ToastItem
-            key={toast.id}
-            toast={toast}
-            onClose={(toastId) => dispatch(hideToast(toastId))}
-          />
+        {toasts.map((toast) => (
+          <ToastItem key={toast.id} toast={toast} onClose={onClose} />
         ))}
       </View>
     </View>
+  );
+}
+
+export function ToastViewport() {
+  const dispatch = useAppDispatch();
+  const toasts = useAppSelector(selectToasts);
+  const topToasts = toasts
+    .filter((toast) => toast.placement === "top")
+    .slice(-MAX_VISIBLE_TOASTS);
+  const bottomToasts = toasts
+    .filter((toast) => toast.placement !== "top")
+    .slice(-MAX_VISIBLE_TOASTS);
+
+  if (!topToasts.length && !bottomToasts.length) {
+    return null;
+  }
+
+  return (
+    <>
+      <ToastStack
+        placement="top"
+        toasts={topToasts}
+        onClose={(toastId) => dispatch(hideToast(toastId))}
+      />
+      <ToastStack
+        placement="bottom"
+        toasts={bottomToasts}
+        onClose={(toastId) => dispatch(hideToast(toastId))}
+      />
+    </>
   );
 }

@@ -9,7 +9,8 @@ const EXIT_DURATION = 180;
 
 export function ToastItem({ toast, onClose }) {
   const theme = useTheme();
-  const translateY = useRef(new Animated.Value(96)).current;
+  const hiddenOffset = toast.placement === "top" ? -96 : 96;
+  const translateY = useRef(new Animated.Value(hiddenOffset)).current;
   const opacity = useRef(new Animated.Value(0)).current;
   const timeoutRef = useRef(null);
   const isClosingRef = useRef(false);
@@ -30,7 +31,7 @@ export function ToastItem({ toast, onClose }) {
     Animated.parallel([
       Animated.timing(translateY, {
         duration: EXIT_DURATION,
-        toValue: 96,
+        toValue: hiddenOffset,
         useNativeDriver: true,
       }),
       Animated.timing(opacity, {

@@ -11,6 +11,7 @@ function createToastPayload(payload) {
     type: input.type || "info",
     title: input.title || null,
     message: input.message,
+    placement: input.placement || "bottom",
     duration: input.duration ?? DEFAULT_TOAST_DURATION,
   };
 }

@@ -11,6 +11,7 @@ import {
   receiveNotification,
   selectCurrentUser,
   selectIsAuthenticated,
+  showInfoToast,
   useAppDispatch,
   useAppSelector,
 } from "../../store";
@@ -26,7 +27,12 @@ import {
 } from "../realtime/reverbNotifications";
 
 function normalizeIncomingNotification(payload) {
-  return payload?.notification || payload?.data?.notification || payload?.data || payload;
+  return (
+    payload?.notification ||
+    payload?.data?.notification ||
+    payload?.data ||
+    payload
+  );
 }
 
 function shouldRefreshInvitations(type) {
@@ -60,6 +66,26 @@ function getNotificationResponseKey(response, notification) {
 }
 
 const RESPONSE_DEDUPE_WINDOW_MS = 3000;
+const TOAST_DEDUPE_WINDOW_MS = 3000;
+
+function getNotificationToastKey(notification) {
+  return String(notification?.id || notification?.uuid || "");
+}
+
+function getNotificationToastMessage(notification) {
+  const message =
+    notification?.message ||
+    notification?.body ||
+    notification?.title ||
+    "You have a new notification.";
+  const subtitle = notification?.subtitle || notification?.group?.name || "";
+
+  if (!subtitle || message.includes(subtitle)) {
+    return message;
+  }
+
+  return `${message} · ${subtitle}`;
+}
 
 export function NotificationRuntime() {
   const dispatch = useAppDispatch();
@@ -68,6 +94,7 @@ export function NotificationRuntime() {
   const currentUser = useAppSelector(selectCurrentUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const lastHandledResponseRef = useRef({ handledAt: 0, key: null });
+  const lastToastedNotificationRef = useRef({ shownAt: 0, key: null });
   const pathnameRef = useRef(pathname);
   const userId = currentUser?.id;
 
@@ -76,7 +103,7 @@ export function NotificationRuntime() {
   }, [pathname]);
 
   const handleNotification = useCallback(
-    (payload) => {
+    (payload, options = {}) => {
       const notification = normalizeIncomingNotification(payload);
 
       if (!notification?.id) {
@@ -84,6 +111,29 @@ export function NotificationRuntime() {
       }
 
       dispatch(receiveNotification(notification));
+
+      if (options.showToast) {
+        const toastKey = getNotificationToastKey(notification);
+        const now = Date.now();
+        const lastToast = lastToastedNotificationRef.current;
+        const alreadyShownRecently =
+          lastToast.key === toastKey &&
+          now - lastToast.shownAt < TOAST_DEDUPE_WINDOW_MS;
+
+        if (!toastKey || !alreadyShownRecently) {
+          lastToastedNotificationRef.current = {
+            key: toastKey,
+            shownAt: now,
+          };
+          dispatch(
+            showInfoToast(getNotificationToastMessage(notification), {
+              placement: "top",
+              title: "Notification",
+            }),
+          );
+        }
+      }
+
       dispatch(fetchHomeDashboard());
 
       if (shouldRefreshInvitations(notification.type)) {
@@ -106,7 +156,9 @@ export function NotificationRuntime() {
       return undefined;
     }
 
-    return subscribeToUserNotifications(userId, handleNotification);
+    return subscribeToUserNotifications(userId, (payload) =>
+      handleNotification(payload, { showToast: true }),
+    );
   }, [handleNotification, isAuthenticated, userId]);
 
   useEffect(() => {
@@ -118,7 +170,9 @@ export function NotificationRuntime() {
 
     const unsubscribe = subscribeToExpoNotificationEvents({
       onNotification: (notification) => {
-        handleNotification(extractNotificationPayload(notification));
+        handleNotification(extractNotificationPayload(notification), {
+          showToast: true,
+        });
       },
       onNotificationResponse: (response) => {
         const notification = handleNotification(
