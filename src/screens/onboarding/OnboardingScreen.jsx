@@ -16,24 +16,24 @@ import { setStoredOnboardingCompleted } from "../../storage/onboardingStorage";
 const slides = [
   {
     id: "plan",
-    image: require("../../../assets/onboarding/onboarding1.png"),
+    image: require("../../../assets/onboarding/onboarding3.png"),
     eyebrow: "Split smarter",
     title: "Track every shared cost without the math headache",
     body: "Create groups, add expenses, and let SplitEasy keep everyone’s balance clear.",
   },
-  {
-    id: "settle",
-    image: require("../../../assets/onboarding/onboarding2.png"),
-    eyebrow: "Settle faster",
-    title: "Remind, settle, and stay in sync with your people",
-    body: "See who owes what, send friendly reminders, and keep group activity easy to follow.",
-  },
+  // {
+  //   id: "settle",
+  //   image: require("../../../assets/onboarding/onboarding2.png"),
+  //   eyebrow: "Settle faster",
+  //   title: "Remind, settle, and stay in sync with your people",
+  //   body: "See who owes what, send friendly reminders, and keep group activity easy to follow.",
+  // },
 ];
 
 function OnboardingSlide({ item, width }) {
   const theme = useTheme();
   const imageStageSize = Math.min(width * 1.05, 410);
-  const imageSize = imageStageSize * 1.5;
+  const imageSize = imageStageSize * 1.15;
 
   return (
     <View style={[styles.slide, { width }]}>
