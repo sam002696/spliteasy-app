@@ -1,11 +1,11 @@
 import React from "react";
 import { ThemeProvider } from "../../src/design-system";
-import { LoginScreen } from "../../src/screens/login";
+import { SignupScreen } from "../../src/screens/signup";
 
-export default function LoginRoute() {
+export default function SignupRoute() {
   return (
     <ThemeProvider mode="light">
-      <LoginScreen />
+      <SignupScreen />
     </ThemeProvider>
   );
 }

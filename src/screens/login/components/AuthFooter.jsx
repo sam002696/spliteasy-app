@@ -25,7 +25,11 @@ export function AuthFooter({ onSignUp }) {
           opacity: pressed ? 0.72 : 1,
         })}
       >
-        <Text variant="bodySmall" color="accent" style={{ fontWeight: theme.fontWeights.semibold }}>
+        <Text
+          variant="bodySmall"
+          color="secondaryAccent"
+          style={{ fontWeight: theme.fontWeights.semibold }}
+        >
           Sign up
         </Text>
       </Pressable>

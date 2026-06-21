@@ -14,10 +14,10 @@ export function LoginForm({ isSubmitting = false, onForgotPassword, onSubmit }) 
   );
 
   const fieldStyle = {
-    backgroundColor: theme.semantic.card,
-    borderColor: theme.rgba.white10,
+    backgroundColor: theme.colors.white,
+    borderColor: theme.rgba.black10,
     borderRadius: theme.radii.lg,
-    height: 60,
+    height: 58,
     paddingHorizontal: theme.space[4],
   };
 
@@ -33,6 +33,7 @@ export function LoginForm({ isSubmitting = false, onForgotPassword, onSubmit }) 
     <View style={{ gap: theme.space[4] }}>
       <View style={{ gap: theme.space[3] }}>
         <TextField
+          label="Email"
           value={email}
           onChangeText={setEmail}
           placeholder="Email address"
@@ -45,6 +46,7 @@ export function LoginForm({ isSubmitting = false, onForgotPassword, onSubmit }) 
         />
 
         <TextField
+          label="Password"
           value={password}
           onChangeText={setPassword}
           placeholder="Password"
@@ -79,25 +81,28 @@ export function LoginForm({ isSubmitting = false, onForgotPassword, onSubmit }) 
           opacity: pressed ? 0.72 : 1,
         })}
       >
-        <Text variant="field" color="accent">
+        <Text variant="field" color="secondaryAccent">
           Forgot password?
         </Text>
       </Pressable>
 
       <Button
-        title="Continue"
+        title="Sign in"
         size="lg"
         fullWidth
         disabled={!canSubmit || isSubmitting}
         loading={isSubmitting}
         onPress={() => onSubmit?.({ email, password })}
-        style={{
-          height: 58,
-          marginTop: theme.space[2],
-        }}
         textStyle={{
+          color: theme.colors.white,
           fontSize: 16,
           lineHeight: 20,
+        }}
+        style={{
+          backgroundColor: theme.semantic.secondaryAccent,
+          borderColor: theme.semantic.secondaryAccent,
+          height: 58,
+          marginTop: theme.space[2],
         }}
       />
     </View>

@@ -29,6 +29,7 @@ function RootNavigator() {
       >
         <Stack.Screen name="onboarding" />
         <Stack.Screen name="(auth)/login" />
+        <Stack.Screen name="(auth)/signup" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="groups/[groupId]" />
         <Stack.Screen name="group-requests" />
