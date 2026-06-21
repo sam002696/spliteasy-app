@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ONBOARDING_COMPLETED_KEY = "";
+const ONBOARDING_COMPLETED_KEY = "spliteasy.onboardingCompleted";
 
 export async function getStoredOnboardingCompleted() {
   const value = await AsyncStorage.getItem(ONBOARDING_COMPLETED_KEY);

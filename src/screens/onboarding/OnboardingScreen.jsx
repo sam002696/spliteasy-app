@@ -59,14 +59,19 @@ function OnboardingSlide({ item, width }) {
       <View style={[styles.copy, { gap: theme.space[3] }]}>
         <Text
           variant="micro"
-          color="textMuted"
+          color="secondaryAccent"
           uppercase
           align="center"
           style={styles.eyebrow}
         >
           {item.eyebrow}
         </Text>
-        <Text variant="screenTitle" color="text" align="center">
+        <Text
+          variant="screenTitle"
+          color="text"
+          align="center"
+          style={{ fontSize: 30, lineHeight: 37 }}
+        >
           {item.title}
         </Text>
         <Text variant="body" color="textMuted" align="center">
@@ -90,7 +95,7 @@ function PaginationDots({ activeIndex }) {
             key={slide.id}
             style={{
               backgroundColor: isActive
-                ? theme.semantic.surfaceStrong
+                ? theme.semantic.secondaryAccent
                 : theme.semantic.border,
               borderRadius: theme.radii.full,
               height: theme.space[2],
@@ -162,7 +167,12 @@ export function OnboardingScreen() {
           },
         ]}
       >
-        <Text variant="micro" color="textMuted" uppercase style={styles.brand}>
+        <Text
+          variant="micro"
+          color="secondaryAccent"
+          uppercase
+          style={styles.brand}
+        >
           Spliteasy
         </Text>
         <Pressable
@@ -171,9 +181,13 @@ export function OnboardingScreen() {
           style={({ pressed }) => [
             styles.skipButton,
             {
+              backgroundColor: theme.colors.white,
+              borderColor: theme.semantic.border,
+              borderRadius: theme.radii.full,
+              borderWidth: theme.borderWidths.thin,
               opacity: pressed ? 0.68 : 1,
-              paddingHorizontal: theme.space[2],
-              paddingVertical: theme.space[1],
+              paddingHorizontal: theme.space[3],
+              paddingVertical: theme.space[2],
             },
           ]}
         >
@@ -211,9 +225,19 @@ export function OnboardingScreen() {
           size="lg"
           fullWidth
           onPress={goNext}
+          style={{
+            backgroundColor: theme.semantic.secondaryAccent,
+            borderColor: theme.semantic.secondaryAccent,
+            height: 58,
+          }}
+          textStyle={{
+            color: theme.colors.white,
+            fontSize: 16,
+            lineHeight: 20,
+          }}
           right={
             <ArrowRight
-              color={theme.semantic.accentText}
+              color={theme.colors.white}
               size={theme.space[5]}
               strokeWidth={theme.borderWidths.medium}
             />
@@ -229,7 +253,7 @@ const styles = StyleSheet.create({
     letterSpacing: 4,
   },
   copy: {
-    paddingHorizontal: 28,
+    paddingHorizontal: 30,
   },
   dots: {
     alignItems: "center",
@@ -248,7 +272,7 @@ const styles = StyleSheet.create({
   imageStage: {
     alignItems: "center",
     justifyContent: "center",
-    overflow: "visible",
+    overflow: "hidden",
   },
   safeArea: {
     flex: 1,
@@ -258,5 +282,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     justifyContent: "center",
+    paddingTop: 8,
   },
 });
