@@ -10,7 +10,7 @@ Implemented UI:
 - Groups tab
 - Group Detail screen
 - Create Group modal
-- Add Expense modal with Manual Entry UI and Scan Receipt placeholder
+- Add Expense modal with manual expense entry
 - Balances tab
 - Profile tab
 - Custom bottom tab navigation
@@ -120,7 +120,6 @@ app/(modals)/add-expense.jsx
 Add Expense is a full-height modal. It includes:
 
 - Amount card
-- Manual Entry / Scan Receipt mode toggle
 - Description field
 - Prefilled group field
 - Date field
@@ -130,17 +129,7 @@ Add Expense is a full-height modal. It includes:
 - Split preview
 - Save expense button
 
-Manual mode is UI-only. Scan mode currently shows a placeholder for the future receipt scanner flow.
-
-### Receipt Scanner
-
-Planned flow:
-
-1. Camera screen with receipt frame.
-2. Scanned list screen with merchant banner, editable line items, and totals card.
-3. Split mode picker with Split Total and Split by Item.
-
-This flow is not implemented yet.
+Expense entry is manual-only.
 
 ### Balances
 

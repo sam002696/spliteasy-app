@@ -1,10 +1,3 @@
-import { Camera, PencilLine } from "lucide-react-native";
-
-export const entryModes = [
-  { label: "Manual Entry", value: "manual", icon: PencilLine },
-  { label: "Scan Receipt", value: "scan", icon: Camera },
-];
-
 export const currencyOptions = [
   { label: "BDT", value: "BDT" },
   { label: "USD", value: "USD" },

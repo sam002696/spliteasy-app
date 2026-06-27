@@ -9,7 +9,7 @@ import {
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ModeToggle, Text, TextField, useTheme } from "../../design-system";
+import { Text, TextField, useTheme } from "../../design-system";
 import {
   createExpense,
   fetchBalances,
@@ -33,14 +33,9 @@ import {
   AmountCard,
   ChoiceGrid,
   FormSection,
-  ScanPlaceholder,
   SplitEditor,
 } from "./components";
-import {
-  currencyOptions,
-  entryModes,
-  splitMethods,
-} from "./data/addExpenseOptions";
+import { currencyOptions, splitMethods } from "./data/addExpenseOptions";
 import {
   buildCreateExpensePayload,
   buildDefaultSplitValues,
@@ -88,7 +83,6 @@ export function AddExpenseScreen({ groupId }) {
     selectedGroup && String(selectedGroup.id) === normalizedGroupId
       ? selectedGroup.name
       : "Selected group";
-  const [entryMode, setEntryMode] = useState("manual");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [currency] = useState("BDT");
@@ -237,165 +231,154 @@ export function AddExpenseScreen({ groupId }) {
         >
           <AddExpenseHeader onClose={closeModal} />
           <AmountCard amount={amount} onAmountChange={setAmount} />
-          <ModeToggle
-            options={entryModes}
-            value={entryMode}
-            onChange={setEntryMode}
-            style={{ marginBottom: theme.space[2] }}
-          />
+          <View>
+            <FormSection title="Details">
+              <View style={{ gap: theme.space[3] }}>
+                <TextField
+                  value={description}
+                  onChangeText={setDescription}
+                  placeholder="Dinner, groceries, rent..."
+                  left={<FieldIcon icon={FileText} />}
+                  style={{
+                    backgroundColor: palette.fieldBackground,
+                    borderColor: palette.fieldBorder,
+                  }}
+                />
+                <TextField
+                  value={groupName}
+                  editable={false}
+                  left={<FieldIcon icon={UserRound} />}
+                  style={{
+                    backgroundColor: palette.fieldBackground,
+                    borderColor: palette.fieldBorder,
+                  }}
+                />
+                <TextField
+                  value={expenseDate}
+                  onChangeText={setExpenseDate}
+                  placeholder="YYYY-MM-DD"
+                  keyboardType="numbers-and-punctuation"
+                  left={<FieldIcon icon={CalendarDays} />}
+                  helperText="Use YYYY-MM-DD format."
+                  style={{
+                    backgroundColor: palette.fieldBackground,
+                    borderColor: palette.fieldBorder,
+                  }}
+                />
+              </View>
+            </FormSection>
 
-          {entryMode === "scan" ? (
-            <ScanPlaceholder />
-          ) : (
-            <View style={{ marginTop: theme.space[6] }}>
-              <FormSection title="Details">
-                <View style={{ gap: theme.space[3] }}>
-                  <TextField
-                    value={description}
-                    onChangeText={setDescription}
-                    placeholder="Dinner, groceries, rent..."
-                    left={<FieldIcon icon={FileText} />}
-                    style={{
-                      backgroundColor: palette.fieldBackground,
-                      borderColor: palette.fieldBorder,
-                    }}
-                  />
-                  <TextField
-                    value={groupName}
-                    editable={false}
-                    left={<FieldIcon icon={UserRound} />}
-                    style={{
-                      backgroundColor: palette.fieldBackground,
-                      borderColor: palette.fieldBorder,
-                    }}
-                  />
-                  <TextField
-                    value={expenseDate}
-                    onChangeText={setExpenseDate}
-                    placeholder="YYYY-MM-DD"
-                    keyboardType="numbers-and-punctuation"
-                    left={<FieldIcon icon={CalendarDays} />}
-                    helperText="Use YYYY-MM-DD format."
-                    style={{
-                      backgroundColor: palette.fieldBackground,
-                      borderColor: palette.fieldBorder,
-                    }}
-                  />
-                </View>
-              </FormSection>
-
-              <FormSection title="Currency">
-                <View style={{ gap: theme.space[3] }}>
+            <FormSection title="Currency">
+              <View style={{ gap: theme.space[3] }}>
+                <View
+                  style={{
+                    alignItems: "center",
+                    backgroundColor: palette.cardBackground,
+                    borderRadius: theme.radii.lg,
+                    flexDirection: "row",
+                    gap: theme.space[3],
+                    padding: theme.space[4],
+                  }}
+                >
                   <View
                     style={{
                       alignItems: "center",
-                      backgroundColor: palette.cardBackground,
-                      borderRadius: theme.radii.lg,
-                      flexDirection: "row",
-                      gap: theme.space[3],
-                      padding: theme.space[4],
+                      backgroundColor: palette.currencyIconBackground,
+                      borderRadius: theme.radii.md,
+                      height: theme.sizes.iconButton,
+                      justifyContent: "center",
+                      width: theme.sizes.iconButton,
                     }}
                   >
-                    <View
-                      style={{
-                        alignItems: "center",
-                        backgroundColor: palette.currencyIconBackground,
-                        borderRadius: theme.radii.md,
-                        height: theme.sizes.iconButton,
-                        justifyContent: "center",
-                        width: theme.sizes.iconButton,
-                      }}
-                    >
-                      <Text variant="cardTitle" color="text">
-                        ৳
-                      </Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text variant="cardTitle" color="text">
-                        {selectedCurrency.label}
-                      </Text>
-                      <Text variant="bodySmall" color="textMuted">
-                        {currencyNames[currency] || selectedCurrency.label}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        alignItems: "center",
-                        backgroundColor: palette.currencyBadgeBackground,
-                        borderColor: palette.currencyBadgeBorder,
-                        borderRadius: theme.radii.full,
-                        borderWidth: theme.borderWidths.hairline,
-                        flexDirection: "row",
-                        gap: theme.space[1],
-                        minHeight: theme.sizes.minTapTarget - theme.space[2],
-                        paddingHorizontal: theme.space[3],
-                      }}
-                    >
-                      <Check
-                        color={palette.currencyBadgeText}
-                        size={theme.space[4]}
-                        strokeWidth={theme.borderWidths.medium}
-                      />
-                      <Text variant="field" color={palette.currencyBadgeText}>
-                        From settings
-                      </Text>
-                    </View>
+                    <Text variant="cardTitle" color="text">
+                      ৳
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text variant="cardTitle" color="text">
+                      {selectedCurrency.label}
+                    </Text>
+                    <Text variant="bodySmall" color="textMuted">
+                      {currencyNames[currency] || selectedCurrency.label}
+                    </Text>
                   </View>
                   <View
                     style={{
                       alignItems: "center",
+                      backgroundColor: palette.currencyBadgeBackground,
+                      borderColor: palette.currencyBadgeBorder,
+                      borderRadius: theme.radii.full,
+                      borderWidth: theme.borderWidths.hairline,
                       flexDirection: "row",
                       gap: theme.space[1],
+                      minHeight: theme.sizes.minTapTarget - theme.space[2],
+                      paddingHorizontal: theme.space[3],
                     }}
                   >
-                    <CircleAlert
-                      color={theme.semantic.textMuted}
+                    <Check
+                      color={palette.currencyBadgeText}
                       size={theme.space[4]}
                       strokeWidth={theme.borderWidths.medium}
                     />
-                    <Text variant="bodySmall" color="textMuted">
-                      Change your default currency in Profile - Settings.
+                    <Text variant="field" color={palette.currencyBadgeText}>
+                      From settings
                     </Text>
                   </View>
                 </View>
-              </FormSection>
+                <View
+                  style={{
+                    alignItems: "center",
+                    flexDirection: "row",
+                    gap: theme.space[1],
+                  }}
+                >
+                  <CircleAlert
+                    color={theme.semantic.textMuted}
+                    size={theme.space[4]}
+                    strokeWidth={theme.borderWidths.medium}
+                  />
+                  <Text variant="bodySmall" color="textMuted">
+                    Change your default currency in Profile - Settings.
+                  </Text>
+                </View>
+              </View>
+            </FormSection>
 
-              <FormSection title="Who paid">
-                <ChoiceGrid
-                  options={payerOptions}
-                  value={payerId}
-                  onChange={setPayerId}
-                />
-              </FormSection>
+            <FormSection title="Who paid">
+              <ChoiceGrid
+                options={payerOptions}
+                value={payerId}
+                onChange={setPayerId}
+              />
+            </FormSection>
 
-              <FormSection title="Split method">
-                <ChoiceGrid
-                  options={splitMethods}
-                  value={splitMethod}
-                  onChange={changeSplitMethod}
-                />
-              </FormSection>
+            <FormSection title="Split method">
+              <ChoiceGrid
+                options={splitMethods}
+                value={splitMethod}
+                onChange={changeSplitMethod}
+              />
+            </FormSection>
 
-              <FormSection
-                title={
-                  splitMethod === "equal" ? "Split preview" : "Split details"
-                }
-              >
-                <SplitEditor
-                  amountValue={hasValidAmount ? amountValue : 0}
-                  currency={currency}
-                  members={members}
-                  onChangeValue={changeSplitValue}
-                  splitMethod={splitMethod}
-                  values={splitValues}
-                />
-              </FormSection>
-            </View>
-          )}
+            <FormSection
+              title={
+                splitMethod === "equal" ? "Split preview" : "Split details"
+              }
+            >
+              <SplitEditor
+                amountValue={hasValidAmount ? amountValue : 0}
+                currency={currency}
+                members={members}
+                onChangeValue={changeSplitValue}
+                splitMethod={splitMethod}
+                values={splitValues}
+              />
+            </FormSection>
+          </View>
 
           <View style={{ marginTop: theme.space[6] }}>
             <AddExpenseFooter
-              canSave={entryMode === "scan" ? false : canSave}
+              canSave={canSave}
               loading={loading.create}
               onSave={saveExpense}
             />
